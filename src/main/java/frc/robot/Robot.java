@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,13 +18,23 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+
+  XboxController driver_controller = new XboxController(0);
+
+  boolean driver_controller_A_button;
+
   @Override
   public void robotInit() {}
 
   // DANS BRILLANT IDEA
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+    getControllerStates();
+
+  }
 
   @Override
   public void autonomousInit() {}
@@ -54,4 +65,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {}
+
+
+
+  public void getControllerStates() {
+    driver_controller_A_button = driver_controller.getAButton();
+  }
 }
