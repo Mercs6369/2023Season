@@ -20,6 +20,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {}
 
+  // DANS BRILLANT IDEA
+
   @Override
   public void robotPeriodic() {}
 
