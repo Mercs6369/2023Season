@@ -28,6 +28,10 @@ public class Robot extends TimedRobot {
   boolean driver_controller_Y_button;
   boolean driver_controller_X_button;
   boolean driver_controller_B_button;
+  double driver_controller_L_X_Axis;
+  double driver_controller_L_Y_Axis;
+  double driver_controller_R_X_Axis;
+  double driver_controller_R_Y_Axis;
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -113,6 +117,10 @@ public class Robot extends TimedRobot {
     driver_controller_B_button = driver_controller.getBButton();
     driver_controller_X_button = driver_controller.getXButton();
     driver_controller_Y_button = driver_controller.getYButton();
-    
+    driver_controller_L_X_Axis = driver_controller.getLeftX();
+    driver_controller_L_Y_Axis = driver_controller.getLeftY();
+    driver_controller_R_X_Axis = driver_controller.getRightX();
+    driver_controller_R_Y_Axis = driver_controller.getRightY();
+
   }
 }
