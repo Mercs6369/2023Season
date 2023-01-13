@@ -10,18 +10,22 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 public class Arm {
 
+    // Variables
     double arm_length;
 
+    // Motors
     WPI_TalonFX claw_motor = new WPI_TalonFX(0, "rio");
-//  Jonathan to add rotating_arm, 2nd_stage_elevator, 1st_stage_elevator
+    WPI_TalonFX pivot_motor = new WPI_TalonFX(1, "rio");
+    WPI_TalonFX first_stage_elevator = new WPI_TalonFX(2, "rio");
+    WPI_TalonFX second_stage_elevator = new WPI_TalonFX(3, "rio");
 
-    public Arm() {
-        
-    }
+
+
+    public Arm() {}
     
 
     public void score_game_piece() {
-        // put score code here
+        // Scoring game pieces
     }
 
     public void eject_game_piece() {
