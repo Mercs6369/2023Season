@@ -23,15 +23,17 @@ public class Robot extends TimedRobot {
 
 
   XboxController driver_controller = new XboxController(0);
-
-  boolean driver_controller_A_button;
-  boolean driver_controller_Y_button;
-  boolean driver_controller_X_button;
-  boolean driver_controller_B_button;
+  XboxController operator_controller = new XboxController(1);
+// maybe put these variables in the constants class?
+  boolean operator_controller_A_button;
+  boolean operator_controller_Y_button;
+  boolean operator_controller_X_button;
+  boolean operator_controller_B_button;
   double driver_controller_L_X_Axis;
   double driver_controller_L_Y_Axis;
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
+  int driver_controller_POV_button = driver_controller.getPOV();
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -55,10 +57,40 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     getControllerStates();
-    if(driver_controller_B_button)
+    if(operator_controller_A_button == true)
     {
-      // something hello this is me jonathan
+      // There should be a method to pick an object automatically
     }
+    if(operator_controller_B_button == true)
+    {
+      // There should be a method to AutoBalance on the Charge Station
+    }
+    if(operator_controller_X_button == true)
+    {
+      // There should be a method that ejects an object
+    }
+    if(operator_controller_Y_button == true)
+    {
+      // There should be a method that scores the object
+    }
+    //We still need to make a deadband function below function is a draft
+    if(-0.1 < driver_controller_L_X_Axis && 0.1 > driver_controller_L_X_Axis && -0.1 < driver_controller_L_Y_Axis && driver_controller_L_Y_Axis < .1)
+    {
+      //Move(0,0)
+    }
+    /*Maybe we should add the next two methods in the far future
+    if(canAutoPickObj() == true)
+    {
+      driver_controller.setRumble(null, .5);
+    }
+    this method should make the contoller rumble if a game object can be autonomous intaked
+    if(canAutoScoreObj() == true)
+    {
+      driver_controller.setRumble(null, .5);
+    }
+    this method should make the contoller rumble if a game object can be autonomous scored
+    */
+    
 
   }
 
@@ -113,10 +145,11 @@ public class Robot extends TimedRobot {
 
 
   public void getControllerStates() {
-    driver_controller_A_button = driver_controller.getAButton();
-    driver_controller_B_button = driver_controller.getBButton();
-    driver_controller_X_button = driver_controller.getXButton();
-    driver_controller_Y_button = driver_controller.getYButton();
+    operator_controller_A_button = operator_controller.getAButton();
+    operator_controller_B_button = operator_controller.getBButton();
+    operator_controller_X_button = operator_controller.getXButton();
+    operator_controller_Y_button = operator_controller.getYButton();
+    driver_controller_POV_button = driver_controller.getPOV();
     driver_controller_L_X_Axis = driver_controller.getLeftX();
     driver_controller_L_Y_Axis = driver_controller.getLeftY();
     driver_controller_R_X_Axis = driver_controller.getRightX();
