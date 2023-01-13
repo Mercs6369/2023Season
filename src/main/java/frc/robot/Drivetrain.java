@@ -45,7 +45,7 @@ public class Drivetrain {
         gyro.configFactoryDefault();
         gyro.setYaw(0);
         
-        swerveOdometry = new SwerveDriveOdometry(swerveKinematics, new Rotation2d(gyro.getYaw()*(Math.PI/180)));
+        swerveOdometry = new SwerveDriveOdometry(swerveKinematics, new Rotation2d(gyro.getYaw()*(Math.PI/180)), null);
 
         mSwerveMods = new SwerveX_Module[] {
 
@@ -79,7 +79,7 @@ public class Drivetrain {
         mSwerveMods[2].setDesiredState(states[2]);
         mSwerveMods[3].setDesiredState(states[3]);
 
-        swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); //update
+        //swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); 
         
     }
 
