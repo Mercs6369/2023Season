@@ -23,11 +23,17 @@ public class Robot extends TimedRobot {
 
 
   XboxController driver_controller = new XboxController(0);
-
-  boolean driver_controller_A_button;
-  boolean driver_controller_Y_button;
-  boolean driver_controller_X_button;
-  boolean driver_controller_B_button;
+  XboxController operator_controller = new XboxController(1);
+// maybe put these variables in the constants class?
+  boolean operator_controller_A_button;
+  boolean operator_controller_Y_button;
+  boolean operator_controller_X_button;
+  boolean operator_controller_B_button;
+  double driver_controller_L_X_Axis;
+  double driver_controller_L_Y_Axis;
+  double driver_controller_R_X_Axis;
+  double driver_controller_R_Y_Axis;
+  int driver_controller_POV_button = driver_controller.getPOV();
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
