@@ -29,10 +29,40 @@ public class Robot extends TimedRobot {
   boolean driver_controller_X_button;
   boolean driver_controller_B_button;
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  // Shuffleboard: Declares variables associated with Alliance Selection
+  private final SendableChooser<String> m_alliance = new SendableChooser<>();
+  private static final String kRed = "Red";
+  private static final String kBlue = "Blue";
+  private String m_allianceSelected;
+  // Shuffleboard: Declares variables associated with Idle Selection
+  private final SendableChooser<String> m_idle = new SendableChooser<>();
+  private static final String kNotIdle = "No";
+  private static final String kIsIdle = "Yes";
+  private String m_idleSelected;
+  // Shuffleboard: Declares variables associated with Position Selection
+  private final SendableChooser<String> m_position = new SendableChooser<>();
+  private static final String kCenter = "Center";
+  private static final String kLeft = "Left";
+  private static final String kRight = "Right";
+  private String m_positionSelected;
+  // Shuffleboard: Declares variables associated with Scoring Node
+  private final SendableChooser<String>  m_scoringNode= new SendableChooser<>();
+  private static final String kHigh = "High";
+  private static final String kMedium = "Medium";
+  private static final String kHybrid = "Hybrid";
+  private String m_scoringNodeSelected;
+  // Shuffleboard: Declares variables associated with Leaving Community
+  private final SendableChooser<String>  m_leavingCommunity = new SendableChooser<>();
+  private static final String kIsLeaving = "Yes";
+  private static final String kNotLeaving = "No";
+  private String m_leavingCommunitySelected;
+  // Shuffleboard: Declares variables associated with Delay
+  private final SendableChooser<String>  m_delay = new SendableChooser<>();
+  private static final String kNoDelay = "No Delay";
+  private static final String kOneSecond = "One Second";
+  private static final String kThreeSeconds = "Three Seconds";
+  private static final String kFiveSeconds = "Five Seconds";
+  private String m_delaySelected;
 
   @Override
   public void robotInit() {
