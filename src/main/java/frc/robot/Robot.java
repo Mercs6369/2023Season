@@ -132,6 +132,10 @@ public class Robot extends TimedRobot {
     {
       //Move(0,0)
     }
+    if(-0.1 < driver_controller_R_X_Axis && 0.1 > driver_controller_R_X_Axis && -0.1 < driver_controller_R_Y_Axis && driver_controller_R_Y_Axis < .1)
+    {
+      //Move(0,0)
+    }
     /*Maybe we should add the next two methods in the far future
     if(canAutoPickObj() == true)
     {
