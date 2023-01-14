@@ -13,6 +13,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 // test ignore this
 public class Arm {
     
+    public Arm() {}
+//  ^^^ idk what to do with this
+
 
 
     enum ArmStateEnum {
@@ -27,20 +30,18 @@ public class Arm {
 
     // Variables
     double arm_length;    
+    /*   
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
-
+    ColorSensorV3 claw_sensor = new ColorSensorV3(i2cPort);
+    ^^^ Temporary comments             
+    */
+  
 
     // Motors
     WPI_TalonFX claw_motor = new WPI_TalonFX(Constants.CLAW_MOTOR_ID, "rio"); 
     WPI_TalonFX pivot_motor = new WPI_TalonFX(Constants.PIVOT_MOTOR_ID, "rio"); 
     WPI_TalonFX first_stage_elevator = new WPI_TalonFX(Constants.FIRST_STAGE_ELEVATOR_ID, "rio"); 
     WPI_TalonFX second_stage_elevator = new WPI_TalonFX(Constants.SECOND_STAGE_ELEVATOR_ID, "rio");
-
-    ColorSensorV3 claw_sensor = new ColorSensorV3(i2cPort);
-
-
-
-    public Arm() {}
 
 
 
@@ -54,17 +55,17 @@ public class Arm {
 
     public void _Eject_Game_Piece() {
         if (ARM_STATE == ArmStateEnum.Idle) {
-            ARM_STATE = ArmStateEnum.Scoring;
+            ARM_STATE = ArmStateEnum.Ejecting;
         }
     }
 
     public void _Pickup_Game_Piece() {
         if (ARM_STATE == ArmStateEnum.Idle) {
-            ARM_STATE = ArmStateEnum.Scoring;
+            ARM_STATE = ArmStateEnum.Picking_up;
         }
     }
 
-//  ^^^ These are the methods you would call when you want to eject/score/pickup.
+//  ^^^ These are the methods you would call when you want to eject/score/pickup. Theoretically these can be run however many times you want, you shouldn't have to implement a debounce thingy :P
 
 
 
@@ -96,3 +97,6 @@ public class Arm {
 //  ^^^ This needs to be run constantly whenever you want the arm to work and do magik shtuff
 
 }
+
+
+
