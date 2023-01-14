@@ -8,10 +8,9 @@ public class Constants {
     public static final int INTAKE_MOTOR_1_ID = 1;
     public static final int CLAW_MOTOR_ID = 16;
     public static final int INTAKE_MOTOR_2_ID = 2;
-    public static final int LIFT_MOTOR_1_ID = 3;
-    public static final int LIFT_MOTOR_2_ID = 4;
-    public static final int LIFT_MOTOR_3_ID = 14;
-    public static final int LIFT_PIVOT_MOTOR_ID = 5;
+    public static final int FIRST_STAGE_ELEVATOR_ID= 3;
+    public static final int SECOND_STAGE_ELEVATOR_ID = 22;
+    public static final int PIVOT_MOTOR_ID = 5;
     public static final int DRIVE_FL_MOTOR_1_ID = 6;
     public static final int angleMotor1ID = 15;
     public static final int DRIVE_FL_MOTOR_2_ID = 7;
