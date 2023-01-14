@@ -9,22 +9,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-
 
   XboxController driver_controller = new XboxController(0);
   XboxController operator_controller = new XboxController(1);
-// maybe put these variables in the constants class?
+// maybe put these variables in the constants class? Yes, constants being worked by Gargi, still need these though
   boolean operator_controller_A_button;
   boolean operator_controller_Y_button;
   boolean operator_controller_X_button;
@@ -34,6 +23,8 @@ public class Robot extends TimedRobot {
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button = driver_controller.getPOV();
+
+  Arm m_arm = new Arm();
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -72,45 +63,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    // Shuffleboard: Passes options "Red" and "Blue" for Alliance
-    m_alliance.setDefaultOption("Red", kRed);
-    m_alliance.setDefaultOption("Blue", kBlue);
-    SmartDashboard.putData("Alliance", m_alliance);
-    // Shuffleboard: Passes options "Yes" and "No" for Idle
-    m_idle.setDefaultOption("No", kNotIdle);
-    m_idle.addOption("Yes", kIsIdle);
-    SmartDashboard.putData("Idle", m_idle);
-    // Shuffleboard: Passes options "Center", "Left", and "Right" for Position
-    m_position.setDefaultOption("Center", kCenter);
-    m_position.addOption("Left", kLeft);
-    m_position.addOption("Right", kRight);
-    SmartDashboard.putData("Position", m_position);
-    // Shuffleboard: Passes options "High", "Medium", and "Hybrid" for Scoring Node
-    m_scoringNode.setDefaultOption("High", kHigh);
-    m_scoringNode.addOption("Medium", kMedium);
-    m_scoringNode.addOption("Hybrid", kHybrid);
-    SmartDashboard.putData("Scoring Node", m_scoringNode);
-    // Shuffleboard: Passes options "Yes" and "No" for Leaving Community
-    m_leavingCommunity.setDefaultOption("Yes", kIsLeaving);
-    m_leavingCommunity.addOption("No", kNotLeaving);
-    SmartDashboard.putData("Leaving Community", m_leavingCommunity);
-    // Shuffleboard: Passes options "No Delay", "One Second", "Three Seconds", and "Five Seconds" for Delay
-    m_delay.setDefaultOption("No Delay", kNoDelay);
-    m_delay.addOption("One Second", kOneSecond);
-    m_delay.addOption("Three Seconds", kThreeSeconds);
-    m_delay.addOption("Five Seconds", kFiveSeconds);
-    SmartDashboard.putData("Delay", m_delay);
-    
-    
-  }
 
-  // DANS BRILLANT IDEA
-  // AMALS BRILLANT IDEA
+    robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
+        
+  }
 
   @Override
   public void robotPeriodic() {
 
-    getControllerStates();
+    getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
@@ -148,12 +109,86 @@ public class Robot extends TimedRobot {
     }
     this method should make the contoller rumble if a game object can be autonomous scored
     */
-    
-
   }
 
   @Override
   public void autonomousInit() {
+
+    autoInitShuffleboard();  // performs autonomous initialization of Shuffleboard usuage
+
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+
+  }
+
+  @Override
+  public void teleopInit() {
+
+  }
+
+  @Override
+  public void teleopPeriodic() {
+
+  }
+
+  @Override
+  public void disabledInit() {}
+
+  @Override
+  public void disabledPeriodic() {}
+
+  @Override
+  public void testInit() {}
+
+  @Override
+  public void testPeriodic() {}
+
+  public void getControllerStates() {
+    operator_controller_A_button = operator_controller.getAButton();
+    operator_controller_B_button = operator_controller.getBButton();
+    operator_controller_X_button = operator_controller.getXButton();
+    operator_controller_Y_button = operator_controller.getYButton();
+    driver_controller_POV_button = driver_controller.getPOV();
+    driver_controller_L_X_Axis = driver_controller.getLeftX();
+    driver_controller_L_Y_Axis = driver_controller.getLeftY();
+    driver_controller_R_X_Axis = driver_controller.getRightX();
+    driver_controller_R_Y_Axis = driver_controller.getRightY();
+  }
+
+  public void robotInitShuffleboard() {
+      // Shuffleboard: Passes options "Red" and "Blue" for Alliance
+      m_alliance.setDefaultOption("Red", kRed);
+      m_alliance.setDefaultOption("Blue", kBlue);
+      SmartDashboard.putData("Alliance", m_alliance);
+      // Shuffleboard: Passes options "Yes" and "No" for Idle
+      m_idle.setDefaultOption("No", kNotIdle);
+      m_idle.addOption("Yes", kIsIdle);
+      SmartDashboard.putData("Idle", m_idle);
+      // Shuffleboard: Passes options "Center", "Left", and "Right" for Position
+      m_position.setDefaultOption("Center", kCenter);
+      m_position.addOption("Left", kLeft);
+      m_position.addOption("Right", kRight);
+      SmartDashboard.putData("Position", m_position);
+      // Shuffleboard: Passes options "High", "Medium", and "Hybrid" for Scoring Node
+      m_scoringNode.setDefaultOption("High", kHigh);
+      m_scoringNode.addOption("Medium", kMedium);
+      m_scoringNode.addOption("Hybrid", kHybrid);
+      SmartDashboard.putData("Scoring Node", m_scoringNode);
+      // Shuffleboard: Passes options "Yes" and "No" for Leaving Community
+      m_leavingCommunity.setDefaultOption("Yes", kIsLeaving);
+      m_leavingCommunity.addOption("No", kNotLeaving);
+      SmartDashboard.putData("Leaving Community", m_leavingCommunity);
+      // Shuffleboard: Passes options "No Delay", "One Second", "Three Seconds", and "Five Seconds" for Delay
+      m_delay.setDefaultOption("No Delay", kNoDelay);
+      m_delay.addOption("One Second", kOneSecond);
+      m_delay.addOption("Three Seconds", kThreeSeconds);
+      m_delay.addOption("Five Seconds", kFiveSeconds);
+      SmartDashboard.putData("Delay", m_delay);
+  }
+
+  public void autoInitShuffleboard() {
     // Shuffleboard: Prints Alliance Selection to console
     m_allianceSelected = m_alliance.getSelected();
     System.out.println("Alliance Selected: " + m_allianceSelected);
@@ -172,50 +207,5 @@ public class Robot extends TimedRobot {
     // Shuffleboard: Prints Delay Selection to console
     m_delaySelected = m_delay.getSelected();
     System.out.println("Delay Selected: " + m_delaySelected);
-    
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-
-  }
-
-  @Override
-  public void teleopInit() {}
-
-  @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void testInit() {}
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void simulationInit() {}
-
-  @Override
-  public void simulationPeriodic() {}
-
-
-
-  public void getControllerStates() {
-    operator_controller_A_button = operator_controller.getAButton();
-    operator_controller_B_button = operator_controller.getBButton();
-    operator_controller_X_button = operator_controller.getXButton();
-    operator_controller_Y_button = operator_controller.getYButton();
-    driver_controller_POV_button = driver_controller.getPOV();
-    driver_controller_L_X_Axis = driver_controller.getLeftX();
-    driver_controller_L_Y_Axis = driver_controller.getLeftY();
-    driver_controller_R_X_Axis = driver_controller.getRightX();
-    driver_controller_R_Y_Axis = driver_controller.getRightY();
-
   }
 }
