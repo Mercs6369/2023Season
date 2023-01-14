@@ -19,10 +19,10 @@ public class Arm {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     // Motors
-    WPI_TalonFX claw_motor = new WPI_TalonFX(0, "rio");
-    WPI_TalonFX pivot_motor = new WPI_TalonFX(1, "rio");
-    WPI_TalonFX first_stage_elevator = new WPI_TalonFX(2, "rio");
-    WPI_TalonFX second_stage_elevator = new WPI_TalonFX(3, "rio");
+    WPI_TalonFX claw_motor = new WPI_TalonFX(Constants.CLAW_MOTOR_ID, "rio");
+    WPI_TalonFX pivot_motor = new WPI_TalonFX(Constants.PIVOT_MOTOR_ID, "rio");
+    WPI_TalonFX first_stage_elevator = new WPI_TalonFX(Constants.FIRST_STAGE_ELEVATOR_ID, "rio");
+    WPI_TalonFX second_stage_elevator = new WPI_TalonFX(Constants.SECOND_STAGE_ELEVATOR_ID, "rio");
 
     ColorSensorV3 claw_sensor = new ColorSensorV3(i2cPort);
 
