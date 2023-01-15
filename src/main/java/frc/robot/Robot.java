@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
     }
     this method should make the contoller rumble if a game object can be autonomous intaked
     if(canAutoScoreObj() == true)
-    {
+    { 
       driver_controller.setRumble(null, .5);
     }
     this method should make the contoller rumble if a game object can be autonomous scored
@@ -189,22 +189,22 @@ public class Robot extends TimedRobot {
   }
 
   public void autoInitShuffleboard() {
-    // Shuffleboard: Prints Alliance Selection to console
+    // Shuffleboard: Sets Alliance Selection to variable and prints to console
     m_allianceSelected = m_alliance.getSelected();
     System.out.println("Alliance Selected: " + m_allianceSelected);
-    // Shuffleboard: Prints Idle Selection to console
+    // Shuffleboard: Sets Idle Selection to variable and prints to console
     m_idleSelected = m_idle.getSelected();
     System.out.println("Idle Selected: " + m_idleSelected);
-    // Shuffleboard: Prints Position Selection to console
+    // Shuffleboard: Sets Position Selection to variable
     m_positionSelected = m_position.getSelected();
     System.out.println("Position Selected: " + m_positionSelected);
-    // Shuffleboard: Prints Scoring Node Selection to console
+    // Shuffleboard: Sets Scoring Node Selection to variable and prints to console
     m_scoringNodeSelected = m_scoringNode.getSelected();
     System.out.println("Scoring Node Selected: " + m_scoringNodeSelected);
-    // Shuffleboard: Prints Leaving Community Selection to console
+    // Shuffleboard: Sets Leaving Community Selection to variable and prints to console
     m_leavingCommunitySelected = m_leavingCommunity.getSelected();
     System.out.println("Leaving Community Selected: " + m_leavingCommunitySelected);
-    // Shuffleboard: Prints Delay Selection to console
+    // Shuffleboard: Sets Delay Selection to variable and prints to console
     m_delaySelected = m_delay.getSelected();
     System.out.println("Delay Selected: " + m_delaySelected);
   }
