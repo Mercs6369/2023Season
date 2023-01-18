@@ -3,6 +3,9 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
+
+import java.util.TimerTask;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -16,17 +19,19 @@ public class Arm {
     public Arm() {}
 //  ^^^ idk what to do with this
 
-
-
+    LED_Signaling test = new LED_Signaling();
+    
+    
     enum ArmStateEnum {
         Idle,
         Scoring,
         Ejecting,
         Picking_up,
         error
-      }
+    }
     
-    ArmStateEnum ARM_STATE = ArmStateEnum.Idle;
+
+    ArmStateEnum GLOBAL_ARM_STATE = ArmStateEnum.Idle;
 
     // Variables
     double arm_length;    
@@ -43,25 +48,28 @@ public class Arm {
     WPI_TalonFX first_stage_elevator = new WPI_TalonFX(Constants.FIRST_STAGE_ELEVATOR_ID, "rio"); 
     WPI_TalonFX second_stage_elevator = new WPI_TalonFX(Constants.SECOND_STAGE_ELEVATOR_ID, "rio");
 
-
-
-
+   
+    Timer m_time = new Timer();
 
     public void _Score_Game_Piece() {
-        if (ARM_STATE == ArmStateEnum.Idle) {
-            ARM_STATE = ArmStateEnum.Scoring;
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Scoring;            
+            m_time.start();
         }
     }
 
     public void _Eject_Game_Piece() {
-        if (ARM_STATE == ArmStateEnum.Idle) {
-            ARM_STATE = ArmStateEnum.Ejecting;
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Ejecting;
+            m_time.start();
         }
     }
 
     public void _Pickup_Game_Piece() {
-        if (ARM_STATE == ArmStateEnum.Idle) {
-            ARM_STATE = ArmStateEnum.Picking_up;
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
+            m_time.start();
+            test.dolightstuff(0.5);
         }
     }
 
@@ -69,13 +77,22 @@ public class Arm {
 
 
 
+    boolean action_finished = false;    
+
+    private void end_action() {
+        System.out.println("Action duration for the action "+GLOBAL_ARM_STATE+" was (in secs) "+m_time.get()+".");
+        m_time.reset();
+        m_time.stop();
+        GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+    }
+//  ^^^ end_action needs to be run whenever you end an action :)
+
 
     private void ejectPeriodic() {
 
     }
 
     private void scorePeriodic() {
-
     }
 
     private void pickupPeriodic() {
@@ -85,18 +102,15 @@ public class Arm {
 //  ^^^ These shouldn't need to be messed with (besides fine-tuning) after they're laid out.
 
     public void armPeriodic() {
-        if (ARM_STATE == ArmStateEnum.Scoring) {
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
             scorePeriodic();
-        } else if (ARM_STATE == ArmStateEnum.Ejecting) {
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Ejecting) {
             ejectPeriodic();
-        } else if (ARM_STATE == ArmStateEnum.Picking_up) {
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
             pickupPeriodic();
         }
     }
 
 //  ^^^ This needs to be run constantly whenever you want the arm to work and do magik shtuff
 
-}
-
-
-
+};
