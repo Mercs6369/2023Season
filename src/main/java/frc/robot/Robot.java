@@ -6,8 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class Robot extends TimedRobot {
 
@@ -23,8 +27,15 @@ public class Robot extends TimedRobot {
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button = driver_controller.getPOV();
+  //Drivetrain m_drive = new Drivetrain();
 
-  Arm m_arm = new Arm();
+  //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
+  //SwerveX_Module frontRightModule = new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
+  //SwerveX_Module = new SwerveX_Module(3, 2, 10, -69.785), //backLeftModule
+  SwerveX_Module backLeftModule = new SwerveX_Module(3, 2, 10, -69.785);
+  //new SwerveX_Module(4, 5, 11, -351.457) //backRightModule
+
+  // Arm m_arm = new Arm();
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -109,6 +120,10 @@ public class Robot extends TimedRobot {
     }
     this method should make the contoller rumble if a game object can be autonomous scored
     */
+    //m_drive.update();
+
+
+
   }
 
   @Override
@@ -131,6 +146,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    //m_drive.drive(new Translation2d(0.2*driver_controller_L_X_Axis, 0.2*driver_controller_L_Y_Axis), 0.2*driver_controller_R_X_Axis, false);
+    backLeftModule.setDesiredState(new SwerveModuleState( 2*driver_controller_L_Y_Axis, new Rotation2d(2*driver_controller_R_X_Axis)));
+  
   }
 
   @Override
