@@ -75,9 +75,17 @@ public class Drivetrain {
 
         SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(speeds);
         mSwerveMods[0].setDesiredState(states[0]);
+        SmartDashboard.putNumber("Front Left Speed", states[0].speedMetersPerSecond);
+        SmartDashboard.putNumber("Front Left Angle", states[0].angle.getRadians());
         mSwerveMods[1].setDesiredState(states[1]);
+        SmartDashboard.putNumber("Front Right Speed", states[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Front Right Angle", states[1].angle.getRadians());
         mSwerveMods[2].setDesiredState(states[2]);
+        SmartDashboard.putNumber("Back Left Speed", states[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Back Left Angle", states[1].angle.getRadians());
         mSwerveMods[3].setDesiredState(states[3]);
+        SmartDashboard.putNumber("Back Right Speed", states[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Back Right Angle", states[1].angle.getRadians());
 
         //swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); 
         
