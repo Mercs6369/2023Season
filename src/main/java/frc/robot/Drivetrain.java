@@ -22,7 +22,7 @@ public class Drivetrain {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveX_Module[] mSwerveMods;
     public PigeonIMU gyro;
-    final int pigeonID = 1;
+    final int pigeonID = 10;
     public static final double trackWidth = 29.75; //need to update for us
     public static final double wheelBase = 29.75; ////need to update for us
     
@@ -55,16 +55,16 @@ public class Drivetrain {
             int angleEncoderChannel
             double offset
             */
-            new SwerveX_Module(0, 0, 0, 0), //frontLeftModule
-            new SwerveX_Module(1, 1, 1, 1), //frontRightModule
-            new SwerveX_Module(2, 2, 2, 2), //backLeftModule
-            new SwerveX_Module(3, 3, 3, 3) //backRightModule
+            new SwerveX_Module(15, 7, 12, -90.87890625), //frontLeftModule
+            new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
+            new SwerveX_Module(3, 2, 10, -69.785), //backLeftModule
+            new SwerveX_Module(4, 5, 11, -351.457) //backRightModule
         };
     }
 
 
     public void drive(Translation2d translation, double rotation, boolean fieldOriented) {
-        rotation *= 2.0 / Math.hypot(wheelBase, trackWidth);
+        //rotation *= 2.0 / Math.hypot(wheelBase, trackWidth);
         ChassisSpeeds speeds;
         if (fieldOriented) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
@@ -81,6 +81,14 @@ public class Drivetrain {
 
         //swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); 
         
+    }
+
+    public void update(){
+        mSwerveMods[0].update();
+        mSwerveMods[1].update();
+        mSwerveMods[2].update();
+        mSwerveMods[3].update();
+
     }
 
 }
