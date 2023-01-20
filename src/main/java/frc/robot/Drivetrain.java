@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,8 +15,8 @@ public class Drivetrain {
     public SwerveX_Module[] mSwerveMods;
     public PigeonIMU gyro;
     final int pigeonID = 10;
-    public static final double trackWidth = 29.75 * 0.0254; //units converted from inches to meters
-    public static final double wheelBase = 29.75 * 0.0254; //units converted from inches to meters
+    public static final double trackWidth = Units.inchesToMeters(29.75);
+    public static final double wheelBase = Units.inchesToMeters(29.75);
     
     public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //  frontLeftModule
