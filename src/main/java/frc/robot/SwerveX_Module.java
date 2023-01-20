@@ -1,9 +1,11 @@
 package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,10 +45,19 @@ public class SwerveX_Module {
     this.m_steerMotor = new WPI_TalonFX(steerMotorChannel);
     this.m_steerMotor.configFactoryDefault();
     this.m_steerMotor.config_kP(0, 0.05);
+    this.m_steerMotor.setInverted(true);
+    //this.m_steerMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 
+    //                                        0,
+	//			                            40);
 
     this.m_angleEncoder = new WPI_CANCoder(angleEncoderChannel); //need to update for us //m_angleEncoder = new WPI_CANCoder(0, "rio"); // Rename "rio" to match the CANivore device name if using a CANivore
+    this.m_angleEncoder.configFactoryDefault();
+    //this.m_angleEncoder.configSensorDirection();
 
+    //this.m_steerMotor.configRemoteFeedbackFilter(this.m_angleEncoder.getDeviceID(), RemoteSensorSource.CANCoder, 0);
     this.angleOffset = offset;
+
+    this.m_steerMotor.configIntegratedSensorOffset(offset, 30);
     }
 
    /**
@@ -91,13 +102,14 @@ public class SwerveX_Module {
         double velocity = Conversions.MPSToFalcon(state.speedMetersPerSecond, wheelCircumference, driveGearRatio);
         m_driveMotor.set(ControlMode.Velocity, velocity);
 
-        double angle = Conversions.degreesToFalcon((state.angle.getRadians()*(180/Math.PI)), angleGearRatio);
+        double angle = Conversions.degreesToFalcon((state.angle.getDegrees()), angleGearRatio);
+        SmartDashboard.putNumber("post_convert_angle_command" + Integer.toString(this.m_driveMotor.getDeviceID()), angle);
         m_steerMotor.set(ControlMode.Position, (angle + this.angleOffset));
 
     }
 
     public void update(){
-        SmartDashboard.putNumber(Integer.toString(this.m_driveMotor.getDeviceID()), this.m_angleEncoder.getAbsolutePosition());
-
+        SmartDashboard.putNumber("Angle Encoder" + Integer.toString(this.m_driveMotor.getDeviceID()), this.m_angleEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Steer Motor" + Integer.toString(this.m_driveMotor.getDeviceID()), this.m_steerMotor.getSelectedSensorPosition());
     }
 }
