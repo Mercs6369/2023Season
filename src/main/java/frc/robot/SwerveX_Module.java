@@ -56,6 +56,8 @@ public class SwerveX_Module {
 
     //this.m_steerMotor.configRemoteFeedbackFilter(this.m_angleEncoder.getDeviceID(), RemoteSensorSource.CANCoder, 0);
     this.angleOffset = offset;
+
+    this.m_steerMotor.configIntegratedSensorOffset(offset, 30);
     }
 
    /**

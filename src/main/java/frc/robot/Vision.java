@@ -79,9 +79,10 @@ public class Vision {
     ** angleCenterVisionBounds and limelightHeight may not need to be declared as parameters once the method is 
     fully implemented. This method will return double distanceLowerConeNode when fully implemented, which has not yet 
     been added since it causes an error. **
+    
     */ 
-    public void getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
-       double distanceLowerConeNode = 1/(Math.tan(angleCenterVisionBounds)) * (10.875 + (22.125-limelightHeight));
+    public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
+       return (1/(Math.tan(angleCenterVisionBounds)) * (10.875 + (22.125-limelightHeight)));
     }
 
 }

@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button = driver_controller.getPOV();
   Drivetrain m_drive = new Drivetrain();
+  Vision m_vision = new Vision();
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
   //SwerveX_Module frontRightModule = new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
@@ -82,6 +83,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
+  
+
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
@@ -120,11 +124,9 @@ public class Robot extends TimedRobot {
     }
     this method should make the contoller rumble if a game object can be autonomous scored
     */
-    m_drive.update();
+    //m_drive.update();
 
-
-
-  }
+   }
 
   @Override
   public void autonomousInit() {
