@@ -29,8 +29,12 @@ public class Robot extends TimedRobot {
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button = driver_controller.getPOV();
+  
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
+  Arm m_arm = new Arm();
+  LED_Signaling LEDInstance = new LED_Signaling();
+
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
   //SwerveX_Module frontRightModule = new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
@@ -38,7 +42,6 @@ public class Robot extends TimedRobot {
   //SwerveX_Module backLeftModule = new SwerveX_Module(3, 2, 10, -69.785);
   //new SwerveX_Module(4, 5, 11, -351.457) //backRightModule
 
-  // Arm m_arm = new Arm();
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -85,7 +88,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+<<<<<<< HEAD
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
+=======
+    long lastnano_time = System.nanoTime();
+    //SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
+>>>>>>> 93d4f585345a23861decb1f1825534558932be30
   
 
     getControllerStates();    // reads all controller inputs
@@ -96,10 +104,18 @@ public class Robot extends TimedRobot {
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
+      if (System.nanoTime()-lastnano_time >= 1000000000){ // this is all temporary, as I'm using it to test LEDs, to get a good pattern :)
+        LEDInstance.changepattern(-0.01);
+        lastnano_time = System.nanoTime();
+      }
     }
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
+      if (System.nanoTime()-lastnano_time >= 1000000000){
+        LEDInstance.changepattern(0.01);
+        lastnano_time = System.nanoTime();
+      }
     }
     if(operator_controller_Y_button == true)
     {
