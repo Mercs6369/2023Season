@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
+    //SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
   
 
     getControllerStates();    // reads all controller inputs
