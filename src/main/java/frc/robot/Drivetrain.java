@@ -14,14 +14,14 @@ public class Drivetrain {
     public SwerveX_Module[] mSwerveMods;
     public PigeonIMU gyro;
     final int pigeonID = 10;
-    public static final double trackWidth = 29.75; //need to update for us
-    public static final double wheelBase = 29.75; ////need to update for us
+    public static final double trackWidth = 29.75 * 0.0254; //units converted from inches to meters
+    public static final double wheelBase = 29.75 * 0.0254; //units converted from inches to meters
     
     public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), // frontRightModule or frontLeftModule
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule or frontLeftModule
-                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // backLeftModule or backRightModule
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // backLeftModule or backRightModule
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //  frontLeftModule
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // backLeftModule
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // backRightModule
 
     public Drivetrain() {
         /*
@@ -52,7 +52,7 @@ public class Drivetrain {
         } else {
             speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
         }
-
+        
         SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(speeds);
         mSwerveMods[0].setDesiredState(states[0]);
         SmartDashboard.putNumber("Front Left Speed", states[0].speedMetersPerSecond);
@@ -61,11 +61,11 @@ public class Drivetrain {
         SmartDashboard.putNumber("Front Right Speed", states[1].speedMetersPerSecond);
         SmartDashboard.putNumber("Front Right Angle", states[1].angle.getRadians());
         mSwerveMods[2].setDesiredState(states[2]);
-        SmartDashboard.putNumber("Back Left Speed", states[1].speedMetersPerSecond);
-        SmartDashboard.putNumber("Back Left Angle", states[1].angle.getRadians());
+        SmartDashboard.putNumber("Back Left Speed", states[2].speedMetersPerSecond);
+        SmartDashboard.putNumber("Back Left Angle", states[2].angle.getRadians());
         mSwerveMods[3].setDesiredState(states[3]);
-        SmartDashboard.putNumber("Back Right Speed", states[1].speedMetersPerSecond);
-        SmartDashboard.putNumber("Back Right Angle", states[1].angle.getRadians());
+        SmartDashboard.putNumber("Back Right Speed", states[3].speedMetersPerSecond);
+        SmartDashboard.putNumber("Back Right Angle", states[3].angle.getRadians());
         //swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); 
     }
 
