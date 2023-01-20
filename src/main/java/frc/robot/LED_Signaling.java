@@ -2,6 +2,7 @@ package frc.robot;
 import com.fasterxml.jackson.annotation.JacksonInject.Value;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 
 public class LED_Signaling {
@@ -25,6 +26,7 @@ public class LED_Signaling {
 
     public void changepattern(double m_value) {
         Spark.set(Spark.get()+m_value);
+        System.out.println(Spark.get());
     }
 
     /**
