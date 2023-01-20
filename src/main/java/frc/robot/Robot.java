@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Robot extends TimedRobot {
 
@@ -83,7 +85,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
+    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
   
 
     getControllerStates();    // reads all controller inputs
