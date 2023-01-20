@@ -7,12 +7,15 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 public class LED_Signaling {
     
+
     // Defines the Spark motor controller.
     public PWMSparkMax Spark = new PWMSparkMax(0);
+
 
     // Sets the LED pattern to Idle at startup.
     public LED_Signaling() {
         //SetLEDS(LED_State.Idle);
+        Spark.set(.5);
     }
 
     // I mean, it's an enum, need I say more?
