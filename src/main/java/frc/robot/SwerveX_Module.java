@@ -46,18 +46,16 @@ public class SwerveX_Module {
     this.m_steerMotor.configFactoryDefault();
     this.m_steerMotor.config_kP(0, 0.05);
     this.m_steerMotor.setInverted(true);
-    //this.m_steerMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 
-    //                                        0,
-	//			                            40);
 
     this.m_angleEncoder = new WPI_CANCoder(angleEncoderChannel); //need to update for us //m_angleEncoder = new WPI_CANCoder(0, "rio"); // Rename "rio" to match the CANivore device name if using a CANivore
     this.m_angleEncoder.configFactoryDefault();
     //this.m_angleEncoder.configSensorDirection();
 
-    //this.m_steerMotor.configRemoteFeedbackFilter(this.m_angleEncoder.getDeviceID(), RemoteSensorSource.CANCoder, 0);
     this.angleOffset = offset;
 
     this.m_steerMotor.configIntegratedSensorOffset(offset, 30);
+    //this.m_steerMotor.setSelectedSensorPosition(offset); // one alternative idea
+    //this.m_steerMotor.getSensorCollection().setIntegratedSensorPosition(offset, 30); // another idea
     }
 
    /**
