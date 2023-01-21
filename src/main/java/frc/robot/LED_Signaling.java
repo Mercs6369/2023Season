@@ -24,7 +24,9 @@ public class LED_Signaling {
     // Sets the LED pattern to Idle at startup.
     public LED_Signaling() {
         //SetLEDS(LED_State.Idle);
-        Spark.set(0.5);
+        Spark.set(0.81);
+        System.out.println("dakadwnnjkd");
+
     }
 
     // I mean, it's an enum, need I say more?
@@ -41,15 +43,12 @@ public class LED_Signaling {
         System.out.println(Spark.get());
     }
 
-    public void test_function() {
-        Spark.set(0.07);
-    }
 
     /**
      * Sets the LED pattern.
      *  @param Status Can be set to Decoration, Error, In_Progress, Idle, or ReadyToScore.
      */
-    
+    /*
     public void SetLEDS(LED_State Status) {
         if (Status == LED_State.Decoration) {
             Spark.set(BlinkinValues[1]);
@@ -67,6 +66,6 @@ public class LED_Signaling {
             Spark.set(BlinkinValues[5]);
         }
     }
-    
+    */
 }
 
