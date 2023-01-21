@@ -9,7 +9,18 @@ public class LED_Signaling {
     
 
     // Defines the Spark motor controller.
-    public PWMSparkMax Spark = new PWMSparkMax(0);
+    public PWMSparkMax Spark = new PWMSparkMax(1);
+
+
+
+    double[] BlinkinValues = {
+           // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
+        0, // Decoration
+        0, // Error
+        0, // In_Progress
+        0, // Idle
+        0, // ReadyToScore
+    };
 
 
     // Sets the LED pattern to Idle at startup.
@@ -36,24 +47,24 @@ public class LED_Signaling {
      * Sets the LED pattern.
      *  @param Status Can be set to Decoration, Error, In_Progress, Idle, or ReadyToScore.
      */
-    /* 
+    
     public void SetLEDS(LED_State Status) {
         if (Status == LED_State.Decoration) {
-            Spark.set(0);
+            Spark.set(BlinkinValues[1]);
 
         } else if (Status == LED_State.Error) {
-            Spark.set(0);
+            Spark.set(BlinkinValues[2]);
 
         } else if (Status == LED_State.In_Progress) {
-            Spark.set(0);
+            Spark.set(BlinkinValues[3]);
 
         } else if (Status == LED_State.Idle) {
-            Spark.set(0);
+            Spark.set(BlinkinValues[4]);
 
         } else if (Status == LED_State.ReadyToScore) {
-            Spark.set(0);
+            Spark.set(BlinkinValues[5]);
         }
     }
-    */
+    
 }
 

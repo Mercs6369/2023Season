@@ -70,7 +70,7 @@ public class Arm {
      */
     public void _Score_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
-            //LED_Instance.SetLEDS(LED_State.In_Progress);
+            LED_Instance.SetLEDS(LED_State.In_Progress);
             GLOBAL_ARM_STATE = ArmStateEnum.Scoring;            
             m_time.start();
         }
@@ -81,7 +81,7 @@ public class Arm {
      */
     public void _Eject_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
-            //LED_Instance.SetLEDS(LED_State.In_Progress);
+            LED_Instance.SetLEDS(LED_State.In_Progress);
             GLOBAL_ARM_STATE = ArmStateEnum.Ejecting;
             m_time.start();
         }
@@ -92,13 +92,13 @@ public class Arm {
      */
     public void _Pickup_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
-            //LED_Instance.SetLEDS(LED_State.In_Progress);
+            LED_Instance.SetLEDS(LED_State.In_Progress);
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
             m_time.start();
         }
     }
 
-//  ^^^ These are the methods you would call when you want to eject/score/pickup. 
+//  ^^^ These three methods you would call when you want to eject/score/pickup. 
 //      Theoretically these can be run however many times you want, you shouldn't have to implement a debounce thingy :P
 
 
@@ -111,7 +111,7 @@ public class Arm {
         m_time.reset();
         m_time.stop();
         GLOBAL_ARM_STATE = ArmStateEnum.Idle;
-        //LED_Instance.SetLEDS(LED_State.Idle);
+        LED_Instance.SetLEDS(LED_State.Idle);
     }
 
 

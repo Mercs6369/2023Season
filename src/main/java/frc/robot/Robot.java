@@ -33,7 +33,14 @@ public class Robot extends TimedRobot {
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
+<<<<<<< HEAD
   //LED_Signaling LEDInstance = new LED_Signaling();
+=======
+  
+  // LED stuff, no touchy
+  LED_Signaling LEDInstance = new LED_Signaling();
+  long lastnano_time = 0;
+>>>>>>> ed123b68aca2dc28e43766bf89077737ab2be9f1
 
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
@@ -85,13 +92,17 @@ public class Robot extends TimedRobot {
         
   }
 
+ 
+
   @Override
   public void robotPeriodic() {
 
+
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
-    long lastnano_time = System.nanoTime();
+    
     //SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
   
+
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
