@@ -105,7 +105,7 @@ public class Robot extends TimedRobot {
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
-      if (System.nanoTime()-lastnano_time >= 1000000000){ // this is all temporary, as I'm using it to test LEDs, to get a good pattern :)
+      if (System.nanoTime()-lastnano_time >= 330000000){ // this is all temporary, as I'm using it to test LEDs, to get a good pattern :)
         LEDInstance.changepattern(-0.02);
         lastnano_time = System.nanoTime();
         System.out.println("BUTTON B PRESSED");
@@ -115,7 +115,7 @@ public class Robot extends TimedRobot {
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
-      if (System.nanoTime()-lastnano_time >= 1000000000){
+      if (System.nanoTime()-lastnano_time >= 330000000){
         LEDInstance.changepattern(0.02);
         lastnano_time = System.nanoTime();
       }
