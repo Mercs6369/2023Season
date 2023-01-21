@@ -33,15 +33,8 @@ public class Robot extends TimedRobot {
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
-<<<<<<< HEAD
-  //LED_Signaling LEDInstance = new LED_Signaling();
-=======
-  
-  // LED stuff, no touchy
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
->>>>>>> ed123b68aca2dc28e43766bf89077737ab2be9f1
-
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
   //SwerveX_Module frontRightModule = new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
@@ -113,15 +106,17 @@ public class Robot extends TimedRobot {
     {
       // There should be a method to AutoBalance on the Charge Station
       if (System.nanoTime()-lastnano_time >= 1000000000){ // this is all temporary, as I'm using it to test LEDs, to get a good pattern :)
-        //LEDInstance.changepattern(-0.01);
+        LEDInstance.changepattern(-0.02);
         lastnano_time = System.nanoTime();
-      }
+        System.out.println("BUTTON B PRESSED");
+        
+      }    
     }
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
       if (System.nanoTime()-lastnano_time >= 1000000000){
-        //LEDInstance.changepattern(0.01);
+        LEDInstance.changepattern(0.02);
         lastnano_time = System.nanoTime();
       }
     }

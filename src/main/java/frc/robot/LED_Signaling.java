@@ -1,6 +1,4 @@
 package frc.robot;
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
-
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
@@ -26,7 +24,7 @@ public class LED_Signaling {
     // Sets the LED pattern to Idle at startup.
     public LED_Signaling() {
         //SetLEDS(LED_State.Idle);
-        Spark.set(.5);
+        Spark.set(0.5);
     }
 
     // I mean, it's an enum, need I say more?
@@ -41,6 +39,10 @@ public class LED_Signaling {
     public void changepattern(double m_value) {
         Spark.set(Spark.get()+m_value);
         System.out.println(Spark.get());
+    }
+
+    public void test_function() {
+        Spark.set(0.07);
     }
 
     /**
