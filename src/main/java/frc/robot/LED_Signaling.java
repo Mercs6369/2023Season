@@ -14,7 +14,7 @@ public class LED_Signaling {
 
 
     double[] BlinkinValues = {
-                // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
+           // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
         0, // Decoration
         0, // Error
         0, // In_Progress
