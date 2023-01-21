@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LED_Signaling.LED_State;
 
+
 import java.util.TimerTask;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -14,10 +15,19 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
+
+
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 // test ignore this
 public class Arm {
-    
-    public Arm() {}
+
+
+    TalonSRX miniCIM = new TalonSRX(0);
+
+
+    public Arm() {} // constructor
 
 
     // Use dis for LED things.
