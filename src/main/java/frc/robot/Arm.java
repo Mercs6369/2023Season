@@ -18,13 +18,10 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 // test ignore this
 public class Arm {
 
-
-    TalonSRX miniCIM = new TalonSRX(0);
 
 
     public Arm() {} // constructor
