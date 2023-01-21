@@ -26,7 +26,6 @@ public class LED_Signaling {
         //SetLEDS(LED_State.Idle);
         Spark.set(0.81);
         System.out.println("dakadwnnjkd");
-
     }
 
     // I mean, it's an enum, need I say more?
@@ -39,8 +38,8 @@ public class LED_Signaling {
     }
 
     public void changepattern(double m_value) {
-        Spark.set(Spark.get()+m_value);
-        System.out.println(Spark.get());
+        //Spark.set(Spark.get()+m_value);
+        //System.out.println(Spark.get());
     }
 
 
