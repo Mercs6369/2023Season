@@ -9,7 +9,7 @@ public class LED_Signaling {
     
 
     // Defines the Spark motor controller.
-    public PWMSparkMax Spark = new PWMSparkMax(0);
+    public PWMSparkMax Spark = new PWMSparkMax(1);
 
 
 
