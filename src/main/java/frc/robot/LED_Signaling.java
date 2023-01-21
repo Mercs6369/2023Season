@@ -24,7 +24,7 @@ public class LED_Signaling {
     // Sets the LED pattern to Idle at startup.
     public LED_Signaling() {
         //SetLEDS(LED_State.Idle);
-        Spark.set(0.81);
+        Spark.set(-0.99);
     }
 
     // I mean, it's an enum, need I say more?
