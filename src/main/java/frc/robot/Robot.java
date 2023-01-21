@@ -33,7 +33,10 @@ public class Robot extends TimedRobot {
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
+  
+  // LED stuff, no touchy
   LED_Signaling LEDInstance = new LED_Signaling();
+  long lastnano_time = 0;
 
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
@@ -85,8 +88,8 @@ public class Robot extends TimedRobot {
         
   }
 
-  
-  long lastnano_time = System.nanoTime(); // this is used 
+ 
+
   @Override
   public void robotPeriodic() {
 
