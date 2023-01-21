@@ -14,15 +14,15 @@ public class Drivetrain {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveX_Module[] mSwerveMods;
     public PigeonIMU gyro;
-    final int pigeonID = 10;
-    public static final double trackWidth = Units.inchesToMeters(29.75);
-    public static final double wheelBase = Units.inchesToMeters(29.75);
+    final int pigeonID = 16;
+    public static final double trackWidth = Units.inchesToMeters(25.5);
+    public static final double wheelBase = Units.inchesToMeters(25.5);
     
     public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //  frontLeftModule
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule
-                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // backLeftModule
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // backRightModule
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), //  frontLeftModule
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), // backLeftModule
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0)); // backRightModule
 
     public Drivetrain() {
         /*
@@ -37,10 +37,10 @@ public class Drivetrain {
         //swerveOdometry = new SwerveDriveOdometry(swerveKinematics, new Rotation2d(gyro.getYaw()*(Math.PI/180)), null);
 
         mSwerveMods = new SwerveX_Module[] {
-            new SwerveX_Module(15, 7, 12, -90.87890625), //frontLeftModule
-            new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
-            new SwerveX_Module(3, 2, 10, -69.785), //backLeftModule
-            new SwerveX_Module(4, 5, 11, -351.457) //backRightModule
+            new SwerveX_Module(15, 7, 12, -90.87890625 - 0.6396), //frontLeftModule
+            new SwerveX_Module(9, 8, 13, -213.75 - 0.273359), //frontRightModule
+            new SwerveX_Module(3, 2, 10, -69.785 - 0.9460), //backLeftModule
+            new SwerveX_Module(4, 5, 11, -351.457 - 0.481603) //backRightModule
         };
     }
 

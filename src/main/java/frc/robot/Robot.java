@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
-  LED_Signaling LEDInstance = new LED_Signaling();
+  //LED_Signaling LEDInstance = new LED_Signaling();
 
 
   //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
     {
       // There should be a method to AutoBalance on the Charge Station
       if (System.nanoTime()-lastnano_time >= 1000000000){ // this is all temporary, as I'm using it to test LEDs, to get a good pattern :)
-        LEDInstance.changepattern(-0.01);
+        //LEDInstance.changepattern(-0.01);
         lastnano_time = System.nanoTime();
       }
     }
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
     {
       // There should be a method that ejects an object
       if (System.nanoTime()-lastnano_time >= 1000000000){
-        LEDInstance.changepattern(0.01);
+        //LEDInstance.changepattern(0.01);
         lastnano_time = System.nanoTime();
       }
     }
@@ -127,6 +127,7 @@ public class Robot extends TimedRobot {
     {
       //Move(0,0)
     }
+
     /*Maybe we should add the next two methods in the far future
     if(canAutoPickObj() == true)
     {
@@ -162,8 +163,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    if (Math.abs(driver_controller_L_X_Axis) <= 0.1){
+      driver_controller_L_X_Axis = 0;
+    }
+    if (Math.abs(driver_controller_L_Y_Axis) <= 0.1){
+      driver_controller_L_Y_Axis = 0;
+    }
+    if (Math.abs(driver_controller_R_X_Axis) <= 0.1){
+      driver_controller_R_X_Axis = 0;
+    }
 
-   m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 0.4*driver_controller_R_X_Axis, false);
+
+    m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
+
     
   }
 
