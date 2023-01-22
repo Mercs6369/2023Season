@@ -53,8 +53,8 @@ public class SwerveX_Module {
 
     this.angleOffset = offset;
 
-    this.m_steerMotor.configIntegratedSensorOffset(offset, 30);
-    //this.m_steerMotor.setSelectedSensorPosition(offset); // one alternative idea
+    //this.m_steerMotor.configIntegratedSensorOffset(offset, 30);
+    this.m_steerMotor.setSelectedSensorPosition(offset); // one alternative idea
     //this.m_steerMotor.getSensorCollection().setIntegratedSensorPosition(offset, 30); // another idea
     }
 
