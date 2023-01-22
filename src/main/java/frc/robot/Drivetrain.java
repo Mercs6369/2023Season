@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain {
     public SwerveDriveOdometry swerveOdometry;
@@ -19,28 +18,22 @@ public class Drivetrain {
     public static final double wheelBase = Units.inchesToMeters(25.5);
     
     public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0), //  frontLeftModule
-                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // frontRightModule
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // backLeftModule
-                new Translation2d(wheelBase / 2.0, trackWidth / 2.0)); // backRightModule
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //  frontLeftModule
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // backLeftModule
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0)); // backRightModule
 
     public Drivetrain() {
-        /*
-        frontLeftModule.setName("Front Left");
-        frontRightModule.setName("Front Right");
-        backLeftModule.setName("Back Left");
-        backRightModule.setName("Back Right");
-        */
         gyro = new PigeonIMU(pigeonID);
         gyro.configFactoryDefault();
         gyro.setYaw(0);
         //swerveOdometry = new SwerveDriveOdometry(swerveKinematics, new Rotation2d(gyro.getYaw()*(Math.PI/180)), null);
 
         mSwerveMods = new SwerveX_Module[] {
-            new SwerveX_Module(15, 7, 12, -90.87890625 - 0.6396), //frontLeftModule
-            new SwerveX_Module(9, 8, 13, -213.75 - 0.273359), //frontRightModule
-            new SwerveX_Module(3, 2, 10, -69.785 - 0.9460), //backLeftModule
-            new SwerveX_Module(4, 5, 11, -351.457 - 0.481603) //backRightModule
+            new SwerveX_Module(15, 7, 12, 274.7), //frontLeftModule
+            new SwerveX_Module(9, 8, 13, 39.9), //frontRightModule
+            new SwerveX_Module(3, 2, 10, 256.9), //backLeftModule
+            new SwerveX_Module(4, 5, 11, 176.7) //backRightModule
         };
     }
 
@@ -56,17 +49,9 @@ public class Drivetrain {
         
         SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(speeds);
         mSwerveMods[0].setDesiredState(states[0]);
-        SmartDashboard.putNumber("Front Right Speed", states[0].speedMetersPerSecond);
-        SmartDashboard.putNumber("Front Right Angle", states[0].angle.getRadians());
         mSwerveMods[1].setDesiredState(states[1]);
-        SmartDashboard.putNumber("Front Right Speed", states[1].speedMetersPerSecond);
-        SmartDashboard.putNumber("Front Right Angle", states[1].angle.getRadians());
         mSwerveMods[2].setDesiredState(states[2]);
-        SmartDashboard.putNumber("Back Left Speed", states[2].speedMetersPerSecond);
-        SmartDashboard.putNumber("Back Left Angle", states[2].angle.getRadians());
         mSwerveMods[3].setDesiredState(states[3]);
-        SmartDashboard.putNumber("Back Right Speed", states[3].speedMetersPerSecond);
-        SmartDashboard.putNumber("Back Right Angle", states[3].angle.getRadians());
         //swerveOdometry.update(Rotation2d.fromDegrees(gyro.getYaw()), states); 
     }
 

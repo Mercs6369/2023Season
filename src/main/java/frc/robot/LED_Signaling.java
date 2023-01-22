@@ -1,7 +1,5 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-
 
 public class LED_Signaling {
     
@@ -66,4 +64,3 @@ public class LED_Signaling {
     }
     */
 }
-

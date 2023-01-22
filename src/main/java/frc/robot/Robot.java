@@ -6,13 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Robot extends TimedRobot {
@@ -35,13 +32,6 @@ public class Robot extends TimedRobot {
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
-
-  //SwerveX_Module frontLeftModule = new SwerveX_Module(15, 7, 12, -90.87890625);
-  //SwerveX_Module frontRightModule = new SwerveX_Module(9, 8, 13, -213.75), //frontRightModule
-  //SwerveX_Module = new SwerveX_Module(3, 2, 10, -69.785), //backLeftModule
-  //SwerveX_Module backLeftModule = new SwerveX_Module(3, 2, 10, -69.785);
-  //new SwerveX_Module(4, 5, 11, -351.457) //backRightModule
-
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -90,13 +80,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
-    
-    //SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(0, 12.5));
-  
-
-
+   
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
@@ -178,10 +163,7 @@ public class Robot extends TimedRobot {
     if (Math.abs(driver_controller_R_X_Axis) <= 0.1){
       driver_controller_R_X_Axis = 0;
     }
-
-
     m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
-
     
   }
 
@@ -208,7 +190,7 @@ public class Robot extends TimedRobot {
     driver_controller_R_X_Axis = driver_controller.getRightX();
     driver_controller_R_Y_Axis = driver_controller.getRightY();
   }
-
+  
   public void robotInitShuffleboard() {
       // Shuffleboard: Passes options "Red" and "Blue" for Alliance
       m_alliance.setDefaultOption("Red", kRed);
