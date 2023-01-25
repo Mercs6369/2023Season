@@ -97,7 +97,7 @@ public class Vision {
         } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
             gamePieceCamera.setDriverMode(false);
             gamePieceCamera.setPipelineIndex(gamePiecePipelineIndex);
-           
+            
         } else {
             // invalid command sent
         }
