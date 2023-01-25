@@ -11,9 +11,13 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
-    PhotonCamera camera = new PhotonCamera("photonvision");
-    boolean hasTargets;
-    PhotonPipelineResult result;
+    PhotonCamera camera = new PhotonCamera("photonvision"); // April Tag camera
+    PhotonCamera gamePieceCamera = new PhotonCamera("GamePieceTargeting"); // Game Piece Camera
+    boolean hasTargets; // april tags
+    PhotonPipelineResult result; // april tags
+
+    boolean gamePieceHasTargets; // Game Piece has Targets
+    PhotonPipelineResult gamePieceCameraResult; // Game Piece Detection Result
     
     final double CAMERA_HEIGHT_METERS = 0.0;
     final double TARGET_HEIGHT_METERS = 0.0;
@@ -79,6 +83,24 @@ public class Vision {
     public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
        //return ((11.875+22.125-limelightHeight))/Math.tan(Math.toRadians(angleCenterVisionBounds));
        return ((9.875 + 22.125 - limelightHeight)/Math.tan(Math.toRadians(angleCenterVisionBounds)))-26.5;
+    }
+
+    public int getGamePieceCameraPipeline() {
+        return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
+    }
+
+    public void setGamePiecePipeline(int gamePiecePipelineIndex) {
+        
+        
+        if (gamePiecePipelineIndex == -99) {
+            gamePieceCamera.setDriverMode(true);
+        } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
+            gamePieceCamera.setDriverMode(false);
+            gamePieceCamera.setPipelineIndex(gamePiecePipelineIndex);
+           
+        } else {
+            // invalid command sent
+        }
     }
 
 }
