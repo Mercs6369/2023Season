@@ -1,6 +1,8 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
+
+
 public class LED_Signaling {
     
 
@@ -44,7 +46,7 @@ public class LED_Signaling {
      * Sets the LED pattern.
      *  @param Status Can be set to Decoration, Error, In_Progress, Idle, or ReadyToScore.
      */
-    /*
+    
     public void SetLEDS(LED_State Status) {
         if (Status == LED_State.Decoration) {
             Spark.set(BlinkinValues[1]);
@@ -62,5 +64,5 @@ public class LED_Signaling {
             Spark.set(BlinkinValues[5]);
         }
     }
-    */
+    
 }
