@@ -92,7 +92,7 @@ public class Vision {
     public void setGamePiecePipeline(int gamePiecePipelineIndex) {
         
         
-        if (gamePiecePipelineIndex == -99) {
+        if (gamePiecePipelineIndex == -99) { // -99 is the driver cam thingy
             gamePieceCamera.setDriverMode(true);
         } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
             gamePieceCamera.setDriverMode(false);
