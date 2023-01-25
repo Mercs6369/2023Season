@@ -78,7 +78,8 @@ public class Vision {
     */ 
     public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
        //return ((11.875+22.125-limelightHeight))/Math.tan(Math.toRadians(angleCenterVisionBounds));
-       return ((9.875 + 22.125 - limelightHeight)/Math.tan(Math.toRadians(angleCenterVisionBounds)))-26.5;
+       double perceived_distance = ((9.875 + 22.125 - limelightHeight)/Math.tan(Math.toRadians(angleCenterVisionBounds)))-26.5;
+       return (perceived_distance / (-0.0000968196 * Math.pow(perceived_distance,2) + perceived_distance * 0.0178159 + 0.407122));
     }
 
 }
