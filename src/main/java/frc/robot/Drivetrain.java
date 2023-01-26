@@ -36,7 +36,21 @@ public class Drivetrain {
             new SwerveX_Module(4, 5, 11, 176.7) //backRightModule
         };
     }
-
+    public void brake(){
+        mSwerveMods[0].setBrakeMode();
+        mSwerveMods[1].setBrakeMode();
+        mSwerveMods[2].setBrakeMode();
+        mSwerveMods[3].setBrakeMode();
+        
+        mSwerveMods[0].setDesiredState(new SwerveModuleState(
+            0, Rotation2d.fromDegrees(45.0)));
+        mSwerveMods[1].setDesiredState(new SwerveModuleState(
+            0, Rotation2d.fromDegrees(-45.0)));
+        mSwerveMods[2].setDesiredState(new SwerveModuleState(
+            0, Rotation2d.fromDegrees(-45.0)));
+        mSwerveMods[3].setDesiredState(new SwerveModuleState(
+            0, Rotation2d.fromDegrees(45.0)));
+    }
     public void drive(Translation2d translation, double rotation, boolean fieldOriented) {
         rotation *= 2.0 / Math.hypot(wheelBase, trackWidth);
         ChassisSpeeds speeds;
