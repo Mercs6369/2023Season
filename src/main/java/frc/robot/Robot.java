@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
   boolean operator_controller_Y_button;
   boolean operator_controller_X_button;
   boolean operator_controller_B_button;
+  boolean brake_mode_enabled = false; // Controlls wether robot is in brake mode or not
   double driver_controller_L_X_Axis;
   double driver_controller_L_Y_Axis;
   double driver_controller_R_X_Axis;
@@ -163,8 +164,13 @@ public class Robot extends TimedRobot {
     if (Math.abs(driver_controller_R_X_Axis) <= 0.1){
       driver_controller_R_X_Axis = 0;
     }
-    m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
-    
+
+    if (brake_mode_enabled == true){
+      m_drive.brake();
+    }
+    else {
+      m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
+    }
   }
 
   @Override
@@ -189,6 +195,7 @@ public class Robot extends TimedRobot {
     driver_controller_L_Y_Axis = driver_controller.getLeftY();
     driver_controller_R_X_Axis = driver_controller.getRightX();
     driver_controller_R_Y_Axis = driver_controller.getRightY();
+    brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
   }
   
   public void robotInitShuffleboard() {
