@@ -21,7 +21,7 @@ public class Drivetrain {
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //  frontLeftModule
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), // frontRightModule
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), // backLeftModule
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0)); // backRightModule
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // backRightModule
 
     public Drivetrain() {
         gyro = new PigeonIMU(pigeonID);
