@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -38,11 +39,13 @@ public class SwerveX_Module {
     Timer.delay(1.0);
     this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
     this.m_driveMotor.configFactoryDefault();
+    this.m_driveMotor.setNeutralMode(NeutralMode.Coast);
     this.m_driveMotor.config_kP(0, 0.05);
     this.m_driveMotor.setInverted(false);
 
     this.m_steerMotor = new WPI_TalonFX(steerMotorChannel);
     this.m_steerMotor.configFactoryDefault();
+    this.m_steerMotor.setNeutralMode(NeutralMode.Coast);
     this.m_steerMotor.config_kP(0, 0.3);
     this.m_steerMotor.setInverted(true);
 
@@ -65,10 +68,16 @@ public class SwerveX_Module {
             Rotation2d.fromDegrees(Conversions.falconToDegrees(m_steerMotor.getSelectedSensorPosition(), angleGearRatio)) //depends on gear ratio
         );
     }
-
+    public void setBrakeMode(){
+        m_driveMotor.setNeutralMode(NeutralMode.Brake); 
+        m_steerMotor.setNeutralMode(NeutralMode.Brake);
+    }
     public void setDesiredState(SwerveModuleState desiredState) {
         //SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_steerMotor.getSelectedSensorPosition()));
         SwerveModuleState state = desiredState;
+
+        m_steerMotor.setNeutralMode(NeutralMode.Coast);
+        m_driveMotor.setNeutralMode(NeutralMode.Coast);
 
         m_driveMotor.set(ControlMode.Velocity,
                          Conversions.MPSToFalcon(state.speedMetersPerSecond, wheelCircumference, driveGearRatio));
