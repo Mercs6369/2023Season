@@ -67,7 +67,7 @@ public class SwerveX_Module {
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        //SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(this.m_angleEncoder.getAbsolutePosition()*(Math.PI/180)));
+        //SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_steerMotor.getSelectedSensorPosition()));
         SwerveModuleState state = desiredState;
 
         m_driveMotor.set(ControlMode.Velocity,
