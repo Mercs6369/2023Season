@@ -28,7 +28,7 @@ public class Arm {
 
 
     // Use dis for LED things.
-    LED_Signaling LED_Instance = new LED_Signaling();
+    //LED_Signaling LED_Instance = new LED_Signaling();
     
     // Uhh yea, enum.
     enum ArmStateEnum {
