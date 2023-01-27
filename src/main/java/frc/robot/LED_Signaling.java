@@ -13,11 +13,10 @@ public class LED_Signaling {
 
     double[] BlinkinValues = {
            // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
-        0, // Decoration
-        0, // Error
-        0, // In_Progress
-        0, // Idle
-        0, // ReadyToScore
+        -.43, // Decoration
+        0.59, // Error
+        -.33, // Idle
+        0.75, // ReadyToScore
     };
 
 
@@ -31,7 +30,6 @@ public class LED_Signaling {
     enum LED_State {
         Decoration, // Probably for AhTahn Mode
         Error, // Error
-        In_Progress, // Picking up or scoring
         Idle, // When Idle/not doing anything
         ReadyToScore; // Item in claw/intake
     }
@@ -54,14 +52,11 @@ public class LED_Signaling {
         } else if (Status == LED_State.Error) {
             Spark.set(BlinkinValues[2]);
 
-        } else if (Status == LED_State.In_Progress) {
+        } else if (Status == LED_State.Idle) {
             Spark.set(BlinkinValues[3]);
 
-        } else if (Status == LED_State.Idle) {
-            Spark.set(BlinkinValues[4]);
-
         } else if (Status == LED_State.ReadyToScore) {
-            Spark.set(BlinkinValues[5]);
+            Spark.set(BlinkinValues[4]);
         }
     }
     

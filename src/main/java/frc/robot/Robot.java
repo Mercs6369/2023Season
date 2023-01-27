@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
       if (System.nanoTime()-lastnano_time >= 330000000){
         LEDInstance.changepattern(0.02);
         lastnano_time = System.nanoTime();
+    
       }
     }
     if(operator_controller_Y_button == true)
