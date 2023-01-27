@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
-  long lastnano_time = 0;
+
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -81,7 +81,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-
+    m_vision.getOrientationOfCone();
+    
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
    
     getControllerStates();    // reads all controller inputs
