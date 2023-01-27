@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -9,6 +10,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
+import java.util.ArrayList;
+
 
 public class Vision {
     PhotonCamera camera = new PhotonCamera("photonvision"); // April Tag camera
@@ -90,9 +95,28 @@ public class Vision {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
     }
 
+    public void getOrientationOfCone() {
+        setGamePiecePipeline(0);
+        
+        if (gamePieceCameraResult.hasTargets()) {
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+            
+            double objectLength = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
+            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+
+            SmartDashboard.putNumber("length", objectLength);
+            SmartDashboard.putNumber("width", objectWidth);
+           
+        }
+    }
+
+
+
+
+
     public void setGamePiecePipeline(int gamePiecePipelineIndex) {
         
-        
+
         if (gamePiecePipelineIndex == -99) { // -99 is the driver cam thingy
             gamePieceCamera.setDriverMode(true);
         } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
