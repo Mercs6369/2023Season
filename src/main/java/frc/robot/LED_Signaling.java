@@ -47,16 +47,16 @@ public class LED_Signaling {
     
     public void SetLEDS(LED_State Status) {
         if (Status == LED_State.Decoration) {
-            Spark.set(BlinkinValues[1]);
+            Spark.set(BlinkinValues[0]);
 
         } else if (Status == LED_State.Error) {
-            Spark.set(BlinkinValues[2]);
+            Spark.set(BlinkinValues[1]);
 
         } else if (Status == LED_State.Idle) {
-            Spark.set(BlinkinValues[3]);
+            Spark.set(BlinkinValues[2]);
 
         } else if (Status == LED_State.ReadyToScore) {
-            Spark.set(BlinkinValues[4]);
+            Spark.set(BlinkinValues[3]);
         }
     }
     

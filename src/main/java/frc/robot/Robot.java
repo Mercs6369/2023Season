@@ -88,25 +88,18 @@ public class Robot extends TimedRobot {
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
-      LEDInstance.SetLEDS(LED_State.Idle);
-
     }
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
-      LEDInstance.SetLEDS(LED_State.ReadyToScore);
-
     }
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
-      LEDInstance.SetLEDS(LED_State.Error);
     }
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
-      LEDInstance.SetLEDS(LED_State.Decoration);
-
     }
     //We still need to make a deadband function below function is a draft
     if(-0.1 < driver_controller_L_X_Axis && 0.1 > driver_controller_L_X_Axis && -0.1 < driver_controller_L_Y_Axis && driver_controller_L_Y_Axis < .1)
