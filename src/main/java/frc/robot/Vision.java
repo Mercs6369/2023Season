@@ -83,7 +83,7 @@ public class Vision {
     public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
        //return ((11.875+22.125-limelightHeight))/Math.tan(Math.toRadians(angleCenterVisionBounds));
        double perceived_distance = (9.875 + 22.125 - limelightHeight)/Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)));
-       return (0.00657143)*perceived_distance*perceived_distance + -0.0254286*perceived_distance + 33.6486;
+       return (0.00657143)*perceived_distance*perceived_distance - 0.0254286*perceived_distance + 33.6486;
     }
 
     public int getGamePieceCameraPipeline() {
