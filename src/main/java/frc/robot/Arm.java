@@ -30,12 +30,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // test ignore this
 public class Arm {
 
-    Compressor phCompressor = new Compressor(20, PneumaticsModuleType.REVPH);
-    DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 2);
-    DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 3);
+    //Compressor phCompressor = new Compressor(20, PneumaticsModuleType.REVPH);
+    Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
+    DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
     public Arm() { // constructor
-        phCompressor.enableAnalog(119, 120);
+        phCompressor.enableDigital();
+        //phCompressor.enableAnalog(119, 120);
     } 
 
 
