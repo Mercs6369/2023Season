@@ -86,7 +86,7 @@ public class Vision {
     limelightHeight will simply be taller than the level of the lower reflective tape. 
     */ 
     public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
-       double perceived_distance = ((19.75 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)))))-9.625;
+       double perceived_distance = ((11.875 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)))))-8.75;
        return perceived_distance;
     }
 
