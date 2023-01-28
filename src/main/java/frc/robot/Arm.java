@@ -15,7 +15,11 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
-
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -26,7 +30,13 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 // test ignore this
 public class Arm {
 
-    public Arm() {} // constructor
+    Compressor phCompressor = new Compressor(20, PneumaticsModuleType.REVPH);
+    DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 2);
+    DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 3);
+
+    public Arm() { // constructor
+        phCompressor.enableAnalog(119, 120);
+    } 
 
 
     // Use dis for LED things.
@@ -72,7 +82,27 @@ public class Arm {
     WPI_TalonFX first_stage_elevator = new WPI_TalonFX(Constants.FIRST_STAGE_ELEVATOR_ID, "rio"); 
     WPI_TalonFX second_stage_elevator = new WPI_TalonFX(Constants.SECOND_STAGE_ELEVATOR_ID, "rio");
 
+    // newmatics shtuff
 
+    public void update() {
+        SmartDashboard.putNumber("High Side Pressure", phCompressor.getPressure());
+    }
+
+    public void setForward(){
+        LeftClawSolenoid.set(Value.kForward);
+        RightClawSolenoid.set(Value.kForward);
+    }
+
+    public void setReverse(){
+        LeftClawSolenoid.set(Value.kReverse);
+        RightClawSolenoid.set(Value.kReverse);
+    }
+
+    public void close(){
+        RightClawSolenoid.close();
+        LeftClawSolenoid.close();
+
+    }
 
     /**
      * Call this whenever you need to score a game piece. This can be run whenever, you don't need a debounce thingy.

@@ -83,15 +83,20 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
-   
+
+    m_arm.update();
+
+
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
+      m_arm.setReverse();
     }
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
+      m_arm.close();
     }
     if(operator_controller_X_button == true)
     {
@@ -100,6 +105,8 @@ public class Robot extends TimedRobot {
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
+      m_arm.setForward();
+
     }
     //We still need to make a deadband function below function is a draft
     if(-0.1 < driver_controller_L_X_Axis && 0.1 > driver_controller_L_X_Axis && -0.1 < driver_controller_L_Y_Axis && driver_controller_L_Y_Axis < .1)
