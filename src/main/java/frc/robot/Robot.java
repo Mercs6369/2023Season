@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
 
     m_arm.update();
-
+    m_vision.getOrientationOfCone();
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
