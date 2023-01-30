@@ -98,14 +98,30 @@ public class Vision {
     public void getOrientationOfCone() {
         setGamePiecePipeline(0);
         
-        if (gamePieceCameraResult.hasTargets()) {
-            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-            
-            double objectLength = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
-            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+        gamePieceCamera.getLatestResult();
 
-            SmartDashboard.putNumber("length", objectLength);
+        if (gamePieceCameraResult.hasTargets()) {
+            
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
+            double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+            SmartDashboard.putNumber("length", objectHeight);
             SmartDashboard.putNumber("width", objectWidth);
+
+
+
+
+            if (objectHeight > (objectWidth + 10)) {
+                // probably standing up
+                SmartDashboard.putString("Orientation", "Hopefully standing up");
+            } else {
+                // probably on the side
+                SmartDashboard.putString("Orientation", "On It's Side maybe, probably, eh what do I know, this code probably isn't accurate at all oops");
+            }
+
+
+
+
            
         }
     }
