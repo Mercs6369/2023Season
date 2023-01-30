@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
-
+  long lastnano_time = 0;
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -81,18 +81,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    m_vision.getOrientationOfCone();
-    
-    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),15.07));
-   
+
+    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
+
+    m_arm.update();
+
+
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
+      m_arm.setReverse();
     }
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
+      m_arm.close();
     }
     if(operator_controller_X_button == true)
     {
@@ -101,6 +105,8 @@ public class Robot extends TimedRobot {
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
+      m_arm.setForward();
+
     }
     //We still need to make a deadband function below function is a draft
     if(-0.1 < driver_controller_L_X_Axis && 0.1 > driver_controller_L_X_Axis && -0.1 < driver_controller_L_Y_Axis && driver_controller_L_Y_Axis < .1)
