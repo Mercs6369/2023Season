@@ -131,8 +131,7 @@ public class Vision {
     limelightHeight will simply be taller than the level of the lower reflective tape. 
     */ 
     public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
-       double perceived_distance = ((19.75 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(angleCenterVisionBounds))))-9.625;
-       return perceived_distance;
+       return ((11.875 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)-1.58164))))-8.75;
     }
 
     public int getGamePieceCameraPipeline() {
@@ -142,14 +141,30 @@ public class Vision {
     public void getOrientationOfCone() {
         setGamePiecePipeline(0);
         
-        if (gamePieceCameraResult.hasTargets()) {
-            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-            
-            double objectLength = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
-            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+        gamePieceCamera.getLatestResult();
 
-            SmartDashboard.putNumber("length", objectLength);
+        if (gamePieceCameraResult.hasTargets()) {
+            
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
+            double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+            SmartDashboard.putNumber("length", objectHeight);
             SmartDashboard.putNumber("width", objectWidth);
+
+
+
+
+            if (objectHeight > (objectWidth + 10)) {
+                // probably standing up
+                SmartDashboard.putString("Orientation", "Hopefully standing up");
+            } else {
+                // probably on the side
+                SmartDashboard.putString("Orientation", "On It's Side maybe, probably, eh what do I know, this code probably isn't accurate at all oops");
+            }
+
+
+
+
            
         }
     }
