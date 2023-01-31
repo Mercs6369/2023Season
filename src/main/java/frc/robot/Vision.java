@@ -25,8 +25,8 @@ public class Vision {
     ColorMatchResult match;
     String color_string;
 
-    //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
-    //private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+    //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429); // standard blue
+    //private final Color kYellowTarget = new Color(0.361, 0.524, 0.113); //standard yellow
     private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);  //this was measured by us
     private final Color kConeTarget = new Color(0.46, 0.45, 0.09); //this was measured by us
 
@@ -40,7 +40,6 @@ public class Vision {
     double range = 0.0;
 
     public void color_sensor_init() {
-
         m_colorMatcher.addColorMatch(kCubeTarget);
         m_colorMatcher.addColorMatch(kConeTarget);
     }
@@ -59,17 +58,17 @@ public class Vision {
 
             if (match.color == kCubeTarget) {
             color_string = "Cube";
-            } else if (match.color == kConeTarget) {
+            } 
+            else if (match.color == kConeTarget) {
                 color_string = "Cone";
-            } else {
+            }
+            else {
                 color_string = "Unknown";
             }
-            System.out.print(color_string);
             }
  
         SmartDashboard.putNumber("Confidence", match.confidence);
         SmartDashboard.putString("Detected Color", color_string);
-
         }
 
     public void targeting() {
@@ -88,18 +87,12 @@ public class Vision {
                             CAMERA_PITCH_RADIANS,
                             ((result.getBestTarget().getPitch())*(Math.PI/180)));
             this.result = result;
-            
-
-            
-
-    
         }
 
         SmartDashboard.putNumber("Range", range);
         SmartDashboard.putNumber("ID", getBestTarget());
         SmartDashboard.putNumber("Yaw", getTargetWithID(getBestTarget()).getYaw());
         SmartDashboard.putNumber("Skew", getTargetWithID(getBestTarget()).getSkew());
-        
     }
 
     public PhotonTrackedTarget getTargetWithID(int id) { 
@@ -149,9 +142,6 @@ public class Vision {
             SmartDashboard.putNumber("length", objectHeight);
             SmartDashboard.putNumber("width", objectWidth);
 
-
-
-
             if (objectHeight > (objectWidth + 10)) {
                 // probably standing up
                 SmartDashboard.putString("Orientation", "Hopefully standing up");
@@ -159,30 +149,17 @@ public class Vision {
                 // probably on the side
                 SmartDashboard.putString("Orientation", "On It's Side maybe, probably, eh what do I know, this code probably isn't accurate at all oops");
             }
-
-
-
-
-           
         }
     }
 
-
-
-
-
     public void setGamePiecePipeline(int gamePiecePipelineIndex) {
-        
-
         if (gamePiecePipelineIndex == -99) { // -99 is the driver cam thingy
             gamePieceCamera.setDriverMode(true);
         } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
             gamePieceCamera.setDriverMode(false);
             gamePieceCamera.setPipelineIndex(gamePiecePipelineIndex);
-            
         } else {
             // invalid command sent
         }
     }
-
 }
