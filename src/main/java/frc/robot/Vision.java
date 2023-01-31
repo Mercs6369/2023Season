@@ -7,12 +7,10 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.PhotonPipelineResult;
-
-
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
-import java.util.ArrayList;
 
 
 public class Vision {
@@ -20,6 +18,19 @@ public class Vision {
     PhotonCamera gamePieceCamera = new PhotonCamera("GamePieceTargeting"); // Game Piece Camera
     boolean hasTargets; // april tags
     PhotonPipelineResult result; // april tags
+    double red_color = 0;
+    double green_color = 0;
+    double blue_color = 0;
+    double mag;
+    ColorMatch m_colorMatcher;
+    ColorMatchResult match;
+    String color_string;
+
+    //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
+    //private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+    private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);
+    private final Color kConeTarget = new Color(0.46, 0.45, 0.09);
+
 
     boolean gamePieceHasTargets; // Game Piece has Targets
     PhotonPipelineResult gamePieceCameraResult; // Game Piece Detection Result
@@ -30,7 +41,41 @@ public class Vision {
 
     double range = 0.0;
 
+    public void test_init() {
+
+        m_colorMatcher.addColorMatch(kCubeTarget);
+        m_colorMatcher.addColorMatch(kConeTarget);
+    }
+        
+    public void test () {
+        red_color = SmartDashboard.getNumber("colorSensorRed", 0);
+        green_color = SmartDashboard.getNumber("colorSensorGreen", 0);
+        blue_color = SmartDashboard.getNumber("colorSensorBlue", 0);
+        mag = red_color + green_color + blue_color;
+        red_color = red_color/mag;
+        green_color = green_color/mag;
+        blue_color = blue_color/mag;
+
+        System.out.print(red_color);
+        System.out.print(green_color);
+        System.out.print(blue_color);
+        
+        if ((red_color != 0) && (green_color != 0) && (blue_color != 0)) {
+            m_colorMatcher.matchClosestColor(new Color(red_color, green_color, blue_color));
+
+            if (match.color == kCubeTarget) {
+            color_string = "Cube";
+            } else if (match.color == kConeTarget) {
+                color_string = "Cone";
+            } else {
+                color_string = "Unknown";
+            }
+            System.out.print(color_string);
+            }
+        }
+
     public void targeting() {
+
         var result = camera.getLatestResult();
         hasTargets = result.hasTargets();
         if (hasTargets) {
