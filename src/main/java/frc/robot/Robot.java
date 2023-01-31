@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
   double driver_controller_L_Y_Axis;
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
-  int driver_controller_POV_button = driver_controller.getPOV();
+  int driver_controller_POV_button;
   
   Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
+    m_vision.color_sensor_init();
         
   }
 
@@ -86,6 +87,7 @@ public class Robot extends TimedRobot {
 
     m_arm.update();
     m_vision.getOrientationOfCone();
+    m_vision.color_sensor_measure();
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
