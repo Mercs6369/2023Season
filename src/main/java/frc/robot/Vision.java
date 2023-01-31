@@ -1,8 +1,6 @@
 package frc.robot;
 
-import java.util.Collections;
 import java.util.List;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -22,15 +20,14 @@ public class Vision {
     double green_color = 0;
     double blue_color = 0;
     double mag;
-    ColorMatch m_colorMatcher;
+    ColorMatch m_colorMatcher = new ColorMatch();
     ColorMatchResult match;
     String color_string;
 
     //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
     //private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
-    private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);
-    private final Color kConeTarget = new Color(0.46, 0.45, 0.09);
-
+    private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);  //this was measured by us
+    private final Color kConeTarget = new Color(0.46, 0.45, 0.09); //this was measured by us
 
     boolean gamePieceHasTargets; // Game Piece has Targets
     PhotonPipelineResult gamePieceCameraResult; // Game Piece Detection Result
@@ -41,13 +38,13 @@ public class Vision {
 
     double range = 0.0;
 
-    public void test_init() {
+    public void color_sensor_init() {
 
         m_colorMatcher.addColorMatch(kCubeTarget);
         m_colorMatcher.addColorMatch(kConeTarget);
     }
         
-    public void test () {
+    public void color_sensor_measure () {
         red_color = SmartDashboard.getNumber("colorSensorRed", 0);
         green_color = SmartDashboard.getNumber("colorSensorGreen", 0);
         blue_color = SmartDashboard.getNumber("colorSensorBlue", 0);
@@ -55,13 +52,9 @@ public class Vision {
         red_color = red_color/mag;
         green_color = green_color/mag;
         blue_color = blue_color/mag;
-
-        System.out.print(red_color);
-        System.out.print(green_color);
-        System.out.print(blue_color);
         
         if ((red_color != 0) && (green_color != 0) && (blue_color != 0)) {
-            m_colorMatcher.matchClosestColor(new Color(red_color, green_color, blue_color));
+            match = m_colorMatcher.matchClosestColor(new Color(red_color, green_color, blue_color));
 
             if (match.color == kCubeTarget) {
             color_string = "Cube";
@@ -72,6 +65,10 @@ public class Vision {
             }
             System.out.print(color_string);
             }
+ 
+        SmartDashboard.putNumber("Confidence", match.confidence);
+        SmartDashboard.putString("Detected Color", color_string);
+
         }
 
     public void targeting() {
