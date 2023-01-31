@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class Vision {
@@ -45,9 +46,9 @@ public class Vision {
     }
         
     public void color_sensor_measure () {
-        red_color = SmartDashboard.getNumber("colorSensorRed", 0);
-        green_color = SmartDashboard.getNumber("colorSensorGreen", 0);
-        blue_color = SmartDashboard.getNumber("colorSensorBlue", 0);
+        red_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorRed").getDouble(0);
+        green_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorGreen").getDouble(0);
+        blue_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorBlue").getDouble(0);
         mag = red_color + green_color + blue_color;
         red_color = red_color/mag;
         green_color = green_color/mag;
