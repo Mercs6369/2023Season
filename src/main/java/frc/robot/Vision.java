@@ -31,7 +31,7 @@ public class Vision {
     private final Color kConeTarget = new Color(0.46, 0.45, 0.09); //this was measured by us
 
     boolean gamePieceHasTargets; // Game Piece has Targets
-    PhotonPipelineResult gamePieceCameraResult; // Game Piece Detection Result
+    PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
     
     final double CAMERA_HEIGHT_METERS = 0.0;
     final double TARGET_HEIGHT_METERS = 0.0;
