@@ -45,9 +45,9 @@ public class Vision {
     }
         
     public void color_sensor_measure () {
-        red_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorRed").getDouble(0);
-        green_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorGreen").getDouble(0);
-        blue_color = NetworkTableInstance.getDefault().getTable("default").getEntry("colorSensorBlue").getDouble(0);
+        red_color = NetworkTableInstance.getDefault().getTable("RevColorSensor_V3").getEntry("colorSensorRed").getDouble(0);
+        green_color = NetworkTableInstance.getDefault().getTable("RevColorSensor_V3").getEntry("colorSensorGreen").getDouble(0);
+        blue_color = NetworkTableInstance.getDefault().getTable("RevColorSensor_V3").getEntry("colorSensorBlue").getDouble(0);
         mag = red_color + green_color + blue_color;
         red_color = red_color/mag;
         green_color = green_color/mag;
