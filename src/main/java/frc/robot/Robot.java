@@ -87,7 +87,6 @@ public class Robot extends TimedRobot {
 
     m_arm.update();
     m_vision.getOrientationOfCone();
-    m_vision.color_sensor_measure();
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
@@ -103,6 +102,8 @@ public class Robot extends TimedRobot {
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
+      m_vision.color_sensor_RGB_measure();  // tests rev color sensor
+      m_vision.color_sensor_prox_measure(); // tests rev color sensor
     }
     if(operator_controller_Y_button == true)
     {
