@@ -30,14 +30,14 @@ public class Vision {
     private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);  //this was measured by us
     private final Color kConeTarget = new Color(0.46, 0.45, 0.09); //this was measured by us
 
-    boolean gamePieceHasTargets; // Game Piece has Targets
-    PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
+    private boolean gamePieceHasTargets = false; // Game Piece has Targets
+    private final PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
     
-    final double CAMERA_HEIGHT_METERS = 0.0;
-    final double TARGET_HEIGHT_METERS = 0.0;
-    final double CAMERA_PITCH_RADIANS = 0.0;
+    private final double CAMERA_HEIGHT_METERS = 0.0;
+    private final double TARGET_HEIGHT_METERS = 0.0;
+    private final double CAMERA_PITCH_RADIANS = 0.0;
 
-    double range = 0.0;
+    private double range = 0.0;
 
     public void color_sensor_init() {
         m_colorMatcher.addColorMatch(kCubeTarget);
