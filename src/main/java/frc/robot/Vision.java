@@ -1,6 +1,9 @@
 package frc.robot;
 
 import java.util.List;
+
+import javax.xml.crypto.Data;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -94,32 +97,118 @@ public class Vision {
        return ((11.875 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)-1.58164))))-8.75;
     }
 
+
+
+
+    /*
+     *
+     * Everything above this is not Jonathan's code
+     * 
+     * 
+     * 
+     * 
+     * Everything under this is Jonathan's code.
+     * 
+     */
+
+
     public int getGamePieceCameraPipeline() {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
     }
 
-    public void getOrientationOfCone() {
-        setGamePiecePipeline(0);
-        
-        gamePieceCamera.getLatestResult();
+
+    enum infoTypeToReturn {
+        Area,
+        Pitch,
+        Skew,
+        Yaw,
+        Orientation,
+    }
+
+
+
+
+    private double getOrientationOfCone() {
+        PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+        double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
+        double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+     
+        if (objectHeight > (objectWidth + 10)) {
+            // Probably standing up
+            return 1.0;
+        } else {
+            // Probably on the side
+            return 0.0;
+        }
+    }  
+
+/*
+    public String getBestTargetGlobal() {
+        double CubeArea;
+        double ConeArea;
+
+        gamePieceCamera.setPipelineIndex(0);
+        gamePieceCameraResult = gamePieceCamera.getLatestResult();
 
         if (gamePieceCameraResult.hasTargets()) {
-            
-            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-            double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
-            double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
-            SmartDashboard.putNumber("length", objectHeight);
-            SmartDashboard.putNumber("width", objectWidth);
+            bestTarget = gamePieceCameraResult.getBestTarget();
+            ConeArea = 
+        }
 
-            if (objectHeight > (objectWidth + 10)) {
-                // probably standing up
-                SmartDashboard.putString("Orientation", "Hopefully standing up");
-            } else {
-                // probably on the side
-                SmartDashboard.putString("Orientation", "On It's Side maybe, probably, eh what do I know, this code probably isn't accurate at all oops");
+
+    }
+     */
+
+    
+    public double getCubeInfo(infoTypeToReturn valueToGet) {
+        setGamePiecePipeline(1);
+        gamePieceCameraResult = gamePieceCamera.getLatestResult();
+
+        PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+        
+        
+        if (gamePieceCameraResult.hasTargets()) { // if it does has a target then do this :D
+            switch (valueToGet) {
+                case Area:
+                    return bestTarget.getArea();
+                case Pitch:
+                    return bestTarget.getPitch();
+                case Skew:
+                    return bestTarget.getSkew();
+                case Yaw:
+                    return bestTarget.getYaw();
+                default:
+                    break;
             }
         }
+        return -1; // if camera doesn't have targets
     }
+
+
+    public double getConeInfo(infoTypeToReturn valueToGet) {
+        setGamePiecePipeline(0);
+        gamePieceCameraResult = gamePieceCamera.getLatestResult();
+        PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+
+        if (gamePieceCameraResult.hasTargets()) { // if it does has a target then do this :D
+            switch (valueToGet) {
+                case Area:
+                    return bestTarget.getArea();
+                case Pitch:
+                    return bestTarget.getPitch();
+                case Skew:
+                    return bestTarget.getSkew();
+                case Yaw:
+                    return bestTarget.getYaw();
+                case Orientation:
+                    return getOrientationOfCone();
+                default:
+                    break;
+            }
+        }
+        return -1; // if camera doesn't have targets
+    }
+
 
     public void setGamePiecePipeline(int gamePiecePipelineIndex) {
         if (gamePiecePipelineIndex == -99) { // -99 is the driver cam thingy
