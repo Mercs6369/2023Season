@@ -74,7 +74,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    m_vision.color_sensor_init();
         
   }
 
@@ -102,8 +101,8 @@ public class Robot extends TimedRobot {
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
-      m_vision.color_sensor_RGB_measure();  // tests rev color sensor
-      m_vision.color_sensor_prox_measure(); // tests rev color sensor
+      m_vision.CS_RGB_measure(); // tests rev color sensor
+      m_vision.CS_Prox_measure(); // tests rev color sensor
     }
     if(operator_controller_Y_button == true)
     {
