@@ -20,8 +20,8 @@ public class Color_Sensor {
 
     //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429); // standard blue
     //private final Color kYellowTarget = new Color(0.361, 0.524, 0.113); // standard yellow
-    private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);  //this was measured by us
-    private final Color kConeTarget = new Color(0.46, 0.45, 0.09); //this was measured by us
+    private final Color kCubeTarget = new Color(0.25, 0.25, 0.5);  // this was measured by us
+    private final Color kConeTarget = new Color(0.46, 0.45, 0.09); // this was measured by us
 
   /**
    * Constructor for the Color Sensor.
