@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
     PhotonCamera camera = new PhotonCamera("photonvision"); // April Tag camera
-    PhotonCamera gamePieceCamera = new PhotonCamera("GamePieceTargeting"); // Game Piece Camera
+    PhotonCamera gamePieceCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000"); // Game Piece Camera
     boolean hasTargets; // april tags
     PhotonPipelineResult result; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
@@ -144,6 +144,7 @@ public class Vision {
 
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+
         double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
         double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
      
@@ -200,7 +201,7 @@ public class Vision {
 
 
     public double getConeInfo(infoTypeToReturn valueToGet) {
-        setGamePiecePipeline(0);
+        //setGamePiecePipeline(0);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 

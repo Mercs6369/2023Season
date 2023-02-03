@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LED_Signaling.LED_State;
+import frc.robot.Vision.infoTypeToReturn;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
+    m_vision.setGamePiecePipeline(0);
         
   }
 
@@ -85,7 +87,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
 
     m_arm.update();
-    m_vision.getOrientationOfCone();
+    SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
+    SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
+    SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
