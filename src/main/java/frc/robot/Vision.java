@@ -131,7 +131,7 @@ public class Vision {
     }
 
 
-    enum infoTypeToReturn {
+    enum infoTypeToReturn { // this is used when using GetCubeInfo/GetConeInfo
         Area,
         Pitch,
         Skew,
@@ -139,6 +139,16 @@ public class Vision {
         Orientation,
     }
 
+
+    enum gamePiecePipelineIndex { // this is used for the setGamePiecePipeline method
+        driver,
+        cube,
+        cone,
+    }
+
+
+    double coneAreaAt1Foot;
+    double cubeAreaAt1Foot;
 
 
 
@@ -157,32 +167,46 @@ public class Vision {
         }
     }  
 
-/*
+
     public String getBestTargetGlobal() {
+        
         double CubeArea;
         double ConeArea;
 
-        gamePieceCamera.setPipelineIndex(0);
+        setGamePiecePipeline(gamePiecePipelineIndex.cone);     
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
 
+        // cone pipeline
         if (gamePieceCameraResult.hasTargets()) {
-            bestTarget = gamePieceCameraResult.getBestTarget();
-            ConeArea = 
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+            ConeArea = bestTarget.getArea();
         }
 
 
+        // cube pipeline
+        setGamePiecePipeline(gamePiecePipelineIndex.cube);
+        gamePieceCameraResult = gamePieceCamera.getLatestResult();
+        
+        if (gamePieceCameraResult.hasTargets()) {
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
+            CubeArea = bestTarget.getArea();
+        }
+
+
+        return "in progress"; // don't mess with any code here
+
+
     }
-     */
+    
 
     
     public double getCubeInfo(infoTypeToReturn valueToGet) {
-        setGamePiecePipeline(1);
+        setGamePiecePipeline(gamePiecePipelineIndex.cube);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
-
-        PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
         
         
         if (gamePieceCameraResult.hasTargets()) { // if it does has a target then do this :D
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             switch (valueToGet) {
                 case Area:
                     return bestTarget.getArea();
@@ -201,11 +225,11 @@ public class Vision {
 
 
     public double getConeInfo(infoTypeToReturn valueToGet) {
-        //setGamePiecePipeline(0);
+        setGamePiecePipeline(gamePiecePipelineIndex.cone);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
-        PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 
         if (gamePieceCameraResult.hasTargets()) { // if it does has a target then do this :D
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             switch (valueToGet) {
                 case Area:
                     return bestTarget.getArea();
@@ -225,14 +249,19 @@ public class Vision {
     }
 
 
-    public void setGamePiecePipeline(int gamePiecePipelineIndex) {
-        if (gamePiecePipelineIndex == -99) { // -99 is the driver cam thingy
-            gamePieceCamera.setDriverMode(true);
-        } else if (gamePiecePipelineIndex == 0 || gamePiecePipelineIndex == 1){
-            gamePieceCamera.setDriverMode(false);
-            gamePieceCamera.setPipelineIndex(gamePiecePipelineIndex);
-        } else {
-            // invalid command sent
-        }
+
+
+    public void setGamePiecePipeline(gamePiecePipelineIndex newPipelineName) {
+       if (newPipelineName == gamePiecePipelineIndex.driver) {
+        gamePieceCamera.setPipelineIndex(2); // idx 2 is driver
+       } else if (newPipelineName == gamePiecePipelineIndex.cone) {
+        gamePieceCamera.setPipelineIndex(0); // idx 0 is cone
+       } else if (newPipelineName == gamePiecePipelineIndex.cube) {
+        gamePieceCamera.setPipelineIndex(1); // idx 1 is cube
+       } else {
+        System.out.println("Error in Vision.java - newPipelineName wasn't of the proper enum. Not sure how this is possible :P");
+       }
+
+
     }
 }
