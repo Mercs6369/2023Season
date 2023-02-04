@@ -126,6 +126,10 @@ public class Vision {
      */
 
 
+    /**
+     * Returns the current game piece targeting pipeline index. 0 = cone, 1 = cube, other is probably driver mode
+     * 
+     */
     public int getGamePieceCameraPipeline() {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
     }
@@ -151,7 +155,10 @@ public class Vision {
     double cubeAreaAt1Foot;
 
 
-
+    /**
+     * 
+     * Returns the orientation of the cone, this should only be run after a cone game piece has been identified. (1.0 - Standing Up || 0.0 - On It's Side)
+     */
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 
@@ -196,6 +203,11 @@ public class Vision {
 
 
 
+    /**
+    * 
+    *   Returns the best target, can return 3 strings: Cone - The best/closest target is a cone || Cube - The best/closest target is a cone || Error - There is not a target to evaluate.
+    *
+    */
     public String getBestTargetGlobal() {
         
         double CubeArea;
