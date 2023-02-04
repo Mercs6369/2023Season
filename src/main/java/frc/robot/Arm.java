@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm {
 
-    //Compressor phCompressor = new Compressor(20, PneumaticsModuleType.REVPH);
-    Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
+    //Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
     DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 

@@ -13,10 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 
 public class Robot extends TimedRobot {
 
-  XboxController driver_controller = new XboxController(0);
+  public static CTREConfigs ctreConfigs;
+  private Command m_autonomousCommand;
+  private RobotContainer m_robotContainer;
+
+  //XboxController driver_controller = new XboxController(0);
   XboxController operator_controller = new XboxController(1);
 // maybe put these variables in the constants class? Yes, constants being worked by Gargi, still need these though
   boolean operator_controller_A_button;
@@ -30,7 +37,6 @@ public class Robot extends TimedRobot {
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
   
-  Drivetrain m_drive = new Drivetrain();
   Vision m_vision = new Vision();
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
@@ -74,8 +80,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    ctreConfigs = new CTREConfigs();
+    m_robotContainer = new RobotContainer();
+
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    m_vision.setGamePiecePipeline(0);
+    //m_vision.setGamePiecePipeline(0);
         
   }
 
@@ -83,6 +92,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
 
@@ -169,10 +184,10 @@ public class Robot extends TimedRobot {
     }
 
     if (brake_mode_enabled == true){
-      m_drive.brake();
+      //m_drive.brake();
     }
     else {
-      m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
+      //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
   }
 
@@ -193,12 +208,12 @@ public class Robot extends TimedRobot {
     operator_controller_B_button = operator_controller.getBButton();
     operator_controller_X_button = operator_controller.getXButton();
     operator_controller_Y_button = operator_controller.getYButton();
-    driver_controller_POV_button = driver_controller.getPOV();
-    driver_controller_L_X_Axis = driver_controller.getLeftX();
-    driver_controller_L_Y_Axis = driver_controller.getLeftY();
-    driver_controller_R_X_Axis = driver_controller.getRightX();
-    driver_controller_R_Y_Axis = driver_controller.getRightY();
-    brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
+    // driver_controller_POV_button = driver_controller.getPOV();
+    // driver_controller_L_X_Axis = driver_controller.getLeftX();
+    // driver_controller_L_Y_Axis = driver_controller.getLeftY();
+    // driver_controller_R_X_Axis = driver_controller.getRightX();
+    // driver_controller_R_Y_Axis = driver_controller.getRightY();
+    // brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
   }
   
   public void robotInitShuffleboard() {
