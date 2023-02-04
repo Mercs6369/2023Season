@@ -155,6 +155,37 @@ public class Vision {
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 
+
+
+        
+
+
+        System.out.println("0 and 0x");
+        System.out.println(bestTarget.getDetectedCorners().get(0));
+        System.out.println(bestTarget.getDetectedCorners().get(0).x);
+        SmartDashboard.putNumber("0x", bestTarget.getDetectedCorners().get(0).x);
+        
+        System.out.println("1 and 1x");
+        System.out.println(bestTarget.getDetectedCorners().get(1));
+        System.out.println(bestTarget.getDetectedCorners().get(1).x);
+        SmartDashboard.putNumber("1x", bestTarget.getDetectedCorners().get(1).x);
+
+        System.out.println("0 and 0y");
+        System.out.println(bestTarget.getDetectedCorners().get(0));
+        System.out.println(bestTarget.getDetectedCorners().get(0).y);
+        SmartDashboard.putNumber("0y", bestTarget.getDetectedCorners().get(0).y);
+
+        System.out.println("3 and 3y");
+        System.out.println(bestTarget.getDetectedCorners().get(3));
+        System.out.println(bestTarget.getDetectedCorners().get(3).y);
+        SmartDashboard.putNumber("3y", bestTarget.getDetectedCorners().get(3).y);
+
+
+
+
+        return -1;
+
+/* 
         double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
         double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
      
@@ -165,7 +196,10 @@ public class Vision {
             // Probably on the side
             return 0.0;
         }
+        */
     }  
+    
+
 
 
     public String getBestTargetGlobal() {
