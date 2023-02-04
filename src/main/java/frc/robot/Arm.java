@@ -24,10 +24,6 @@ public class Arm {
     DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
-    public Arm() { // constructor
-        phCompressor.enableDigital();
-        //phCompressor.enableAnalog(119, 120);
-    } 
 
     enum ArmStateEnum {
         Idle,
@@ -124,14 +120,17 @@ public class Arm {
 
     private void ejectPeriodic() {
         KnewmaticsOpen();
+        end_action();
     }
 
     private void scorePeriodic() {
-        KnewmaticsClose();
+        KnewmaticsOpen();
+        end_action();
     }
 
     private void pickupPeriodic() {
         KnewmaticsClose();
+        end_action();
     }
 
 //  This needs to be run constantly whenever you want the arm to work and do magik shtuff
@@ -144,4 +143,16 @@ public class Arm {
             pickupPeriodic();
         }
     }
+
+
+
+
+
+
+    public Arm() { // constructor
+        phCompressor.enableDigital();
+        //phCompressor.enableAnalog(119, 120);
+        KnewmaticsOpen();
+    } 
+
 };
