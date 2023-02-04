@@ -61,12 +61,12 @@ public class Arm {
         SmartDashboard.putNumber("High Side Pressure", phCompressor.getPressure());
     }
 
-    public void setForward(){
+    public void KnewmaticsClose(){
         LeftClawSolenoid.set(Value.kForward);
         RightClawSolenoid.set(Value.kForward);
     }
 
-    public void setReverse(){
+    public void KnewmaticsOpen(){
         LeftClawSolenoid.set(Value.kReverse);
         RightClawSolenoid.set(Value.kReverse);
     }
@@ -123,14 +123,15 @@ public class Arm {
 //  These three methods shouldn't need to be run except inside armPeriodic()
 
     private void ejectPeriodic() {
-
+        KnewmaticsOpen();
     }
 
     private void scorePeriodic() {
+        KnewmaticsClose();
     }
 
     private void pickupPeriodic() {
-
+        KnewmaticsClose();
     }
 
 //  This needs to be run constantly whenever you want the arm to work and do magik shtuff
