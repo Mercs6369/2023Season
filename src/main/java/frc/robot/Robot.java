@@ -110,12 +110,12 @@ public class Robot extends TimedRobot {
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
-      m_arm.setReverse();
+      m_arm._Eject_Game_Piece();
     }
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
-      m_arm.close();
+      m_arm._Pickup_Game_Piece();
     }
     if(operator_controller_X_button == true)
     {
@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
-      m_arm.setForward();
+      m_arm._Score_Game_Piece();
 
     }
     //We still need to make a deadband function below function is a draft
