@@ -156,47 +156,41 @@ public class Vision {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 
 
-
-        
-
-
         System.out.println("0 and 0x");
-        System.out.println(bestTarget.getDetectedCorners().get(0));
-        System.out.println(bestTarget.getDetectedCorners().get(0).x);
-        SmartDashboard.putNumber("0x", bestTarget.getDetectedCorners().get(0).x);
+        System.out.println(bestTarget.getMinAreaRectCorners().get(0).x);
+        SmartDashboard.putNumber("0x", bestTarget.getMinAreaRectCorners().get(0).x);
         
         System.out.println("1 and 1x");
-        System.out.println(bestTarget.getDetectedCorners().get(1));
-        System.out.println(bestTarget.getDetectedCorners().get(1).x);
-        SmartDashboard.putNumber("1x", bestTarget.getDetectedCorners().get(1).x);
+        System.out.println(bestTarget.getMinAreaRectCorners().get(1).x);
+        SmartDashboard.putNumber("1x", bestTarget.getMinAreaRectCorners().get(1).x);
 
         System.out.println("0 and 0y");
-        System.out.println(bestTarget.getDetectedCorners().get(0));
-        System.out.println(bestTarget.getDetectedCorners().get(0).y);
-        SmartDashboard.putNumber("0y", bestTarget.getDetectedCorners().get(0).y);
+        System.out.println(bestTarget.getMinAreaRectCorners().get(0).y);
+        SmartDashboard.putNumber("0y", bestTarget.getMinAreaRectCorners().get(0).y);
 
         System.out.println("3 and 3y");
-        System.out.println(bestTarget.getDetectedCorners().get(3));
-        System.out.println(bestTarget.getDetectedCorners().get(3).y);
-        SmartDashboard.putNumber("3y", bestTarget.getDetectedCorners().get(3).y);
+        System.out.println(bestTarget.getMinAreaRectCorners().get(3).y);
+        SmartDashboard.putNumber("3y", bestTarget.getMinAreaRectCorners().get(3).y);
 
 
 
 
-        return -1;
+        
 
-/* 
-        double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
-        double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+
+        double objectWidth = Math.abs(bestTarget.getMinAreaRectCorners().get(0).x - bestTarget.getMinAreaRectCorners().get(1).x);
+        double objectHeight = Math.abs(bestTarget.getMinAreaRectCorners().get(0).y - bestTarget.getMinAreaRectCorners().get(3).y);
      
-        if (objectHeight > (objectWidth + 10)) {
+        if (objectHeight > (objectWidth - 10)) {
             // Probably standing up
+            SmartDashboard.putString("Orientation", "Standing up");
             return 1.0;
         } else {
             // Probably on the side
+            SmartDashboard.putString("Orientation", "On it's side, probably, ehh, probably not, who knows");
             return 0.0;
         }
-        */
+        
     }  
     
 
