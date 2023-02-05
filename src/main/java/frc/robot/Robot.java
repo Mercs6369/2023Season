@@ -131,15 +131,6 @@ public class Robot extends TimedRobot {
       m_arm._Score_Game_Piece();
 
     }
-    //We still need to make a deadband function below function is a draft
-    if(-0.1 < driver_controller_L_X_Axis && 0.1 > driver_controller_L_X_Axis && -0.1 < driver_controller_L_Y_Axis && driver_controller_L_Y_Axis < .1)
-    {
-      //Move(0,0)
-    }
-    if(-0.1 < driver_controller_R_X_Axis && 0.1 > driver_controller_R_X_Axis && -0.1 < driver_controller_R_Y_Axis && driver_controller_R_Y_Axis < .1)
-    {
-      //Move(0,0)
-    }
     /*Maybe we should add the next two methods in the far future
     if(canAutoPickObj() == true)
     {
@@ -152,7 +143,6 @@ public class Robot extends TimedRobot {
     }
     this method should make the contoller rumble if a game object can be autonomous scored
     */
-    //m_drive.update();
 
    }
 
@@ -210,11 +200,6 @@ public class Robot extends TimedRobot {
     operator_controller_B_button = operator_controller.getBButton();
     operator_controller_X_button = operator_controller.getXButton();
     operator_controller_Y_button = operator_controller.getYButton();
-    // driver_controller_POV_button = driver_controller.getPOV();
-    // driver_controller_L_X_Axis = driver_controller.getLeftX();
-    // driver_controller_L_Y_Axis = driver_controller.getLeftY();
-    // driver_controller_R_X_Axis = driver_controller.getRightX();
-    // driver_controller_R_Y_Axis = driver_controller.getRightY();
     // brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
   }
   
