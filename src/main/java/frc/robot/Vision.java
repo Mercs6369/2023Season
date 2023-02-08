@@ -162,20 +162,6 @@ public class Vision {
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
         
-        SmartDashboard.putNumber("Upper Left X",bestTarget.getMinAreaRectCorners().get(3).x);
-        SmartDashboard.putNumber("Upper Left Y",bestTarget.getMinAreaRectCorners().get(3).y);
-
-        SmartDashboard.putNumber("Upper Right X",bestTarget.getMinAreaRectCorners().get(2).x);
-        SmartDashboard.putNumber("Upper Right Y",bestTarget.getMinAreaRectCorners().get(2).y);
-
-        SmartDashboard.putNumber("Lower Left X",bestTarget.getMinAreaRectCorners().get(0).x);
-        SmartDashboard.putNumber("Lower Left Y",bestTarget.getMinAreaRectCorners().get(0).y);
-
-        SmartDashboard.putNumber("Lower Right X",bestTarget.getMinAreaRectCorners().get(1).x);
-        SmartDashboard.putNumber("Lower Right Y",bestTarget.getMinAreaRectCorners().get(1).y);
-
-
-
 
 
 
@@ -241,6 +227,13 @@ public class Vision {
 
         double objectHeight = Math.abs(highest_right_y - lowest_right_y);
         double objectWidth = Math.abs(farthest_left_x - farthest_right_x);
+
+
+
+        SmartDashboard.putNumber("highest right y",highest_right_y);
+        SmartDashboard.putNumber("lowest right y",lowest_right_y);
+        SmartDashboard.putNumber("farthest left x",farthest_left_x);
+        SmartDashboard.putNumber("farthest right x",farthest_right_x);
 
 
         if (objectHeight >= (objectWidth - 10)) {
