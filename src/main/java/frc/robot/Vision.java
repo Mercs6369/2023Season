@@ -161,32 +161,23 @@ public class Vision {
      */
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-
-
-        System.out.println("0 and 0x");
-        System.out.println(bestTarget.getMinAreaRectCorners().get(0).x);
-        SmartDashboard.putNumber("0x", bestTarget.getMinAreaRectCorners().get(0).x);
-        
-        System.out.println("1 and 1x");
-        System.out.println(bestTarget.getMinAreaRectCorners().get(1).x);
-        SmartDashboard.putNumber("1x", bestTarget.getMinAreaRectCorners().get(1).x);
-
-        System.out.println("0 and 0y");
-        System.out.println(bestTarget.getMinAreaRectCorners().get(0).y);
-        SmartDashboard.putNumber("0y", bestTarget.getMinAreaRectCorners().get(0).y);
-
-        System.out.println("3 and 3y");
-        System.out.println(bestTarget.getMinAreaRectCorners().get(3).y);
-        SmartDashboard.putNumber("3y", bestTarget.getMinAreaRectCorners().get(3).y);
-
-
-
-
-        
-
-
-        double objectWidth = Math.abs(bestTarget.getMinAreaRectCorners().get(0).x - bestTarget.getMinAreaRectCorners().get(1).x);
+        double objectWidth = Math.abs(bestTarget.getMinAreaRectCorners().get(3).x - bestTarget.getMinAreaRectCorners().get(2).x);
         double objectHeight = Math.abs(bestTarget.getMinAreaRectCorners().get(0).y - bestTarget.getMinAreaRectCorners().get(3).y);
+
+        SmartDashboard.putNumber("Object Hieght",objectHeight);
+        SmartDashboard.putNumber("Object Width",objectWidth);
+
+        SmartDashboard.putNumber("Upper Left X",bestTarget.getMinAreaRectCorners().get(3).x);
+        SmartDashboard.putNumber("Upper Left Y",bestTarget.getMinAreaRectCorners().get(3).y);
+
+        SmartDashboard.putNumber("Upper Right X",bestTarget.getMinAreaRectCorners().get(2).x);
+        SmartDashboard.putNumber("Upper Right Y",bestTarget.getMinAreaRectCorners().get(2).y);
+
+        SmartDashboard.putNumber("Lower Left X",bestTarget.getMinAreaRectCorners().get(0).x);
+        SmartDashboard.putNumber("Lower Left Y",bestTarget.getMinAreaRectCorners().get(0).y);
+
+        SmartDashboard.putNumber("Lower Right X",bestTarget.getMinAreaRectCorners().get(1).x);
+        SmartDashboard.putNumber("Lower Right Y",bestTarget.getMinAreaRectCorners().get(1).y);
      
         if (objectHeight > (objectWidth - 10)) {
             // Probably standing up
