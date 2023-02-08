@@ -161,12 +161,7 @@ public class Vision {
      */
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-        double objectWidth = Math.abs(bestTarget.getMinAreaRectCorners().get(3).x - bestTarget.getMinAreaRectCorners().get(2).x);
-        double objectHeight = Math.abs(bestTarget.getMinAreaRectCorners().get(0).y - bestTarget.getMinAreaRectCorners().get(3).y);
-
-        SmartDashboard.putNumber("Object Hieght",objectHeight);
-        SmartDashboard.putNumber("Object Width",objectWidth);
-
+        
         SmartDashboard.putNumber("Upper Left X",bestTarget.getMinAreaRectCorners().get(3).x);
         SmartDashboard.putNumber("Upper Left Y",bestTarget.getMinAreaRectCorners().get(3).y);
 
@@ -178,8 +173,77 @@ public class Vision {
 
         SmartDashboard.putNumber("Lower Right X",bestTarget.getMinAreaRectCorners().get(1).x);
         SmartDashboard.putNumber("Lower Right Y",bestTarget.getMinAreaRectCorners().get(1).y);
-     
-        if (objectHeight > (objectWidth - 10)) {
+
+
+
+
+
+
+
+
+
+
+
+
+        // gets the farthest left x
+        double farthest_left_x = bestTarget.getMinAreaRectCorners().get(0).x;
+        if (bestTarget.getMinAreaRectCorners().get(1).x < farthest_left_x) {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(1).x;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).x < farthest_left_x) {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(2).x;
+
+        } else {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        }
+
+        // gets the farthest right x
+        double farthest_right_x = bestTarget.getMinAreaRectCorners().get(0).x;
+        if (bestTarget.getMinAreaRectCorners().get(1).x > farthest_right_x) {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(1).x;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).x > farthest_right_x) {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(2).x;
+
+        } else {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        }
+
+        // gets the highest right x
+        double highest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
+        if (bestTarget.getMinAreaRectCorners().get(1).y > highest_right_y) {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).y > highest_right_y) {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
+
+        } else {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
+        }
+
+         // gets the lowest right x
+         double lowest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
+         if (bestTarget.getMinAreaRectCorners().get(1).y < lowest_right_y) {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
+ 
+         } else if (bestTarget.getMinAreaRectCorners().get(2).y > lowest_right_y) {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
+ 
+         } else {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
+         }
+
+
+
+
+
+
+
+        double objectHeight = Math.abs(highest_right_y - lowest_right_y);
+        double objectWidth = Math.abs(farthest_left_x - farthest_right_x);
+
+
+        if (objectHeight >= (objectWidth - 10)) {
             // Probably standing up
             SmartDashboard.putString("Orientation", "Standing up");
             return 1.0;
