@@ -8,18 +8,112 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.PhotonPipelineResult;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
+
+    public Pose3d getTag(int id){
+        final Pose3d tag01 =
+                new Pose3d(
+                        new Pose2d(
+                                610.77,
+                                42.19,
+                                Rotation2d.fromDegrees(180)));
+    
+        final Pose3d tag02 =
+                new Pose3d(
+                        new Pose2d(
+                                610.77,
+                                108.19,
+                                Rotation2d.fromDegrees(180)));
+    
+        final Pose3d tag03 =
+                new Pose3d(
+                        new Pose2d(
+                                610.77,
+                                174.19,
+                                Rotation2d.fromDegrees(180)));
+    
+        final Pose3d tag04 =
+                new Pose3d(
+                        new Pose2d(
+                                636.96,
+                                265.74,
+                                Rotation2d.fromDegrees(180)));
+    
+        final Pose3d tag05 =
+                new Pose3d(
+                        new Pose2d(
+                                14.25,
+                                265.74,
+                                Rotation2d.fromDegrees(0)));
+    
+    
+        final Pose3d tag06 =
+                new Pose3d(
+                        new Pose2d(
+                                40.45,
+                                174.19,
+                                Rotation2d.fromDegrees(0)));
+    
+    
+        final Pose3d tag07 =
+                new Pose3d(
+                        new Pose2d(
+                                40.45,
+                                108.19,
+                                Rotation2d.fromDegrees(0)));
+    
+        final Pose3d tag08 =
+                new Pose3d(
+                        new Pose2d(
+                                40.45,
+                                42.19,
+                                Rotation2d.fromDegrees(0)));
+
+        if (id == 1){
+            return tag01;
+        }
+        else if (id == 2){
+            return tag02;
+        }
+        else if (id == 3){
+            return tag03;
+        }
+        else if (id == 4){
+            return tag04;
+        }
+        else if (id == 5){
+            return tag05;
+        }
+        else if (id == 6){
+            return tag06;
+        }
+        else if (id == 7){
+            return tag07;
+        }
+        else {
+            return tag08;
+        }
+    }
+
+    
     PhotonCamera camera = new PhotonCamera("photonvision"); // April Tag camera
     PhotonCamera gamePieceCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000"); // Game Piece Camera
     boolean hasTargets; // april tags
-    PhotonPipelineResult result; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
+    PhotonTrackedTarget target = new PhotonTrackedTarget();
+
+    Pose3d robotPose = new Pose3d();
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
     private PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
     
+    private PhotonPipelineResult result = new PhotonPipelineResult();
     private final double CAMERA_HEIGHT_METERS = 0.0;
     private final double TARGET_HEIGHT_METERS = 0.0;
     private final double CAMERA_PITCH_RADIANS = 0.0;
@@ -45,11 +139,14 @@ public class Vision {
 
     public void targeting() {
 
-        var result = camera.getLatestResult();
+
+        result = camera.getLatestResult();
         hasTargets = result.hasTargets();
         if (hasTargets) {
             this.result = result;
         }
+
+        target = result.getBestTarget();
 
         if (result.hasTargets()) {
             // First calculate range
@@ -59,12 +156,10 @@ public class Vision {
                             CAMERA_PITCH_RADIANS,
                             ((result.getBestTarget().getPitch())*(Math.PI/180)));
             this.result = result;
-        }
 
-        SmartDashboard.putNumber("Range", range);
-        SmartDashboard.putNumber("ID", getBestTarget());
-        SmartDashboard.putNumber("Yaw", getTargetWithID(getBestTarget()).getYaw());
-        SmartDashboard.putNumber("Skew", getTargetWithID(getBestTarget()).getSkew());
+            robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), getTag(target.getFiducialId()), Constants.VisionConstants.robotToCam); 
+          
+        }
     }
 
     public PhotonTrackedTarget getTargetWithID(int id) { 
