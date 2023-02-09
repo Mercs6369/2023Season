@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import java.util.TimerTask;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -24,7 +25,6 @@ public class Arm {
     DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
-
     enum ArmStateEnum {
         Idle,
         Scoring,
@@ -37,7 +37,8 @@ public class Arm {
     ArmStateEnum GLOBAL_ARM_STATE = ArmStateEnum.Idle;
 
     // I don't think this has a use.
-    double arm_length;   
+    double arm_length;
+    double current_elevator_position;
     
     // Used to time how long actions take.
     Timer m_time = new Timer();
@@ -48,8 +49,12 @@ public class Arm {
     // Motors
     WPI_TalonFX claw_motor = new WPI_TalonFX(Constants.CLAW_MOTOR_ID, "rio"); 
     WPI_TalonFX pivot_motor = new WPI_TalonFX(Constants.PIVOT_MOTOR_ID, "rio"); 
-    WPI_TalonFX first_stage_elevator = new WPI_TalonFX(Constants.FIRST_STAGE_ELEVATOR_ID, "rio"); 
-    WPI_TalonFX second_stage_elevator = new WPI_TalonFX(Constants.SECOND_STAGE_ELEVATOR_ID, "rio");
+    WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
+    WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
+
+    // motor configuration settings
+
+
 
     // newmatics shtuff
 
@@ -72,6 +77,14 @@ public class Arm {
         LeftClawSolenoid.close();
 
     }
+    
+    public void move_elevator_height(double controller_input){
+        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
+        //elevator_motor_1.set(ControlMode.Position, current_elevator_position + 10*controller_input);
+        elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
+        SmartDashboard.putNumber("elevator_command", current_elevator_position);
+    }
+
 
     /**
      * Call this whenever you need to score a game piece. This can be run whenever, you don't need a debounce thingy.
@@ -144,15 +157,34 @@ public class Arm {
         }
     }
 
-
-
-
-
-
     public Arm() { // constructor
         phCompressor.enableDigital();
         //phCompressor.enableAnalog(119, 120);
         KnewmaticsOpen();
-    } 
 
+        // elevator motor setups
+        elevator_motor_1.configFactoryDefault();
+        elevator_motor_2.configFactoryDefault();
+        
+        elevator_motor_1.setInverted(false);
+        elevator_motor_1.setSensorPhase(false);
+        elevator_motor_1.setNeutralMode(NeutralMode.Coast);
+
+        elevator_motor_2.setInverted(false);        
+        elevator_motor_2.setSensorPhase(false);
+        elevator_motor_2.setNeutralMode(NeutralMode.Coast);
+
+        elevator_motor_1.config_kP(0, 0.3, 30);
+        elevator_motor_1.config_kI(0, 0.0, 30);
+        elevator_motor_1.config_kD(0, 0.0, 30);
+        elevator_motor_1.config_kF(0, 0.0, 30);
+
+        elevator_motor_2.config_kP(0, 0.3, 30);
+        elevator_motor_2.config_kI(0, 0.0, 30);
+        elevator_motor_2.config_kD(0, 0.0, 30);
+        elevator_motor_2.config_kF(0, 0.0, 30);
+
+        elevator_motor_2.follow(elevator_motor_1);
+        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
+    }
 };

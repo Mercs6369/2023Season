@@ -181,6 +181,8 @@ public class Robot extends TimedRobot {
     else {
       //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
+
+    m_arm.move_elevator_height(operator_controller.getRightY());
   }
 
   @Override
