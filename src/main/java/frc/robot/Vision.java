@@ -168,11 +168,11 @@ public class Vision {
     }
 
     public double getY(){
-        return target.getBestCameraToTarget().getY(); 
+        return robotPose.getY(); 
     }
 
     public double getX(){
-        return target.getBestCameraToTarget().getX(); 
+        return robotPose.getX(); 
     }
 
 
