@@ -102,8 +102,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
-
-    m_arm.update();
     SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
     SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
     SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));

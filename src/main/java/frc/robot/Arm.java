@@ -52,32 +52,23 @@ public class Arm {
     WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
     WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
 
-    // motor configuration settings
 
 
 
-    // newmatics shtuff
-
-    public void update() {
-        SmartDashboard.putNumber("High Side Pressure", phCompressor.getPressure());
-    }
-
-    public void KnewmaticsClose(){
+    // Pneumatics
+    public void pneumaticsClose(){
         LeftClawSolenoid.set(Value.kForward);
         RightClawSolenoid.set(Value.kForward);
     }
 
-    public void KnewmaticsOpen(){
+    public void pneumaticsOpen(){
         LeftClawSolenoid.set(Value.kReverse);
         RightClawSolenoid.set(Value.kReverse);
     }
 
-    public void close(){
-        RightClawSolenoid.close();
-        LeftClawSolenoid.close();
 
-    }
-    
+
+    // Coach Dan testing I think.
     public void move_elevator_height(double controller_input){
         current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
         //elevator_motor_1.set(ControlMode.Position, current_elevator_position + 10*controller_input);
@@ -87,7 +78,7 @@ public class Arm {
 
 
     /**
-     * Call this whenever you need to score a game piece. This can be run whenever, you don't need a debounce thingy.
+     * Call this whenever you need to score a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
     public void _Score_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
@@ -97,7 +88,7 @@ public class Arm {
     }
 
     /**
-     * Call this whenever you need to score a eject a game piece piece. This can be run whenever, you don't need a debounce thingy.
+     * Call this whenever you need to eject a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
     public void _Eject_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
@@ -107,7 +98,7 @@ public class Arm {
     }
 
     /**
-     * Call this whenever you need to score a pickup a game piece piece. This can be run whenever, you don't need a debounce thingy.
+     * Call this whenever you need to pickup a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
     public void _Pickup_Game_Piece() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
@@ -118,6 +109,7 @@ public class Arm {
 
 //  ^^^ These three methods you would call when you want to eject/score/pickup. 
 //      Theoretically these can be run however many times you want, you shouldn't have to implement a debounce thingy :P
+
 
     /**
      * You shouldn't have to run this method. It should all be handled internally, which is why it's private, and not public. But it just ends the current action.
@@ -132,21 +124,23 @@ public class Arm {
 //  These three methods shouldn't need to be run except inside armPeriodic()
 
     private void ejectPeriodic() {
-        KnewmaticsOpen();
+        pneumaticsOpen();
         end_action();
     }
 
     private void scorePeriodic() {
-        KnewmaticsOpen();
+        pneumaticsOpen();
         end_action();
     }
 
     private void pickupPeriodic() {
-        KnewmaticsClose();
+        pneumaticsClose();
         end_action();
     }
 
-//  This needs to be run constantly whenever you want the arm to work and do magik shtuff
+    /**
+     * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
+     */
     public void armPeriodic() {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
             scorePeriodic();
@@ -160,7 +154,7 @@ public class Arm {
     public Arm() { // constructor
         phCompressor.enableDigital();
         //phCompressor.enableAnalog(119, 120);
-        KnewmaticsOpen();
+        pneumaticsOpen();
 
         // elevator motor setups
         elevator_motor_1.configFactoryDefault();
