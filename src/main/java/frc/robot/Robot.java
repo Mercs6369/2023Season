@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     m_arm.armPeriodic();
+    m_vision.targeting();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -105,6 +106,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
     SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
     SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));
+    SmartDashboard.putNumber("psotion (y)", m_vision.getY());
+    SmartDashboard.putNumber("psotion (x)", m_vision.getX());
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
