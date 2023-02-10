@@ -237,8 +237,7 @@ public class Vision {
 
 
     /**
-     * Returns the current game piece targeting pipeline index. 0 = cone, 1 = cube, other is probably driver mode
-     * 
+     * Returns the current game piece targeting pipeline index. 0 = cone, 1 = cube, any other value is probably driver mode
      */
     public int getGamePieceCameraPipeline() {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
@@ -265,10 +264,8 @@ public class Vision {
 
 
     double coneAreaAt1Foot;
-    double cubeAreaAt1Foot;
+    double cubeAreaAt1Foot; // These will be used for getBestTargetGlobal. But getBestTargetGlobal is not yet finished :P
 
-
-    boolean hasGottenOrientation = false;
 
 
     List<Integer> last_four_orientations_of_cone = new ArrayList<>(); // list not array
@@ -276,7 +273,6 @@ public class Vision {
 
 
     /**
-     * 
      * Returns the orientation of the cone, this should only be run after a cone game piece has been identified. (1.0 - Standing Up || 0.0 - On It's Side)
      */
     private double getOrientationOfCone() {
@@ -391,9 +387,8 @@ public class Vision {
 
 
     /**
-    * 
     *   Returns the best target, can return 3 strings: Cone - The best/closest target is a cone || Cube - The best/closest target is a cone || Error - There is not a target to evaluate.
-    *
+    *   Is not finished yet. So I wouldn't recommend using this
     */
     public String getBestTargetGlobal() {
         
@@ -427,6 +422,11 @@ public class Vision {
     
 
     
+    /**
+     * Gets the info of the cube based off of valueToGet
+     * @param valueToGet Can be: Area, Pitch, Skew, and Yaw
+     * @return Returns the requested value based off of valueToGet
+     */
     public double getCubeInfo(infoTypeToReturn valueToGet) {
         setGamePiecePipeline(gamePiecePipelineIndex.cube);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
@@ -451,6 +451,11 @@ public class Vision {
     }
 
 
+    /**
+     * Gets the info of the cone based off of valueToGet
+     * @param valueToGet Can be: Area, Pitch, Skew, Yaw, and Orientation
+     * @return Returns the requested value based off of valueToGet
+     */
     public double getConeInfo(infoTypeToReturn valueToGet) {
         setGamePiecePipeline(gamePiecePipelineIndex.cone);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
@@ -477,7 +482,10 @@ public class Vision {
 
 
 
-
+    /**
+     * Sets the gamePieceCamera pipeline based off of newPipelineName
+     * @param newPipelineName Can be: Driver, Cone, or Cube
+     */
     public void setGamePiecePipeline(gamePiecePipelineIndex newPipelineName) {
        if (newPipelineName == gamePiecePipelineIndex.driver) {
         gamePieceCamera.setPipelineIndex(2); // idx 2 is driver
@@ -488,7 +496,6 @@ public class Vision {
        } else {
         System.out.println("Error in Vision.java - newPipelineName wasn't of the proper enum. Not sure how this is possible :P");
        }
-
 
     }
 
