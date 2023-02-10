@@ -2,20 +2,21 @@ package frc.robot;
 
 import java.util.List;
 
-import javax.xml.crypto.Data;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Vision {
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
+public class Vision {
     public Pose3d getTag(int id){
         final Pose3d tag01 =
                 new Pose3d(
@@ -101,19 +102,17 @@ public class Vision {
         }
     }
 
-    
-    PhotonCamera camera = new PhotonCamera("photonvision"); // April Tag camera
+    PhotonCamera camera = new PhotonCamera("Arducam_OV9281_USB_Camera"); // April Tag camera
     PhotonCamera gamePieceCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000"); // Game Piece Camera
     boolean hasTargets; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
-    PhotonTrackedTarget target = new PhotonTrackedTarget();
-
     Pose3d robotPose = new Pose3d();
+    PhotonTrackedTarget target = new PhotonTrackedTarget();
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
     private PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
-    
     private PhotonPipelineResult result = new PhotonPipelineResult();
+    
     private final double CAMERA_HEIGHT_METERS = 0.0;
     private final double TARGET_HEIGHT_METERS = 0.0;
     private final double CAMERA_PITCH_RADIANS = 0.0;
@@ -138,7 +137,7 @@ public class Vision {
     }
 
     public void targeting() {
-
+        
 
         result = camera.getLatestResult();
         hasTargets = result.hasTargets();
@@ -160,7 +159,21 @@ public class Vision {
             robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), getTag(target.getFiducialId()), Constants.VisionConstants.robotToCam); 
           
         }
+
     }
+
+    public int getID(){
+        return target.getFiducialId();
+    }
+
+    public double getY(){
+        return target.getBestCameraToTarget().getY(); 
+    }
+
+    public double getX(){
+        return target.getBestCameraToTarget().getX(); 
+    }
+
 
     public PhotonTrackedTarget getTargetWithID(int id) { 
         List<PhotonTrackedTarget> targets = result.getTargets(); 
@@ -221,10 +234,6 @@ public class Vision {
      */
 
 
-    /**
-     * Returns the current game piece targeting pipeline index. 0 = cone, 1 = cube, other is probably driver mode
-     * 
-     */
     public int getGamePieceCameraPipeline() {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
     }
@@ -250,107 +259,23 @@ public class Vision {
     double cubeAreaAt1Foot;
 
 
-    /**
-     * 
-     * Returns the orientation of the cone, this should only be run after a cone game piece has been identified. (1.0 - Standing Up || 0.0 - On It's Side)
-     */
+
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-        
 
-
-
-
-
-
-
-
-
-        // gets the farthest left x
-        double farthest_left_x = bestTarget.getMinAreaRectCorners().get(0).x;
-        if (bestTarget.getMinAreaRectCorners().get(1).x < farthest_left_x) {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(1).x;
-
-        } else if (bestTarget.getMinAreaRectCorners().get(2).x < farthest_left_x) {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(2).x;
-
-        } else {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(3).x;
-        }
-
-        // gets the farthest right x
-        double farthest_right_x = bestTarget.getMinAreaRectCorners().get(0).x;
-        if (bestTarget.getMinAreaRectCorners().get(1).x > farthest_right_x) {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(1).x;
-
-        } else if (bestTarget.getMinAreaRectCorners().get(2).x > farthest_right_x) {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(2).x;
-
-        } else {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(3).x;
-        }
-
-        // gets the highest right x
-        double highest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
-        if (bestTarget.getMinAreaRectCorners().get(1).y > highest_right_y) {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
-
-        } else if (bestTarget.getMinAreaRectCorners().get(2).y > highest_right_y) {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
-
-        } else {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
-        }
-
-         // gets the lowest right x
-         double lowest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
-         if (bestTarget.getMinAreaRectCorners().get(1).y < lowest_right_y) {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
- 
-         } else if (bestTarget.getMinAreaRectCorners().get(2).y > lowest_right_y) {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
- 
-         } else {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
-         }
-
-
-
-
-
-
-
-        double objectHeight = Math.abs(highest_right_y - lowest_right_y);
-        double objectWidth = Math.abs(farthest_left_x - farthest_right_x);
-
-
-
-        SmartDashboard.putNumber("highest right y",highest_right_y);
-        SmartDashboard.putNumber("lowest right y",lowest_right_y);
-        SmartDashboard.putNumber("farthest left x",farthest_left_x);
-        SmartDashboard.putNumber("farthest right x",farthest_right_x);
-
-
-        if (objectHeight >= (objectWidth - 10)) {
+        double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
+        double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
+     
+        if (objectHeight > (objectWidth + 10)) {
             // Probably standing up
-            SmartDashboard.putString("Orientation", "Standing up");
             return 1.0;
         } else {
             // Probably on the side
-            SmartDashboard.putString("Orientation", "On it's side, probably, ehh, probably not, who knows");
             return 0.0;
         }
-        
     }  
-    
 
 
-
-    /**
-    * 
-    *   Returns the best target, can return 3 strings: Cone - The best/closest target is a cone || Cube - The best/closest target is a cone || Error - There is not a target to evaluate.
-    *
-    */
     public String getBestTargetGlobal() {
         
         double CubeArea;
