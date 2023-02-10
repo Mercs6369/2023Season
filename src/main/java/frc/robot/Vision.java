@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -363,8 +364,8 @@ public class Vision {
             int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
 
             if (sum > 2){
-            SmartDashboard.putString("Orientation", "Standing up");
-            return 1.0;
+                SmartDashboard.putString("Orientation", "Standing up");
+                return 1.0;
             } else {
                 return 0.0;
             }
