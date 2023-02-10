@@ -208,6 +208,7 @@ public class Vision {
 
 
 
+  
     /*
      *
      * 
@@ -234,9 +235,16 @@ public class Vision {
      */
 
 
+    /**
+     * Returns the current game piece targeting pipeline index. 0 = cone, 1 = cube, other is probably driver mode
+     * 
+     */
     public int getGamePieceCameraPipeline() {
         return gamePieceCamera.getPipelineIndex(); // 0 = cones, 1 = cubes
     }
+
+
+    
 
 
     enum infoTypeToReturn { // this is used when using GetCubeInfo/GetConeInfo
@@ -259,23 +267,133 @@ public class Vision {
     double cubeAreaAt1Foot;
 
 
+    boolean hasGottenOrientation = false;
 
+
+    List<Integer> last_four_orientations_of_cone = new ArrayList<>(); // list not array
+
+
+
+    /**
+     * 
+     * Returns the orientation of the cone, this should only be run after a cone game piece has been identified. (1.0 - Standing Up || 0.0 - On It's Side)
+     */
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
 
-        double objectWidth = Math.abs(bestTarget.getDetectedCorners().get(0).x - bestTarget.getDetectedCorners().get(1).x);
-        double objectHeight = Math.abs(bestTarget.getDetectedCorners().get(0).y - bestTarget.getDetectedCorners().get(3).y);
-     
-        if (objectHeight > (objectWidth + 10)) {
-            // Probably standing up
-            return 1.0;
-        } else {
-            // Probably on the side
-            return 0.0;
+
+        if (last_four_orientations_of_cone.isEmpty()) {
+            last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.add(0);
         }
+
+
+        
+        
+        // gets the farthest left x
+        double farthest_left_x = bestTarget.getMinAreaRectCorners().get(0).x;
+        if (bestTarget.getMinAreaRectCorners().get(1).x < farthest_left_x) {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(1).x;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).x < farthest_left_x) {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(2).x;
+
+        } else {
+            farthest_left_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        }
+
+        // gets the farthest right x
+        double farthest_right_x = bestTarget.getMinAreaRectCorners().get(0).x;
+        if (bestTarget.getMinAreaRectCorners().get(1).x > farthest_right_x) {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(1).x;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).x > farthest_right_x) {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(2).x;
+
+        } else {
+            farthest_right_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        }
+
+
+        // gets the highest right x
+        double highest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
+        if (bestTarget.getMinAreaRectCorners().get(1).y > highest_right_y) {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
+
+        } else if (bestTarget.getMinAreaRectCorners().get(2).y > highest_right_y) {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
+
+        } else {
+            highest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
+        }
+
+         // gets the lowest right x
+         double lowest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
+         if (bestTarget.getMinAreaRectCorners().get(1).y < lowest_right_y) {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
+ 
+        } else if (bestTarget.getMinAreaRectCorners().get(2).y > lowest_right_y) {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
+ 
+        } else {
+            lowest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
+        }
+
+
+
+
+
+
+        double objectHeight = Math.abs(highest_right_y - lowest_right_y);
+        double objectWidth = Math.abs(farthest_left_x - farthest_right_x);
+
+
+
+        SmartDashboard.putNumber("highest right y",highest_right_y);
+        SmartDashboard.putNumber("lowest right y",lowest_right_y);
+        SmartDashboard.putNumber("farthest left x",farthest_left_x);
+        SmartDashboard.putNumber("farthest right x",farthest_right_x);
+
+
+        if (objectHeight >= (objectWidth - 10)) {
+            last_four_orientations_of_cone.add(1);
+            last_four_orientations_of_cone.remove(0);
+            int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
+
+            if (sum > 2){
+            SmartDashboard.putString("Orientation", "Standing up");
+            return 1.0;
+            } else {
+                return 0.0;
+            }
+
+        } else {
+            last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.remove(0);
+            int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
+
+            if (sum < 2){
+                SmartDashboard.putString("Orientation", "On it's side, probably, ehh, probably not, who knows");
+                return 0.0;
+            } else {
+                return 1.0;
+            }
+        }
+
+
+        
     }  
+    
 
 
+
+    /**
+    * 
+    *   Returns the best target, can return 3 strings: Cone - The best/closest target is a cone || Cube - The best/closest target is a cone || Error - There is not a target to evaluate.
+    *
+    */
     public String getBestTargetGlobal() {
         
         double CubeArea;
@@ -372,4 +490,5 @@ public class Vision {
 
 
     }
+
 }
