@@ -19,53 +19,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-
-import org.photonvision.targeting.TargetCorner;
-
-import com.fasterxml.jackson.databind.deser.impl.ObjectIdReader;
-
 public class Vision {
-
-    /* public Transform3d getTag(int id){
-        final Transform3d tag07 =
-            new Transform3d(
-                new Translation3d(
-                    40.45,
-                    108.19,
-                    18.22
-                )
-                , new Rotation3d(
-                    new Quaternion(
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    )
-                ));
-        final Transform3d tag08 =
-        new Transform3d(
-            new Translation3d(
-                40.45,
-                108.19,
-                18.22
-            )
-            , new Rotation3d(
-                new Quaternion(
-                    1.0,
-                    0.0,
-                    0.0,
-                    0.0
-                )
-            ));
-        if (id == 7){
-            return tag07;
-        }
-        else {
-            return tag08;
-        }
-    } */
 
     public Pose3d getTag(int id){
         final Pose3d tag01 =
