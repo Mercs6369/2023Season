@@ -109,7 +109,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));
     SmartDashboard.putNumber("position (y)", m_vision.getY());
     SmartDashboard.putNumber("position (x)", m_vision.getX());
-    SmartDashboard.putNumber("yaw angle", m_vision.getTheta());
+    SmartDashboard.putNumber("yaw angle", m_vision.getYaw());
+
+    SmartDashboard.putNumber("Fid ID 7 Pos X", m_vision.getTag(7).getX());
+    SmartDashboard.putNumber("Fid ID 7 Pos Y", m_vision.getTag(7).getY());
+    SmartDashboard.putNumber("Fid ID 7 Yaw", m_vision.getTag(7).getRotation().getAngle());
 
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)

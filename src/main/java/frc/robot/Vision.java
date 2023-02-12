@@ -14,9 +14,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
@@ -111,6 +112,7 @@ public class Vision {
     boolean hasTargets; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
     Pose3d robotPose = new Pose3d();
+    Transform2d robotPose2d = new Transform2d();
     PhotonTrackedTarget target = new PhotonTrackedTarget();
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
@@ -145,34 +147,29 @@ public class Vision {
 
         result = camera.getLatestResult();
         hasTargets = result.hasTargets();
-        if (hasTargets) {
-            this.result = result;
-        }
 
         target = result.getBestTarget();
 
         if (result.hasTargets()) {
-            // First calculate range
-            range = PhotonUtils.calculateDistanceToTargetMeters(
-                            CAMERA_HEIGHT_METERS,
-                            TARGET_HEIGHT_METERS,
-                            CAMERA_PITCH_RADIANS,
-                            ((result.getBestTarget().getPitch())*(Math.PI/180)));
-            this.result = result;
 
-            robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+/*             robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
                 new Transform3d(
                     new Translation3d(
                         target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), target.getBestCameraToTarget().getZ()
                     )
                     ,
-                    new Rotation3d(
-                            new Quaternion(1.0, 0.0, 0.0, target.getBestCameraToTarget().getRotation().getAngle())
-                    )
+                    new Rotation3d(0.0, 0.0, Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle()))
                 )
                 , getTag(target.getFiducialId())
                 , Constants.VisionConstants.robotToCam
-                );
+            ); */
+
+
+            robotPose2d = PhotonUtils.estimateCameraToTarget(new Translation2d(
+                target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY()
+                )
+                , new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle())))                              
+                , new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle())));
         }
     }
 
@@ -181,15 +178,15 @@ public class Vision {
     }
 
     public double getY(){
-        return robotPose.getY(); 
+        return robotPose2d.getY(); 
     }
 
     public double getX(){
-        return robotPose.getX(); 
+        return robotPose2d.getX(); 
     }
 
-    public double getTheta(){
-        return robotPose.getRotation().getAngle();
+    public double getYaw(){
+        return robotPose2d.getRotation().getDegrees();
     }
 
 
