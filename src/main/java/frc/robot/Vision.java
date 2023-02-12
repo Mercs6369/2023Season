@@ -164,14 +164,36 @@ public class Vision {
                 , Constants.VisionConstants.robotToCam
             ); */
 
-
+/*
             robotPose2d = PhotonUtils.estimateCameraToTarget(new Translation2d(
                 target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY()
                 )
                 , new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle())))                              
                 , new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle())));
+*/
+            robotPose2d = robotPosition(
+                new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle()))), 
+                new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle()))));
         }
     }
+
+    public Transform2d robotPosition(Pose2d aprilTag, Pose2d cameraToTarget){
+
+        return new Transform2d(new Translation2d(((aprilTag.getX() * Math.cos(aprilTag.getRotation().getDegrees())) + cameraToTarget.getX()), aprilTag.getY() + cameraToTarget.getY()), new Rotation2d(Math.toRadians(restrictedRageAngle((aprilTag.getRotation().getDegrees() + cameraToTarget.getRotation().getDegrees())))));
+    }
+
+    public double restrictedRageAngle(double angle){
+
+        if (angle > 180){
+            return angle - 360;
+        }
+        else {
+            return angle - 360;
+        }
+        
+    }
+
+
 
     public int getID(){
         return target.getFiducialId();
