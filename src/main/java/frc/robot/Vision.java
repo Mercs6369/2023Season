@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
 
+
+
     public Pose3d getTag(int id){
         final Pose3d tag01 =
                 new Pose3d(
@@ -114,6 +116,8 @@ public class Vision {
     Pose3d robotPose = new Pose3d();
     Transform2d robotPose2d = new Transform2d();
     PhotonTrackedTarget target = new PhotonTrackedTarget();
+
+    double gamePieceSwerveCommands[];
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
     private PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
@@ -299,8 +303,6 @@ public class Vision {
     }
 
 
-    double coneAreaAt1Foot;
-    double cubeAreaAt1Foot; // These will be used for getBestTargetGlobal. But getBestTargetGlobal is not yet finished :P
 
 
 
@@ -461,6 +463,8 @@ public class Vision {
         if (gamePieceCameraResult.hasTargets()) {
             PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             ConeArea = bestTarget.getArea();
+        } else {
+            ConeArea = -1;
         }
 
 
@@ -471,11 +475,20 @@ public class Vision {
         if (gamePieceCameraResult.hasTargets()) {
             PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             CubeArea = bestTarget.getArea();
+        } else {
+            CubeArea = -1;
         }
 
 
-        return "in progress"; // don't mess with any code here
+        if (CubeArea == -1 && ConeArea == -1) {
+            return "No Target";
+        }
 
+        if (CubeArea > ConeArea) {
+            return "Cube";
+        } else {
+            return "Cone";
+        }
 
     }
     
@@ -557,5 +570,56 @@ public class Vision {
        }
 
     }
+
+
+
+
+    public double[] runAlignmentProcess() {    
+        String best_Target_Global = getBestTargetGlobal();
+        
+        
+        gamePieceSwerveCommands[0] = 0.0;
+        gamePieceSwerveCommands[1] = 0.0;
+        gamePieceSwerveCommands[2] = 0.0;
+
+        if (!(best_Target_Global == "No Target")) {
+            if (best_Target_Global == "Cube") {
+                setGamePiecePipeline(gamePiecePipelineIndex.cube);
+                if (getConeInfo(infoTypeToReturn.Yaw) > 4 || getConeInfo(infoTypeToReturn.Yaw) < 4) {
+                    if (getConeInfo(infoTypeToReturn.Yaw) > 4.0) {
+                        gamePieceSwerveCommands[2] = 1.0;
+                    } else {
+                        gamePieceSwerveCommands[2] = -1.0;
+                    }
+                } else {
+                    gamePieceSwerveCommands[2] = 0.0;
+                }
+                
+
+            } else {
+                setGamePiecePipeline(gamePiecePipelineIndex.cone);
+                
+                if (getCubeInfo(infoTypeToReturn.Yaw) > 4 || getCubeInfo(infoTypeToReturn.Yaw) < 4) {
+                    if (getCubeInfo(infoTypeToReturn.Yaw) > 4.0) {
+                        gamePieceSwerveCommands[2] = 1.0;
+                    } else {
+                        gamePieceSwerveCommands[2] = -1.0;
+                    }
+                } else {
+                    gamePieceSwerveCommands[2] = 0.0;
+                }
+                
+            
+
+
+            }
+            return gamePieceSwerveCommands;
+        } else {
+            return gamePieceSwerveCommands;
+        }
+
+    }
+
+
 
 }
