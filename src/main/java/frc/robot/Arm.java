@@ -119,24 +119,92 @@ public class Arm {
         m_time.reset();
         m_time.stop();
         GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+        actionProgress = 0;
     }
 
 //  These three methods shouldn't need to be run except inside armPeriodic()
 
+
+
+    int actionProgress = 0;
+
     private void ejectPeriodic() {
-        pneumaticsOpen();
-        end_action();
+       
+        if (actionProgress == 0){
+            pneumaticsOpen();
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else if (actionProgress == 1) {
+
+            // make sure the arm is out of the robot perimeter, so that when we drop the object, we don't drop it on the bot. 
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else {
+            end_action();
+        }
+        
+
     }
 
     private void scorePeriodic() {
-        pneumaticsOpen();
-        end_action();
+
+        if (actionProgress == 0) {
+           // make sure the robot is in the correct position
+
+           if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else if (actionProgress == 1) {
+            // angle the arm to scoring position
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else if (actionProgress == 2) {
+            pneumaticsOpen();
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else {
+            end_action();
+        }
+
     }
 
     private void pickupPeriodic() {
-        pneumaticsClose();
-        end_action();
+        
+        if (actionProgress == 0) {
+            pneumaticsOpen();
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+         } else if (actionProgress == 1) {
+             // angle the arm to pickup position
+
+             if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+         } else if (actionProgress == 2) {
+             pneumaticsClose();
+         } else {
+             end_action(); // possibly move to scoring position?
+
+             if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+         } 
+        
     }
+
+
+
+
 
     /**
      * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
