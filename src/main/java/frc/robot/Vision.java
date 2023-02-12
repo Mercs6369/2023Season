@@ -9,15 +9,19 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-
 public class Vision {
+
     public Pose3d getTag(int id){
         final Pose3d tag01 =
                 new Pose3d(
@@ -66,8 +70,8 @@ public class Vision {
         final Pose3d tag07 =
                 new Pose3d(
                         new Pose2d(
-                                40.45,
-                                108.19,
+                                1.03,
+                                2.73,
                                 Rotation2d.fromDegrees(0)));
     
         final Pose3d tag08 =
@@ -108,6 +112,7 @@ public class Vision {
     boolean hasTargets; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
     Pose3d robotPose = new Pose3d();
+    Transform2d robotPose2d = new Transform2d();
     PhotonTrackedTarget target = new PhotonTrackedTarget();
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
@@ -142,37 +147,68 @@ public class Vision {
 
         result = camera.getLatestResult();
         hasTargets = result.hasTargets();
-        if (hasTargets) {
-            this.result = result;
-        }
 
         target = result.getBestTarget();
 
         if (result.hasTargets()) {
-            // First calculate range
-            range = PhotonUtils.calculateDistanceToTargetMeters(
-                            CAMERA_HEIGHT_METERS,
-                            TARGET_HEIGHT_METERS,
-                            CAMERA_PITCH_RADIANS,
-                            ((result.getBestTarget().getPitch())*(Math.PI/180)));
-            this.result = result;
 
-            robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), getTag(target.getFiducialId()), Constants.VisionConstants.robotToCam); 
-          
+/*             robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                new Transform3d(
+                    new Translation3d(
+                        target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), target.getBestCameraToTarget().getZ()
+                    )
+                    ,
+                    new Rotation3d(0.0, 0.0, Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle()))
+                )
+                , getTag(target.getFiducialId())
+                , Constants.VisionConstants.robotToCam
+            ); */
+
+/*
+            robotPose2d = PhotonUtils.estimateCameraToTarget(new Translation2d(
+                target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY()
+                )
+                , new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle())))                              
+                , new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle())));
+*/
+            robotPose2d = robotPosition(
+                new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle()))), 
+                new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle()))));
         }
-
     }
+
+    public Transform2d robotPosition(Pose2d aprilTag, Pose2d cameraToTarget){
+
+        return new Transform2d(new Translation2d(((aprilTag.getX() * Math.cos(aprilTag.getRotation().getDegrees())) + cameraToTarget.getX()), aprilTag.getY() + cameraToTarget.getY()), new Rotation2d(Math.toRadians(restrictedRageAngle((aprilTag.getRotation().getDegrees() + cameraToTarget.getRotation().getDegrees())))));
+    }
+
+    public double restrictedRageAngle(double angle){
+
+        if (angle > 180){
+            return angle - 360;
+        }
+        else {
+            return angle - 360;
+        }
+        
+    }
+
+
 
     public int getID(){
         return target.getFiducialId();
     }
 
     public double getY(){
-        return robotPose.getY(); 
+        return robotPose2d.getY(); 
     }
 
     public double getX(){
-        return robotPose.getX(); 
+        return robotPose2d.getX(); 
+    }
+
+    public double getYaw(){
+        return robotPose2d.getRotation().getDegrees();
     }
 
 
@@ -277,90 +313,113 @@ public class Vision {
      */
     private double getOrientationOfCone() {
         PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
-
+        //PhotonTrackedTarget bestTarget = gamePieceCameraResult.getTargets().get(0);
 
         if (last_four_orientations_of_cone.isEmpty()) {
             last_four_orientations_of_cone.add(0);
             last_four_orientations_of_cone.add(0);
             last_four_orientations_of_cone.add(0);
             last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.add(0);
+            last_four_orientations_of_cone.add(0);
+
         }
 
+        double[] x_points = {0, 0, 0, 0};
+        double[] y_points = {0, 0, 0, 0};
 
-        
-        
-        // gets the farthest left x
-        double farthest_left_x = bestTarget.getMinAreaRectCorners().get(0).x;
-        if (bestTarget.getMinAreaRectCorners().get(1).x < farthest_left_x) {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(1).x;
-
-        } else if (bestTarget.getMinAreaRectCorners().get(2).x < farthest_left_x) {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(2).x;
-
-        } else {
-            farthest_left_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        for (int i = 0; i < 4; i++) {
+            x_points[i] = bestTarget.getMinAreaRectCorners().get(i).x;
+            y_points[i] = bestTarget.getMinAreaRectCorners().get(i).y;
         }
 
-        // gets the farthest right x
-        double farthest_right_x = bestTarget.getMinAreaRectCorners().get(0).x;
-        if (bestTarget.getMinAreaRectCorners().get(1).x > farthest_right_x) {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(1).x;
+        double farthest_right_x = x_points[0];
+        double highest_right_y = y_points[0];
+        double farthest_left_x = x_points[0];
+        double lowest_right_y = y_points[0];
 
-        } else if (bestTarget.getMinAreaRectCorners().get(2).x > farthest_right_x) {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(2).x;
-
-        } else {
-            farthest_right_x = bestTarget.getMinAreaRectCorners().get(3).x;
+        for (int i = 1; i < x_points.length; i++) {
+            farthest_right_x = Math.max(farthest_right_x, x_points[i]);
+            highest_right_y = Math.max(highest_right_y, y_points[i]);
+            farthest_left_x = Math.min(farthest_left_x, x_points[i]);
+            lowest_right_y = Math.min(lowest_right_y, y_points[i]);
         }
-
-
-        // gets the highest right x
-        double highest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
-        if (bestTarget.getMinAreaRectCorners().get(1).y > highest_right_y) {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
-
-        } else if (bestTarget.getMinAreaRectCorners().get(2).y > highest_right_y) {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
-
-        } else {
-            highest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
-        }
-
-         // gets the lowest right x
-         double lowest_right_y = bestTarget.getMinAreaRectCorners().get(0).y;
-         if (bestTarget.getMinAreaRectCorners().get(1).y < lowest_right_y) {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(1).y;
- 
-        } else if (bestTarget.getMinAreaRectCorners().get(2).y > lowest_right_y) {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(2).y;
- 
-        } else {
-            lowest_right_y = bestTarget.getMinAreaRectCorners().get(3).y;
-        }
-
-
-
-
-
 
         double objectHeight = Math.abs(highest_right_y - lowest_right_y);
         double objectWidth = Math.abs(farthest_left_x - farthest_right_x);
 
 
+        if (objectWidth > .1) {
 
-        SmartDashboard.putNumber("highest right y",highest_right_y);
-        SmartDashboard.putNumber("lowest right y",lowest_right_y);
-        SmartDashboard.putNumber("farthest left x",farthest_left_x);
-        SmartDashboard.putNumber("farthest right x",farthest_right_x);
+            double objectRatio = objectHeight/objectWidth;
+            SmartDashboard.putNumber("Ratio thing yess eyss", objectRatio);
+            if (objectRatio >= .40 && objectRatio <= .85) {
+                last_four_orientations_of_cone.add(0);
+                last_four_orientations_of_cone.remove(0);
+                int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3) + last_four_orientations_of_cone.get(4) + last_four_orientations_of_cone.get(5); 
 
+                // on its side
+
+                SmartDashboard.putString("Guess", "On it's side.");
+                if (sum < 3){
+                    SmartDashboard.putString("Average Orientation", "On it's side.");
+                    return 0.0;
+                } else {
+                    return 1.0;
+                }
+
+
+            } else if (objectRatio >= .85 && objectRatio <= 1.35) {
+                last_four_orientations_of_cone.add(0);
+                last_four_orientations_of_cone.remove(0);
+                int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3) + last_four_orientations_of_cone.get(4) + last_four_orientations_of_cone.get(5); 
+                // head on
+
+                SmartDashboard.putString("Guess", "Head on.");
+                if (sum < 3){
+                    SmartDashboard.putString("Average Orientation", "On it's side.");
+                    return 0.0;
+                } else {
+                    return 1.0;
+                }
+
+
+
+            } else if (objectRatio >= 1.35) { // is the second and neccesary
+                last_four_orientations_of_cone.add(1);
+                last_four_orientations_of_cone.remove(0);
+                int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3) + last_four_orientations_of_cone.get(4) + last_four_orientations_of_cone.get(5);                 // standing up
+
+                SmartDashboard.putString("Guess", "Standing Up");
+                if (sum > 3){
+                    SmartDashboard.putString("Average Orientation", "Standing up");
+                    return 1.0;
+                } else {
+                    return 0.0;
+                }
+
+            } else {
+                return -9999999.0;
+            }
+
+
+
+
+        } else {
+            // pAnIK
+            return -9999999.0;
+        }
+
+/* 
+        
 
         if (objectHeight >= (objectWidth - 10)) {
             last_four_orientations_of_cone.add(1);
             last_four_orientations_of_cone.remove(0);
             int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
-
+            SmartDashboard.putString("Guess", "Standing Up");
             if (sum > 2){
-                SmartDashboard.putString("Orientation", "Standing up");
+                SmartDashboard.putString("Average Orientation", "Standing up");
                 return 1.0;
             } else {
                 return 0.0;
@@ -370,15 +429,15 @@ public class Vision {
             last_four_orientations_of_cone.add(0);
             last_four_orientations_of_cone.remove(0);
             int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
-
+            SmartDashboard.putString("Guess", "Side");
             if (sum < 2){
-                SmartDashboard.putString("Orientation", "On it's side, probably, ehh, probably not, who knows");
+                SmartDashboard.putString("Average Orientation", "Side");
                 return 0.0;
             } else {
                 return 1.0;
             }
         }
-
+ */
 
         
     }  
