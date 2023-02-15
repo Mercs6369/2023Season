@@ -177,7 +177,7 @@ public class Vision {
 */
             robotPose2d = robotPosition(
                 new Pose2d(getTag(target.getFiducialId()).getX(), getTag(target.getFiducialId()).getY(), new Rotation2d(Math.toDegrees(getTag(target.getFiducialId()).getRotation().getAngle()))), 
-                new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), new Rotation2d(Math.toRadians(target.getBestCameraToTarget().getRotation().getAngle()))));
+                new Pose2d(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY(), new Rotation2d(target.getBestCameraToTarget().getRotation().getAngle())));
         }
     }
 

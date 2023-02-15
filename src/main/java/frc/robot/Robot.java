@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   int driver_controller_POV_button;
   
   Vision m_vision = new Vision();
-  Arm m_arm = new Arm();
+  //Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
 
@@ -94,8 +94,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    m_arm.armPeriodic();
-    m_vision.targeting();
+    //m_arm.armPeriodic();
+    //m_vision.targeting();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -110,6 +110,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("position (y)", m_vision.getY());
     SmartDashboard.putNumber("position (x)", m_vision.getX());
     SmartDashboard.putNumber("yaw angle", m_vision.getYaw());
+    SmartDashboard.putNumber("AT photonvision yaw", m_vision.target.getBestCameraToTarget().getRotation().getAngle());
 
     SmartDashboard.putNumber("Fid ID 7 Pos X", m_vision.getTag(7).getX());
     SmartDashboard.putNumber("Fid ID 7 Pos Y", m_vision.getTag(7).getY());
@@ -119,12 +120,19 @@ public class Robot extends TimedRobot {
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
-      m_arm._Eject_Game_Piece();
+      //m_arm._Eject_Game_Piece();
+
+      // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
+      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
     }
+    else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+    }
+
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
-      m_arm._Pickup_Game_Piece();
+      //m_arm._Pickup_Game_Piece();
     }
     if(operator_controller_X_button == true)
     {
@@ -135,7 +143,7 @@ public class Robot extends TimedRobot {
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
-      m_arm._Score_Game_Piece();
+      //m_arm._Score_Game_Piece();
 
     }
     /*Maybe we should add the next two methods in the far future
@@ -189,7 +197,7 @@ public class Robot extends TimedRobot {
       //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
 
-    m_arm.move_elevator_height(operator_controller.getRightY());
+    //m_arm.move_elevator_height(operator_controller.getRightY());
   }
 
   @Override
