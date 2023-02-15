@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm {
 
-    Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
-    //Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);    
+//Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
     DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
@@ -185,7 +185,19 @@ public class Arm {
                 actionProgress ++;
             }
          } else if (actionProgress == 1) {
-             // angle the arm to pickup position
+            // angle the arm to pickup position
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+               actionProgress ++;
+           }
+        } else if (actionProgress == 1) {
+
+
+
+            // lock on
+
+            // go forward/backward
+
 
              if (true) { // this if statment needs to be true if we're ready to go onto the next state
                 actionProgress ++;
@@ -195,9 +207,6 @@ public class Arm {
          } else {
              end_action(); // possibly move to scoring position?
 
-             if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
          } 
         
     }
@@ -210,6 +219,7 @@ public class Arm {
      * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
      */
     public void armPeriodic() {
+        
         if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
             scorePeriodic();
         } else if (GLOBAL_ARM_STATE == ArmStateEnum.Ejecting) {
