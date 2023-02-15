@@ -4,6 +4,8 @@
 
 package frc.robot;  // my comment2
 
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,6 +44,7 @@ public class Robot extends TimedRobot {
   //Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
+  Timer m_timeToButtonPress = new Timer();
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -218,6 +221,22 @@ public class Robot extends TimedRobot {
     operator_controller_X_button = operator_controller.getXButton();
     operator_controller_Y_button = operator_controller.getYButton();
     // brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
+    int m_buttonPressCount = 0;
+    double obtainedButtonTime = 0;
+    if(operator_controller.getStartButton() && operator_controller.getBackButton()) {
+      m_buttonPressCount++;
+      if(m_buttonPressCount == 1) {
+        m_timeToButtonPress.start();
+      }
+      obtainedButtonTime = m_timeToButtonPress.get();
+    }
+      if(obtainedButtonTime > 0.5) {
+        brake_mode_enabled = !brake_mode_enabled;
+        m_timeToButtonPress.stop();
+        m_timeToButtonPress.reset();
+    }
+  }
+
   }
   
   public void robotInitShuffleboard() {
