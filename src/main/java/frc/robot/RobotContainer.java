@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,14 +27,12 @@ public class RobotContainer {
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-
-
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver_controller, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver_controller, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    public final Swerve s_Swerve = new Swerve();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -62,6 +61,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    }
+
+    public void updateSwerveParameters(Translation2d strafe, double rotate, boolean autoEnable) {
+        s_Swerve.updateAutoCommandValues(strafe, rotate, autoEnable);
     }
 
     /**

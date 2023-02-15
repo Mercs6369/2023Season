@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     //m_arm.armPeriodic();
-    m_vision.targeting();
+    //m_vision.targeting();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -121,7 +121,14 @@ public class Robot extends TimedRobot {
     {
       // There should be a method to pick an object automatically
       //m_arm._Eject_Game_Piece();
+
+      // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
+      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
     }
+    else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+    }
+
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station

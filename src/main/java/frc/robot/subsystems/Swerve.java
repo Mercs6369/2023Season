@@ -23,10 +23,17 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
 
+    private boolean autoCommanding = false;
+    private Translation2d autoTranslate = new Translation2d(0.0, 0.0);
+    private double autoRotation = 0;
+
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
         zeroGyro();
+        autoCommanding = false;
+        autoTranslate = new Translation2d(0.0, 0.0);
+        autoRotation = 0;
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -48,16 +55,26 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                /* Do this if fieldRelative is true */
                                     -1*translation.getX(), 
                                     translation.getY(), 
                                     -1*rotation, 
                                     getYaw()
                                 )
-                                : new ChassisSpeeds(
+                                : ( (autoCommanding) ?
+                                /* Do this if fieldRelative is false and autoCommanding is true */
+                                new ChassisSpeeds(
+                                    autoTranslate.getX(), 
+                                    autoTranslate.getY(), 
+                                    autoRotation)
+                                    :
+                                /* Do this if fieldRelative is false and autoCommanding is false */
+                                new ChassisSpeeds(
                                     -1*translation.getX(), 
-                                        translation.getY(), 
+                                    translation.getY(), 
                                     -1*rotation)
-                                );
+
+                                ));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
@@ -110,6 +127,12 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
+    }
+
+    public void updateAutoCommandValues(Translation2d strafe, double rotate, boolean autoEnable) {
+        this.autoTranslate = strafe;
+        this.autoRotation = rotate;
+        this.autoCommanding = autoEnable;
     }
 
     @Override
