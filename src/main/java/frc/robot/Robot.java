@@ -43,6 +43,10 @@ public class Robot extends TimedRobot {
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
 
+
+  double[] autonomousSwerveCommands = {0,0,0};
+
+
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
   private static final String kRed = "Red";
@@ -78,6 +82,77 @@ public class Robot extends TimedRobot {
   private static final String kFiveSeconds = "Five Seconds";
   private String m_delaySelected;
 
+
+
+/*
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   */
+  enum pickupStatusEnum {
+    in_progress,
+    finished,
+    idle,
+  }
+  pickupStatusEnum pickupStatus = pickupStatusEnum.idle;
+
+  private void PickUpPiece() {
+    pickupStatus = pickupStatusEnum.in_progress;
+  }
+  private void pickUpPiecePeriodic() {
+    autonomousSwerveCommands = m_vision.runAlignmentProcess();
+    SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
+    SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
+    
+    double rotation = -1*((0-autonomousSwerveCommands[0])/22);
+
+
+    
+    SmartDashboard.putNumber("Rotation For Swerve", rotation);
+
+    
+
+
+
+    if (pickupStatus == pickupStatusEnum.in_progress) {
+      
+      if (!(autonomousSwerveCommands[0] == 0) && !(autonomousSwerveCommands[1] == 0)) { // 0 = in correct position
+        if (!(autonomousSwerveCommands[0] == -99999.0)) { // no target
+          SmartDashboard.putString("Pickup Status", "In progress");
+          // updateSwerveParameters()
+          m_robotContainer.updateSwerveParameters(new Translation2d(0,0), rotation, true);
+        }
+      } else {
+        SmartDashboard.putString("Pickup Status", "Idle");
+        pickupStatus = pickupStatusEnum.idle;
+      }
+
+    } else {
+      SmartDashboard.putString("Pickup Status", "Idle");
+    }
+
+  }
+  /*
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   */
+
+
+  
+
   @Override
   public void robotInit() {
 
@@ -93,6 +168,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    pickUpPiecePeriodic();
+  
 
     //m_arm.armPeriodic();
     //m_vision.targeting();
@@ -133,6 +210,10 @@ public class Robot extends TimedRobot {
     {
       // There should be a method to AutoBalance on the Charge Station
       //m_arm._Pickup_Game_Piece();
+      PickUpPiece();
+    } else {
+      pickupStatus = pickupStatusEnum.idle;
+      m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
     }
     if(operator_controller_X_button == true)
     {

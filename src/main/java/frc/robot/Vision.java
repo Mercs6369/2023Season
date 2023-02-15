@@ -117,7 +117,7 @@ public class Vision {
     Transform2d robotPose2d = new Transform2d();
     PhotonTrackedTarget target = new PhotonTrackedTarget();
 
-    double gamePieceSwerveCommands[];
+    double gamePieceSwerveCommands[] = {0,0,0};
 
     private boolean gamePieceHasTargets = false; // Game Piece has Targets
     private PhotonPipelineResult gamePieceCameraResult = new PhotonPipelineResult(); // Game Piece Detection Result
@@ -590,6 +590,12 @@ public double[] runAlignmentProcess() {
             if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
                 gamePieceSwerveCommands[1] = 0;
             }
+            if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
+                gamePieceSwerveCommands[0] = .65;
+            }
+            if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
+                gamePieceSwerveCommands[0] = -.65;
+            }
                 
 
         } else {
@@ -602,6 +608,14 @@ public double[] runAlignmentProcess() {
             if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
                 gamePieceSwerveCommands[1] = 0;
             }
+
+            if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
+                gamePieceSwerveCommands[0] = 4.39822971504;
+            }
+            if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
+                gamePieceSwerveCommands[0] = -4.39822971504;
+            }
+
         }
             
             return gamePieceSwerveCommands;
