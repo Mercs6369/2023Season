@@ -572,49 +572,42 @@ public class Vision {
     }
 
 
-
-
-    public double[] runAlignmentProcess() {    
-        String best_Target_Global = getBestTargetGlobal();
+public double[] runAlignmentProcess() {    
+    String best_Target_Global = getBestTargetGlobal();
         
         
+    if (!(best_Target_Global == "No Target")) {
         gamePieceSwerveCommands[0] = 0.0;
         gamePieceSwerveCommands[1] = 0.0;
-        gamePieceSwerveCommands[2] = 0.0;
-
-        if (!(best_Target_Global == "No Target")) {
-            if (best_Target_Global == "Cube") {
-                setGamePiecePipeline(gamePiecePipelineIndex.cube);
-                if (getConeInfo(infoTypeToReturn.Yaw) > 4 || getConeInfo(infoTypeToReturn.Yaw) < 4) {
-                    if (getConeInfo(infoTypeToReturn.Yaw) > 4.0) {
-                        gamePieceSwerveCommands[2] = 1.0;
-                    } else {
-                        gamePieceSwerveCommands[2] = -1.0;
-                    }
-                } else {
-                    gamePieceSwerveCommands[2] = 0.0;
-                }
-                
-
-            } else {
-                setGamePiecePipeline(gamePiecePipelineIndex.cone);
-                
-                if (getCubeInfo(infoTypeToReturn.Yaw) > 4 || getCubeInfo(infoTypeToReturn.Yaw) < 4) {
-                    if (getCubeInfo(infoTypeToReturn.Yaw) > 4.0) {
-                        gamePieceSwerveCommands[2] = 1.0;
-                    } else {
-                        gamePieceSwerveCommands[2] = -1.0;
-                    }
-                } else {
-                    gamePieceSwerveCommands[2] = 0.0;
-                }
-                
             
-
-
+        if (best_Target_Global == "Cube") {
+            setGamePiecePipeline(gamePiecePipelineIndex.cube);
+            gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw); // x
+            gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
+            if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
+                gamePieceSwerveCommands[0] = 0;
             }
+            if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
+                gamePieceSwerveCommands[1] = 0;
+            }
+                
+
+        } else {
+            setGamePiecePipeline(gamePiecePipelineIndex.cone);
+            gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
+            gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
+            if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
+                gamePieceSwerveCommands[0] = 0;
+            }
+            if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
+                gamePieceSwerveCommands[1] = 0;
+            }
+        }
+            
             return gamePieceSwerveCommands;
         } else {
+            gamePieceSwerveCommands[0] = -99999.0; // No targets
+            gamePieceSwerveCommands[1] = -99999.0;
             return gamePieceSwerveCommands;
         }
 
