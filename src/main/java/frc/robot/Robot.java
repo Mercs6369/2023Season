@@ -318,7 +318,7 @@ public class Robot extends TimedRobot {
     }
   }
 
-  }
+  
   
   public void robotInitShuffleboard() {
       // Shuffleboard: Passes options "Red" and "Blue" for Alliance
