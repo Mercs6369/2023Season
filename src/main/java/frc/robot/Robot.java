@@ -2,8 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;  // my comment2
-
+package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,7 +18,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-
 public class Robot extends TimedRobot {
 
   public static CTREConfigs ctreConfigs;
@@ -33,7 +31,7 @@ public class Robot extends TimedRobot {
   boolean operator_controller_Y_button;
   boolean operator_controller_X_button;
   boolean operator_controller_B_button;
-  boolean brake_mode_enabled = false; // Controlls wether robot is in brake mode or not
+  boolean brake_mode_enabled = false; // Controls whether robot is in brake mode or not
   double driver_controller_L_X_Axis;
   double driver_controller_L_Y_Axis;
   double driver_controller_R_X_Axis;
@@ -41,7 +39,7 @@ public class Robot extends TimedRobot {
   int driver_controller_POV_button;
   
   Vision m_vision = new Vision();
-  //Arm m_arm = new Arm();
+  Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
   Timer m_timeToButtonPress = new Timer();
@@ -89,16 +87,7 @@ public class Robot extends TimedRobot {
 
 /*
    * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
+   *
    * 
    */
   enum pickupStatusEnum {
@@ -118,13 +107,7 @@ public class Robot extends TimedRobot {
     
     double rotation = -1*((0-autonomousSwerveCommands[0])/22);
 
-
-    
     SmartDashboard.putNumber("Rotation For Swerve", rotation);
-
-    
-
-
 
     if (pickupStatus == pickupStatusEnum.in_progress) {
       
@@ -153,9 +136,6 @@ public class Robot extends TimedRobot {
    * 
    */
 
-
-  
-
   @Override
   public void robotInit() {
 
@@ -166,7 +146,6 @@ public class Robot extends TimedRobot {
     m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
         
   }
-
  
 
   @Override
@@ -174,7 +153,7 @@ public class Robot extends TimedRobot {
     pickUpPiecePeriodic();
   
 
-    //m_arm.armPeriodic();
+    m_arm.armPeriodic();
     //m_vision.targeting();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
