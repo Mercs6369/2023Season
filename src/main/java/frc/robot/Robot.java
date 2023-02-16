@@ -116,15 +116,26 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
     
-    double rotation = -1*((0-autonomousSwerveCommands[0])/22);
+    double rotation = -1*((0-autonomousSwerveCommands[0])/28);
+    rotation = rotation * 1.2;
 
 
-    
+    if (rotation >= -0.07142857142 && rotation <= 0.07142857142){
+      rotation = 0;
+    } else if (rotation >= 0.07142857142 && rotation <= 0.6) {
+      rotation = 0.6;
+    } else if (rotation <= -0.07142857142 && rotation >= -0.6) {
+      rotation = -0.6;
+    } else if (rotation >= 1.2) {
+      rotation = 1.2;
+    } else if (rotation <= -1.2) {
+      rotation = -1.2;
+    }
+
+
     SmartDashboard.putNumber("Rotation For Swerve", rotation);
 
-    
-
-
+  
 
     if (pickupStatus == pickupStatusEnum.in_progress) {
       
