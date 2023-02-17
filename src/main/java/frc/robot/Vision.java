@@ -572,52 +572,52 @@ public class Vision {
     }
 
 
-public double[] runAlignmentProcess() {    
-    String best_Target_Global = getBestTargetGlobal();
+    /**
+     * Run this to get the values of the target (only one) that is currently onscreen.
+     * @return Returns a two things. The Yaw of the object, and the Area of the object.
+     */
+    public double[] runAlignmentProcess() {    
+        String best_Target_Global = getBestTargetGlobal();
         
         
-    if (!(best_Target_Global == "No Target")) {
-        gamePieceSwerveCommands[0] = 0.0;
-        gamePieceSwerveCommands[1] = 0.0;
+        if (!(best_Target_Global == "No Target")) {
+            gamePieceSwerveCommands[0] = 0.0;
+            gamePieceSwerveCommands[1] = 0.0;
             
-        if (best_Target_Global == "Cube") {
-            setGamePiecePipeline(gamePiecePipelineIndex.cube);
-            gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw); // x
-            gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
-            if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
-                gamePieceSwerveCommands[0] = 0;
-            }
-            if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
-                gamePieceSwerveCommands[1] = 0;
-            }
-            if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
-                gamePieceSwerveCommands[0] = .65;
-            }
-            if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
-                gamePieceSwerveCommands[0] = -.65;
-            }
+            if (best_Target_Global == "Cube") {
+                setGamePiecePipeline(gamePiecePipelineIndex.cube);
+                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw); // x
+                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
+                if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
+                    gamePieceSwerveCommands[0] = 0;
+                }
+                if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
+                    gamePieceSwerveCommands[0] = .65;
+                }
+                if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
+                    gamePieceSwerveCommands[0] = -.65;
+                }
+
+             
                 
 
-        } else {
-            setGamePiecePipeline(gamePiecePipelineIndex.cone);
-            gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
-            gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
-            if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
-                gamePieceSwerveCommands[0] = 0;
-            }
-            if (gamePieceSwerveCommands[1] < 4 && gamePieceSwerveCommands[1] > -4) {
-                gamePieceSwerveCommands[1] = 0;
-            }
+            } else {
+                setGamePiecePipeline(gamePiecePipelineIndex.cone);
+                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
+                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
+                if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
+                    gamePieceSwerveCommands[0] = 0;
+                }
+                if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
+                    gamePieceSwerveCommands[0] = 4.39822971504;
+                }
+                if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
+                    gamePieceSwerveCommands[0] = -4.39822971504;
+                }
 
-            if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
-                gamePieceSwerveCommands[0] = 4.39822971504;
-            }
-            if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
-                gamePieceSwerveCommands[0] = -4.39822971504;
-            }
+              
 
-        }
-            
+            }
             return gamePieceSwerveCommands;
         } else {
             gamePieceSwerveCommands[0] = -99999.0; // No targets
