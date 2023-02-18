@@ -21,10 +21,10 @@ public class Constants {
     public static final int INTAKE_MOTOR_1_ID = 21;
     public static final int CLAW_MOTOR_ID = 22;
     public static final int INTAKE_MOTOR_2_ID = 23;
-    public static final int PIVOT_MOTOR_ID = 26;
+    public static final int PIVOT_MOTOR_ID = 29;
 
-    public static final int ELEVATOR_MOTOR_1_ID = 29;
-    public static final int ELEVATOR_MOTOR_2_ID = 30;
+    public static final int ELEVATOR_MOTOR_1_ID = 26;
+    public static final int ELEVATOR_MOTOR_2_ID = 38;
 
 
     public static final int DRIVE_FL_MOTOR_1_ID = 6;

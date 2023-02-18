@@ -154,7 +154,7 @@ public class Robot extends TimedRobot {
   
 
     m_arm.armPeriodic();
-    //m_vision.targeting();
+    m_vision.targeting();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -260,7 +260,7 @@ public class Robot extends TimedRobot {
       //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
 
-    //m_arm.move_elevator_height(operator_controller.getRightY());
+    m_arm.move_elevator_height(operator_controller.getRightY());
   }
 
   @Override

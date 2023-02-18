@@ -52,8 +52,36 @@ public class Arm {
     WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
     WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
 
+    public Arm() { // constructor
+        phCompressor.enableDigital();
+        //phCompressor.enableAnalog(119, 120);
+        pneumaticsOpen();
 
+        // elevator motor setups
+        elevator_motor_1.configFactoryDefault();
+        elevator_motor_2.configFactoryDefault();
+        
+        elevator_motor_1.setInverted(false);
+        elevator_motor_1.setSensorPhase(false);
+        elevator_motor_1.setNeutralMode(NeutralMode.Coast);
 
+        elevator_motor_2.setInverted(false);        
+        elevator_motor_2.setSensorPhase(false);
+        elevator_motor_2.setNeutralMode(NeutralMode.Coast);
+
+        elevator_motor_1.config_kP(0, 0.3, 30);
+        elevator_motor_1.config_kI(0, 0.0, 30);
+        elevator_motor_1.config_kD(0, 0.0, 30);
+        elevator_motor_1.config_kF(0, 0.0, 30);
+
+        elevator_motor_2.config_kP(0, 0.3, 30);
+        elevator_motor_2.config_kI(0, 0.0, 30);
+        elevator_motor_2.config_kD(0, 0.0, 30);
+        elevator_motor_2.config_kF(0, 0.0, 30);
+
+        elevator_motor_2.follow(elevator_motor_1);
+        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
+    }
 
     // Pneumatics
     public void pneumaticsClose(){
@@ -73,7 +101,7 @@ public class Arm {
         current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
         //elevator_motor_1.set(ControlMode.Position, current_elevator_position + 10*controller_input);
         elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
-        SmartDashboard.putNumber("elevator_command", current_elevator_position);
+        SmartDashboard.putNumber("elevator_position", current_elevator_position);
     }
 
 
@@ -227,36 +255,5 @@ public class Arm {
         } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
             pickupPeriodic();
         }
-    }
-
-    public Arm() { // constructor
-        phCompressor.enableDigital();
-        //phCompressor.enableAnalog(119, 120);
-        pneumaticsOpen();
-
-        // elevator motor setups
-        elevator_motor_1.configFactoryDefault();
-        elevator_motor_2.configFactoryDefault();
-        
-        elevator_motor_1.setInverted(false);
-        elevator_motor_1.setSensorPhase(false);
-        elevator_motor_1.setNeutralMode(NeutralMode.Coast);
-
-        elevator_motor_2.setInverted(false);        
-        elevator_motor_2.setSensorPhase(false);
-        elevator_motor_2.setNeutralMode(NeutralMode.Coast);
-
-        elevator_motor_1.config_kP(0, 0.3, 30);
-        elevator_motor_1.config_kI(0, 0.0, 30);
-        elevator_motor_1.config_kD(0, 0.0, 30);
-        elevator_motor_1.config_kF(0, 0.0, 30);
-
-        elevator_motor_2.config_kP(0, 0.3, 30);
-        elevator_motor_2.config_kI(0, 0.0, 30);
-        elevator_motor_2.config_kD(0, 0.0, 30);
-        elevator_motor_2.config_kF(0, 0.0, 30);
-
-        elevator_motor_2.follow(elevator_motor_1);
-        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
     }
 };
