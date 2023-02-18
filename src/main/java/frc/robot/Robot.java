@@ -202,6 +202,7 @@ public class Robot extends TimedRobot {
       // There should be a method that ejects an object
       m_vision.CS_RGB_measure(); // tests rev color sensor
       m_vision.CS_Prox_measure(); // tests rev color sensor
+      SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
     }
     if(operator_controller_Y_button == true)
     {
