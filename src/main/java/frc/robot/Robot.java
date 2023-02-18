@@ -97,31 +97,78 @@ public class Robot extends TimedRobot {
   }
   pickupStatusEnum pickupStatus = pickupStatusEnum.idle;
 
+  /**
+   * This needs to be run whenever the button (assigned to picking up a piece) is pressed. You don't have to worry about adding a debounce to this, it's all handled internally :P
+   */
   private void PickUpPiece() {
     pickupStatus = pickupStatusEnum.in_progress;
   }
+
+  /**
+   * This needs to be run constantly if you want to pickup a game piece. Does not need any parameters.
+   */
   private void pickUpPiecePeriodic() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
     
-    double rotation = -1*((0-autonomousSwerveCommands[0])/22);
+    double rotation = -1*((0-autonomousSwerveCommands[0])/28);
+    rotation = rotation * 1.2;
+
+
+    if (rotation >= -0.07142857142 && rotation <= 0.07142857142){
+      rotation = 0.0;
+    } else if (rotation >= 0.07142857142 && rotation <= 0.6) {
+      rotation = 0.6;
+    } else if (rotation <= -0.07142857142 && rotation >= -0.6) {
+      rotation = -0.6;
+    } else if (rotation >= 1.2) {
+      rotation = 1.2;
+    } else if (rotation <= -1.2) {
+      rotation = -1.2;
+    }
+
+    double swerveYchange; // These 5 variables are being used for calculating how far to move towards the game object.
+    double ca = autonomousSwerveCommands[1]; // do not remove these!!!
+    double maxA = Constants.idealConeArea_Standing;
+    double top_speed = Constants.top_speed_mps;
+    double increment = top_speed / maxA;
+
+
+
+    if ((Constants.idealConeArea_Standing > (ca - 0.5)) && (Constants.idealConeArea_Standing < (ca + 0.5))) {
+      swerveYchange = 0.0;
+      SmartDashboard.putString("On axis", "true");
+
+    } else {
+      swerveYchange = (ca - maxA) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
+      SmartDashboard.putString("On axis", "false");
+
+    }
+
+
+    SmartDashboard.putNumber("First", swerveYchange);
+
+
+    if ((swerveYchange < 0.35) && (swerveYchange >= .11)) { // this is all for the graph line thingy that Coach Dan knows about ask him if things happen
+      swerveYchange = 0.35;
+    } else if (swerveYchange <= .11) {
+      swerveYchange = 0.0;
+    }
+
+    swerveYchange = -1 * swerveYchange; // overall invert
+
 
     SmartDashboard.putNumber("Rotation For Swerve", rotation);
+    SmartDashboard.putNumber("Move (meters per second) For Swerve", swerveYchange);
+
 
     if (pickupStatus == pickupStatusEnum.in_progress) {
-      
-      if (!(autonomousSwerveCommands[0] == 0) && !(autonomousSwerveCommands[1] == 0)) { // 0 = in correct position
-        if (!(autonomousSwerveCommands[0] == -99999.0)) { // no target
-          SmartDashboard.putString("Pickup Status", "In progress");
-          // updateSwerveParameters()
-          m_robotContainer.updateSwerveParameters(new Translation2d(0,0), rotation, true);
-        }
-      } else {
-        SmartDashboard.putString("Pickup Status", "Idle");
-        pickupStatus = pickupStatusEnum.idle;
-      }
-
+                   
+      SmartDashboard.putString("Pickup Status", "In progress");
+      // updateSwerveParameters()
+      m_robotContainer.updateSwerveParameters(new Translation2d(0,swerveYchange), rotation, true);
+     
     } else {
       SmartDashboard.putString("Pickup Status", "Idle");
     }
@@ -156,10 +203,11 @@ public class Robot extends TimedRobot {
     m_arm.armPeriodic();
     m_vision.targeting();
 
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+    /* Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+     * commands, running already-scheduled commands, removing finished or interrupted commands,
+     * and running subsystem periodic() methods.  This must be called from the robot's periodic
+     * block in order for anything in the Command-based framework to work.
+     */
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
