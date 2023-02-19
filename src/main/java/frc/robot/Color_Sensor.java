@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Color_Sensor {
+    final static double COLOR_CONFIDENCE_THRESHOLD = 0.94;
     double red_color = 0;
     double green_color = 0;
     double blue_color = 0;
@@ -91,10 +92,10 @@ public class Color_Sensor {
             blue_color = blue_color/mag;
             match = m_colorMatcher.matchClosestColor(new Color(red_color, green_color, blue_color));
 
-            if (match.color == kCubeTarget) {
+            if ((match.color == kCubeTarget) && (match.confidence > COLOR_CONFIDENCE_THRESHOLD)) {
                 color_string = "Cube";
             } 
-            else if (match.color == kConeTarget) {
+            else if ((match.color == kConeTarget) && (match.confidence > COLOR_CONFIDENCE_THRESHOLD)) {
                 color_string = "Cone";
             }
             else {
