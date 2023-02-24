@@ -252,12 +252,116 @@ public class Robot extends TimedRobot {
       m_vision.CS_Prox_measure(); // tests rev color sensor
       SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
     }
+    double scale = 1.0;
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
       //m_arm._Score_Game_Piece();
+      double targetDistanceX = 1.0;
+      double targetDistanceY = 0;
+      double tol = 0.05;
+
+      double xValue = 0.0;
+      double yVaule = 0.0;
+      double rotationValue = 0.0;
+
+      if (m_vision.getXm() - targetDistanceX < 0.25){
+        scale = 0.75;
+      }
+      else if (m_vision.getX() - targetDistanceX < 0.5){
+        scale = 0.50;
+      }
+      else {
+        scale = 1;
+      }
+
+      //scale = m_vision.getXm() - targetDistanceX;
+
+      if ((Math.abs(m_vision.getZ()) - targetDistanceY) < 1.5){
+        if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
+          yVaule = 0.0;
+          if (m_vision.getYm() < targetDistanceY + 0.1){
+            xValue = -0.75;
+          }
+          else if (m_vision.getYm() > targetDistanceY - 0.1){
+            xValue = 0.75;
+          }
+        }
+        else {
+  
+          if (m_vision.getXm() > targetDistanceX + 0.1){
+      
+            yVaule = -0.75;
+    
+          }
+          else if (m_vision.getXm() < targetDistanceX + 0.1){
+            yVaule = 0.75;
+          }
+
+        }
+      }   
+      else {
+        if ((m_vision.getZ()) > targetDistanceY + 1.5){
+          rotationValue = -0.50;
+        }
+        else if (m_vision.getZ() < targetDistanceY - 1.5){
+          rotationValue = 0.50;
+        }
+        else{
+          rotationValue = 0.0;
+        }
+      }
+
+      /*
+      if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
+        yVaule = 0.0;
+        if (Math.abs(m_vision.getYm()) < 0.1){
+          xValue = 0.0;
+          if ((m_vision.getZ()) > targetDistanceY + 1.5){
+            rotationValue = -0.50;
+          }
+          else if (m_vision.getZ() < targetDistanceY - 1.5){
+            rotationValue = 0.50;
+          }
+          else{
+            rotationValue = 0.0;
+          }
+        }
+        else {
+          if (m_vision.getYm() < targetDistanceY + 0.1){
+            xValue = -0.75;
+          }
+          else if (m_vision.getYm() > targetDistanceY - 0.1){
+            xValue = 0.75;
+          }
+        }
+
+      }
+      else {
+        if (m_vision.getXm() > targetDistanceX + 0.1){
+      
+          yVaule = -0.75;
+  
+        }
+        else if (m_vision.getXm() < targetDistanceX + 0.1){
+          yVaule = 0.75;
+        }
+      }     
+      */
+      m_robotContainer.updateSwerveParameters(new Translation2d(xValue*scale, yVaule*scale), rotationValue, true);
 
     }
+    else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+
+    }
+
+    SmartDashboard.putNumber("auto X", m_vision.getXm());
+    SmartDashboard.putNumber("auto Y", m_vision.getYm());
+    SmartDashboard.putNumber("scale", scale);
+    SmartDashboard.putNumber("z", m_vision.getZ());
+
+
     /*Maybe we should add the next two methods in the far future
     if(canAutoPickObj() == true)
     {
