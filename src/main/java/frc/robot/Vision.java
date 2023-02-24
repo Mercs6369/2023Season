@@ -152,10 +152,10 @@ public class Vision {
         result = camera.getLatestResult();
         hasTargets = result.hasTargets();
 
-        target = result.getBestTarget();
 
         if (result.hasTargets()) {
-
+            
+            target = result.getBestTarget();
 /*             robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
                 new Transform3d(
                     new Translation3d(
@@ -202,6 +202,35 @@ public class Vision {
     public int getID(){
         return target.getFiducialId();
     }
+
+    public double getXm(){
+        if (hasTargets == true){
+            return target.getBestCameraToTarget().getX();
+
+        }
+        else {
+            return 0.0;
+        }
+    }
+
+    public double getZ(){
+        if (hasTargets == true){
+            return target.getYaw();
+
+        }
+        else {
+            return 0.0;
+        }
+    }
+
+    public double getYm(){
+        if (hasTargets == true){
+            return target.getBestCameraToTarget().getY();
+
+        }
+        else {
+            return 0.0;
+        }    }
 
     public double getY(){
         return robotPose2d.getY(); 
