@@ -28,7 +28,11 @@ public class Constants {
     public static final double idealCubeArea = 15;
 
 
-
+    /* Cone Scoring Node Constants || Used for Limelight Vision */
+    public static final double kDistanceBetweenNodes = 23.625;
+    public static final double lLimelightHeight = 0;
+    public static final double tLowerTapeHeight = 21.75;
+    
     /* MOTOR IDS */
     public static final int INTAKE_MOTOR_1_ID = 21;
     public static final int CLAW_MOTOR_ID = 22;
