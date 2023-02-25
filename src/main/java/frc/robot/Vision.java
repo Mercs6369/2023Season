@@ -263,15 +263,12 @@ public class Vision {
         }
     }
 
-    /*
-    getDistanceLowerConeNode() takes angleCenterVisionBounds, or the angle in degrees from the limelight to the 
-    center of the vision bounds, and limelightHeight, or the height of the limelight from the ground as parameters.
-
-    The limelightHeight does not need to be lower than 22.125 for the method to function, as that signals that the 
-    limelightHeight will simply be taller than the level of the lower reflective tape. 
-    */ 
-    public double getDistanceLowerConeNode(double angleCenterVisionBounds, double limelightHeight) {
-       return ((11.875 + 22.125-limelightHeight)/(Math.tan(Math.toRadians(Math.abs(angleCenterVisionBounds)-1.58164))))-8.75;
+    
+    public double getConeScoringDistance(double angleTarget, boolean isUpperSituation) {
+        if(isUpperSituation) {
+            return (Constants.kDistanceBetweenNodes + Constants.tLowerTapeHeight - Constants.lLimelightHeight) / Math.tan(Math.toRadians(angleTarget));  
+        }
+        return (Constants.lLimelightHeight - Constants.tLowerTapeHeight) / Math.tan(Math.toRadians(angleTarget));
     }
 
 
