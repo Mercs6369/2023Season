@@ -38,7 +38,7 @@ public class Arm {
 
     // I don't think this has a use.
     double arm_length;
-    double current_elevator_position;
+    double current_elevator_position_command;
     
     // Used to time how long actions take.
     Timer m_time = new Timer();
@@ -51,6 +51,8 @@ public class Arm {
     WPI_TalonFX pivot_motor = new WPI_TalonFX(Constants.PIVOT_MOTOR_ID, "rio"); 
     WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
     WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
+
+
 
     public Arm() { // constructor
         phCompressor.enableDigital();
@@ -69,18 +71,18 @@ public class Arm {
         elevator_motor_2.setSensorPhase(false);
         elevator_motor_2.setNeutralMode(NeutralMode.Coast);
 
-        elevator_motor_1.config_kP(0, 0.3, 30);
+        elevator_motor_1.config_kP(0, 0.1, 30);
         elevator_motor_1.config_kI(0, 0.0, 30);
         elevator_motor_1.config_kD(0, 0.0, 30);
         elevator_motor_1.config_kF(0, 0.0, 30);
 
-        elevator_motor_2.config_kP(0, 0.3, 30);
+        elevator_motor_2.config_kP(0, 0.1, 30);
         elevator_motor_2.config_kI(0, 0.0, 30);
         elevator_motor_2.config_kD(0, 0.0, 30);
         elevator_motor_2.config_kF(0, 0.0, 30);
 
         elevator_motor_2.follow(elevator_motor_1);
-        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
+        current_elevator_position_command = elevator_motor_1.getSelectedSensorPosition();
     }
 
     // Pneumatics
@@ -98,10 +100,16 @@ public class Arm {
 
     // Coach Dan testing I think.
     public void move_elevator_height(double controller_input){
-        current_elevator_position = elevator_motor_1.getSelectedSensorPosition();
-        //elevator_motor_1.set(ControlMode.Position, current_elevator_position + 10*controller_input);
-        elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
-        SmartDashboard.putNumber("elevator_position", current_elevator_position);
+        current_elevator_position_command = current_elevator_position_command + 100*controller_input;
+        elevator_motor_1.set(ControlMode.Position, current_elevator_position_command);
+        //elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
+
+        
+        
+    }
+
+    public double getElevatorPosition() {
+        return elevator_motor_1.getSelectedSensorPosition();
     }
 
 
