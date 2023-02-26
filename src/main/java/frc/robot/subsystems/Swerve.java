@@ -58,7 +58,7 @@ public class Swerve extends SubsystemBase {
                                 /* Do this if fieldRelative is true */
                                     -1*translation.getX(), 
                                     translation.getY(), 
-                                    -1*rotation, 
+                                    rotation, 
                                     getYaw()
                                 )
                                 : ( (autoCommanding) ?
@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
                                 new ChassisSpeeds(
                                     -1*translation.getX(), 
                                     translation.getY(), 
-                                    -1*rotation)
+                                    rotation)
 
                                 ));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
