@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
   
-  Vision m_vision = new Vision();
+  //Vision m_vision = new Vision();
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
    * This needs to be run constantly if you want to pickup a game piece. Does not need any parameters.
    */
   private void pickUpPiecePeriodic() {
-    autonomousSwerveCommands = m_vision.runAlignmentProcess();
+    //autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
     
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
+    //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
         
   }
  
@@ -201,7 +201,7 @@ public class Robot extends TimedRobot {
   
 
     m_arm.armPeriodic();
-    m_vision.targeting();
+    //m_vision.targeting();
 
     /* Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
      * commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -209,7 +209,9 @@ public class Robot extends TimedRobot {
      * block in order for anything in the Command-based framework to work.
      */
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("elevator_position", m_arm.getElevatorPosition());
 
+    /*
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
     SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
     SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
@@ -222,7 +224,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Fid ID 7 Pos X", m_vision.getTag(7).getX());
     SmartDashboard.putNumber("Fid ID 7 Pos Y", m_vision.getTag(7).getY());
     SmartDashboard.putNumber("Fid ID 7 Yaw", m_vision.getTag(7).getRotation().getAngle());
-
+    */
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
@@ -248,11 +250,12 @@ public class Robot extends TimedRobot {
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
-      m_vision.CS_RGB_measure(); // tests rev color sensor
-      m_vision.CS_Prox_measure(); // tests rev color sensor
-      SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
+      //m_vision.CS_RGB_measure(); // tests rev color sensor
+      //m_vision.CS_Prox_measure(); // tests rev color sensor
+      //SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
     }
     double scale = 1.0;
+    /*
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
@@ -347,10 +350,11 @@ public class Robot extends TimedRobot {
           yVaule = 0.75;
         }
       }     
-      */
+      
       m_robotContainer.updateSwerveParameters(new Translation2d(xValue*scale, yVaule*scale), rotationValue, true);
 
     }
+    
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
 
@@ -413,7 +417,7 @@ public class Robot extends TimedRobot {
       //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
 
-    m_arm.move_elevator_height(operator_controller.getRightY());
+    m_arm.move_elevator_height(-1*operator_controller.getRightY());
   }
 
   @Override
