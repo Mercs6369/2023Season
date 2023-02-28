@@ -437,35 +437,6 @@ public class Vision {
             return -9999999.0;
         }
 
-/* 
-        
-
-        if (objectHeight >= (objectWidth - 10)) {
-            last_four_orientations_of_cone.add(1);
-            last_four_orientations_of_cone.remove(0);
-            int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
-            SmartDashboard.putString("Guess", "Standing Up");
-            if (sum > 2){
-                SmartDashboard.putString("Average Orientation", "Standing up");
-                return 1.0;
-            } else {
-                return 0.0;
-            }
-
-        } else {
-            last_four_orientations_of_cone.add(0);
-            last_four_orientations_of_cone.remove(0);
-            int sum = last_four_orientations_of_cone.get(0) + last_four_orientations_of_cone.get(1) + last_four_orientations_of_cone.get(2) + last_four_orientations_of_cone.get(3);
-            SmartDashboard.putString("Guess", "Side");
-            if (sum < 2){
-                SmartDashboard.putString("Average Orientation", "Side");
-                return 0.0;
-            } else {
-                return 1.0;
-            }
-        }
- */
-
         
     }  
     

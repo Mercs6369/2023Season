@@ -129,11 +129,14 @@ public class Robot extends TimedRobot {
     }
 
     double swerveYchange; // These 5 variables are being used for calculating how far to move towards the game object.
-    double ca = autonomousSwerveCommands[1]; // do not remove these!!!
-    double maxA = Constants.idealConeArea_Standing;
+    double ca = autonomousSwerveCommands[1]; // do not remove these!!! (current area)
+    double idealArea = Constants.idealConeArea_Standing;
     double top_speed = Constants.top_speed_mps;
-    double increment = top_speed / maxA;
+    double increment = top_speed / idealArea;
 
+
+
+    SmartDashboard.putNumber("Unofficial status", (ca - idealArea) * increment * -1);
 
 
     if ((Constants.idealConeArea_Standing > (ca - 0.5)) && (Constants.idealConeArea_Standing < (ca + 0.5))) {
@@ -141,7 +144,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("On axis", "true");
 
     } else {
-      swerveYchange = (ca - maxA) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
+      swerveYchange = (ca - idealArea) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
       SmartDashboard.putString("On axis", "false");
 
     }
