@@ -12,11 +12,16 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Arm {
 
@@ -44,11 +49,11 @@ public class Arm {
     Timer m_time = new Timer();
 
     // Used to help time/document/run any actions.
-    boolean action_finished = false;    
+    boolean action_finished = false;
 
     // Motors
-    WPI_TalonFX claw_motor = new WPI_TalonFX(Constants.CLAW_MOTOR_ID, "rio"); 
-    WPI_TalonFX pivot_motor = new WPI_TalonFX(Constants.PIVOT_MOTOR_ID, "rio"); 
+    CANSparkMax intake_motor_1 = new CANSparkMax(Constants.INTAKE_MOTOR_1_ID, MotorType.kBrushless);
+    CANSparkMax intake_motor_2 = new CANSparkMax(Constants.INTAKE_MOTOR_2_ID, MotorType.kBrushless);
     WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
     WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
 
@@ -83,7 +88,37 @@ public class Arm {
 
         elevator_motor_2.follow(elevator_motor_1);
         current_elevator_position_command = elevator_motor_1.getSelectedSensorPosition();
+
+
+
+        // INTAKE SECTION
+
+
+        intake_motor_1.restoreFactoryDefaults();
+        intake_motor_2.restoreFactoryDefaults();
+
+        intake_motor_1.setInverted(false);
+        //intake_motor_1.setSensorPhase(false);
+        //intake_motor_1.setNeutralMode(NeutralMode.Coast);
+
+        intake_motor_2.setInverted(false);
+        //intake_motor_2.setSensorPhase(false);
+        //intake_motor_2.setNeutralMode(NeutralMode.Coast);
     }
+
+
+
+    public void setIntakeMotor1(double joyStickValue) {
+        intake_motor_1.set(joyStickValue);
+    }
+    public void setIntakeMotor2(double joyStickValue) {
+        intake_motor_2.set(joyStickValue);
+    }
+
+
+
+
+
 
     // Pneumatics
     public void pneumaticsClose(){

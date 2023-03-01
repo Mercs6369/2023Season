@@ -238,33 +238,46 @@ public class Robot extends TimedRobot {
     getControllerStates();    // reads all controller inputs
     if(operator_controller_A_button == true)
     {
+      m_arm.setIntakeMotor1(.5);
       // There should be a method to pick an object automatically
 
       // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
+      //m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
     }
     else {
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+      m_arm.setIntakeMotor1(0);
+      //m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
     }
 
     if(operator_controller_B_button == true)
     {
+      m_arm.setIntakeMotor2(.5);
       // There should be a method to AutoBalance on the Charge Station
-      _RobotPickUpPiece();
+      //_RobotPickUpPiece();
     } else {
+      m_arm.setIntakeMotor2(0);
       pickupStatus = pickupStatusEnum.idle;
-      m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
+      //m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
     }
     if(operator_controller_X_button == true)
-    {
+    { 
+      m_arm.setIntakeMotor1(-.5);
       // There should be a method that ejects an object
       m_vision.CS_RGB_measure(); // tests rev color sensor
       m_vision.CS_Prox_measure(); // tests rev color sensor
       //SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
+    } else {
+      m_arm.setIntakeMotor1(0);
     }
+
     double scale = 1.0;
+    
+    if(operator_controller_Y_button == true) {
+      m_arm.setIntakeMotor2(-.5);
+    } else {
+      m_arm.setIntakeMotor2(0);
+    }
     /*
-    if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
       double targetDistanceX = 1.0;
@@ -347,6 +360,7 @@ public class Robot extends TimedRobot {
         }
 
       }
+      
       else {
         if (m_vision.getXm() > targetDistanceX + 0.1){
       

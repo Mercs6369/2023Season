@@ -263,13 +263,15 @@ public class Vision {
         }
     }
 
-    
+    /*
     public double getConeScoringDistance(double angleTarget, boolean isUpperSituation) {
         if(isUpperSituation) {
             return (Constants.kDistanceBetweenNodes + Constants.tLowerTapeHeight - Constants.lLimelightHeight) / Math.tan(Math.toRadians(angleTarget));  
         }
         return (Constants.lLimelightHeight - Constants.tLowerTapeHeight) / Math.tan(Math.toRadians(angleTarget));
     }
+     */
+    
 
 
 
