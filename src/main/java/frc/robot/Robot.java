@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
   
-  //Vision m_vision = new Vision();
+  Vision m_vision = new Vision();
   Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
@@ -100,15 +100,22 @@ public class Robot extends TimedRobot {
   /**
    * This needs to be run whenever the button (assigned to picking up a piece) is pressed. You don't have to worry about adding a debounce to this, it's all handled internally :P
    */
-  private void PickUpPiece() {
+  private void _RobotPickUpPiece() {
     pickupStatus = pickupStatusEnum.in_progress;
   }
 
   /**
    * This needs to be run constantly if you want to pickup a game piece. Does not need any parameters.
    */
+
+   private void _RobotEjectPiece() {
+    m_arm._Eject_Game_Piece();
+  }
+  private void _RobotScorePiece() {
+    m_arm._Score_Game_Piece();
+  }
   private void pickUpPiecePeriodic() {
-    //autonomousSwerveCommands = m_vision.runAlignmentProcess();
+    autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
     
@@ -193,7 +200,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     
     robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
+    m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
         
   }
  
@@ -204,7 +211,7 @@ public class Robot extends TimedRobot {
   
 
     m_arm.armPeriodic();
-    //m_vision.targeting();
+    m_vision.targeting();
 
     /* Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
      * commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -232,7 +239,6 @@ public class Robot extends TimedRobot {
     if(operator_controller_A_button == true)
     {
       // There should be a method to pick an object automatically
-      //m_arm._Eject_Game_Piece();
 
       // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
       m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
@@ -244,8 +250,7 @@ public class Robot extends TimedRobot {
     if(operator_controller_B_button == true)
     {
       // There should be a method to AutoBalance on the Charge Station
-      //m_arm._Pickup_Game_Piece();
-      PickUpPiece();
+      _RobotPickUpPiece();
     } else {
       pickupStatus = pickupStatusEnum.idle;
       m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
@@ -253,8 +258,8 @@ public class Robot extends TimedRobot {
     if(operator_controller_X_button == true)
     {
       // There should be a method that ejects an object
-      //m_vision.CS_RGB_measure(); // tests rev color sensor
-      //m_vision.CS_Prox_measure(); // tests rev color sensor
+      m_vision.CS_RGB_measure(); // tests rev color sensor
+      m_vision.CS_Prox_measure(); // tests rev color sensor
       //SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
     }
     double scale = 1.0;
@@ -262,7 +267,6 @@ public class Robot extends TimedRobot {
     if(operator_controller_Y_button == true)
     {
       // There should be a method that scores the object
-      //m_arm._Score_Game_Piece();
       double targetDistanceX = 1.0;
       double targetDistanceY = 0;
       double tol = 0.05;
