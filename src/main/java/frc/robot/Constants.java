@@ -17,27 +17,20 @@ public class Constants {
 
     public static final double stickDeadband = 0.1;
 
-
-
     /* Cone Area Movement */
     public static final double top_speed_mps = 1.5;
     public static final double idealConeArea_Standing = 11.3;
-
-
-
     public static final double idealCubeArea = 15;
-
-
 
     /* MOTOR IDS */
     public static final int INTAKE_MOTOR_1_ID = 21;
     public static final int CLAW_MOTOR_ID = 22;
     public static final int INTAKE_MOTOR_2_ID = 23;
-    public static final int PIVOT_MOTOR_ID = 29;
+    public static final int PIVOT_MOTOR_ID = 60;
 
-    public static final int ELEVATOR_MOTOR_1_ID = 29;
-    public static final int ELEVATOR_MOTOR_2_ID = 30;
-
+    public static final int VERTICAL_ELEVATOR_MOTOR_1_ID = 29;
+    public static final int VERTICAL_ELEVATOR_MOTOR_2_ID = 30;
+    public static final int HORIZONTAL_ELEVATOR_MOTOR_ID = 32;
 
     public static final int DRIVE_FL_MOTOR_1_ID = 6;
     public static final int angleMotor1ID = 15;
@@ -53,12 +46,10 @@ public class Constants {
     public static final int DRIVE_BR_MOTOR_2_ID = 13;
 
     /* Swerve Current Limiting */
-
     public static final int angleContinuousCurrentLimit = 0;
     public static final int anglePeakCurrentLimit = 0;
     public static final double anglePeakCurrentDuration = 0;
     public static final boolean angleEnableCurrentLimit = true;
-
 
     public static final int driveContinuousCurrentLimit = 0;
     public static final int drivePeakCurrentLimit = 0;
@@ -76,10 +67,8 @@ public class Constants {
     public static final double claw_encoder_second_position = 0.4;   // ???
     public static final double claw_encoder_third_position = 1.5;   // ???
     public static final double claw_encoder_top_position = 2.3;   // ???
-
     public static final double claw_pulley_1_gear_ratio = 3/1;   // 3 inch disc to 1 inch disc
     public static final double claw_pulley_2_gear_ratio = 62/8;   // 62 teeth to 8 teeth
-
 
     /* Elevator Constants */
     public static final double elevator_motor_gearbox_ratio = 62/8;   // 62 teeth to 8 teeth

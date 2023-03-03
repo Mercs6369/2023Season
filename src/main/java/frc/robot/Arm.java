@@ -43,7 +43,7 @@ public class Arm {
 
     // I don't think this has a use.
     double arm_length;
-    double current_elevator_position_command;
+    double current_vertical_elevator_position_command, current_horizontal_elevator_position_command;
     
     // Used to time how long actions take.
     Timer m_time = new Timer();
@@ -54,10 +54,9 @@ public class Arm {
     // Motors
     CANSparkMax intake_motor_1 = new CANSparkMax(Constants.INTAKE_MOTOR_1_ID, MotorType.kBrushless);
     CANSparkMax intake_motor_2 = new CANSparkMax(Constants.INTAKE_MOTOR_2_ID, MotorType.kBrushless);
-    WPI_TalonFX elevator_motor_1 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_1_ID, "rio"); 
-    WPI_TalonFX elevator_motor_2 = new WPI_TalonFX(Constants.ELEVATOR_MOTOR_2_ID, "rio");
-
-
+    WPI_TalonFX vertical_elevator_motor_1 = new WPI_TalonFX(Constants.VERTICAL_ELEVATOR_MOTOR_1_ID, "rio"); 
+    WPI_TalonFX vertical_elevator_motor_2 = new WPI_TalonFX(Constants.VERTICAL_ELEVATOR_MOTOR_2_ID, "rio");
+    WPI_TalonFX horizontal_elevator_motor = new WPI_TalonFX(Constants.HORIZONTAL_ELEVATOR_MOTOR_ID, "rio");
 
     public Arm() { // constructor
         phCompressor.enableDigital();
@@ -65,35 +64,43 @@ public class Arm {
         pneumaticsOpen();
 
         // elevator motor setups
-        elevator_motor_1.configFactoryDefault();
-        elevator_motor_2.configFactoryDefault();
+        vertical_elevator_motor_1.configFactoryDefault();
+        vertical_elevator_motor_1.configFactoryDefault();
         
-        elevator_motor_1.setInverted(false);
-        elevator_motor_1.setSensorPhase(false);
-        elevator_motor_1.setNeutralMode(NeutralMode.Coast);
+        vertical_elevator_motor_1.setInverted(false);
+        vertical_elevator_motor_1.setSensorPhase(false);
+        vertical_elevator_motor_1.setNeutralMode(NeutralMode.Coast);
 
-        elevator_motor_2.setInverted(false);        
-        elevator_motor_2.setSensorPhase(false);
-        elevator_motor_2.setNeutralMode(NeutralMode.Coast);
+        vertical_elevator_motor_2.setInverted(false);        
+        vertical_elevator_motor_2.setSensorPhase(false);
+        vertical_elevator_motor_2.setNeutralMode(NeutralMode.Coast);
 
-        elevator_motor_1.config_kP(0, 0.1, 30);
-        elevator_motor_1.config_kI(0, 0.0, 30);
-        elevator_motor_1.config_kD(0, 0.0, 30);
-        elevator_motor_1.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_1.config_kP(0, 0.05, 30);
+        vertical_elevator_motor_1.config_kI(0, 0.0, 30);
+        vertical_elevator_motor_1.config_kD(0, 0.0001, 30);
+        vertical_elevator_motor_1.config_kF(0, 0.0, 30);
 
-        elevator_motor_2.config_kP(0, 0.1, 30);
-        elevator_motor_2.config_kI(0, 0.0, 30);
-        elevator_motor_2.config_kD(0, 0.0, 30);
-        elevator_motor_2.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_2.config_kP(0, 0.05, 30);
+        vertical_elevator_motor_2.config_kI(0, 0.0, 30);
+        vertical_elevator_motor_2.config_kD(0, 0.0001, 30);
+        vertical_elevator_motor_2.config_kF(0, 0.0, 30);
 
-        elevator_motor_2.follow(elevator_motor_1);
-        current_elevator_position_command = elevator_motor_1.getSelectedSensorPosition();
+        vertical_elevator_motor_1.configAllowableClosedloopError(0, 20, 30);
+        vertical_elevator_motor_2.configAllowableClosedloopError(0, 20, 30);
 
+        vertical_elevator_motor_2.follow(vertical_elevator_motor_1);
+        current_vertical_elevator_position_command = vertical_elevator_motor_1.getSelectedSensorPosition();
 
+        horizontal_elevator_motor.setInverted(false);        
+        horizontal_elevator_motor.setSensorPhase(false);
+        horizontal_elevator_motor.setNeutralMode(NeutralMode.Coast);
+
+        horizontal_elevator_motor.config_kP(0, 0.2, 30);
+        horizontal_elevator_motor.config_kI(0, 0.0, 30);
+        horizontal_elevator_motor.config_kD(0, 0.0, 30);
+        horizontal_elevator_motor.config_kF(0, 0.0, 30);
 
         // INTAKE SECTION
-
-
         intake_motor_1.restoreFactoryDefaults();
         intake_motor_2.restoreFactoryDefaults();
 
@@ -106,19 +113,12 @@ public class Arm {
         //intake_motor_2.setNeutralMode(NeutralMode.Coast);
     }
 
-
-
     public void setIntakeMotor1(double joyStickValue) {
         intake_motor_1.set(joyStickValue);
     }
     public void setIntakeMotor2(double joyStickValue) {
         intake_motor_2.set(joyStickValue);
     }
-
-
-
-
-
 
     // Pneumatics
     public void pneumaticsClose(){
@@ -131,20 +131,25 @@ public class Arm {
         RightClawSolenoid.set(Value.kReverse);
     }
 
-
-
     // Coach Dan testing I think.
-    public void move_elevator_height(double controller_input){
-        current_elevator_position_command = current_elevator_position_command + 100*controller_input;
-        elevator_motor_1.set(ControlMode.Position, current_elevator_position_command);
+    public void move_vertical_elevator(double controller_input){
+        current_vertical_elevator_position_command = current_vertical_elevator_position_command + 100*controller_input;
+        vertical_elevator_motor_1.set(ControlMode.Position, current_vertical_elevator_position_command);
         //elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
-
-        
-        
     }
 
-    public double getElevatorPosition() {
-        return elevator_motor_1.getSelectedSensorPosition();
+    public double getVerticalElevatorPosition() {
+        return vertical_elevator_motor_1.getSelectedSensorPosition();
+    }
+
+    public void move_horizontal_elevator(double controller_input){
+        current_horizontal_elevator_position_command = current_horizontal_elevator_position_command + 100*controller_input;
+        //horizontal_elevator_motor.set(ControlMode.Position, current_horizontal_elevator_position_command);
+        horizontal_elevator_motor.set(ControlMode.PercentOutput, 0.25*controller_input);
+    }
+
+    public double getHorizontalElevatorPosition() {
+        return horizontal_elevator_motor.getSelectedSensorPosition();
     }
 
 
@@ -195,8 +200,6 @@ public class Arm {
 
 //  These three methods shouldn't need to be run except inside armPeriodic()
 
-
-
     int actionProgress = 0;
 
     private void ejectPeriodic() {
@@ -217,8 +220,6 @@ public class Arm {
         } else {
             end_action();
         }
-        
-
     }
 
     private void scorePeriodic() {
@@ -244,7 +245,6 @@ public class Arm {
         } else {
             end_action();
         }
-
     }
 
     private void pickupPeriodic() {
@@ -264,7 +264,6 @@ public class Arm {
         } else if (actionProgress == 1) {
 
 
-
             // lock on
 
             // go forward/backward
@@ -277,13 +276,8 @@ public class Arm {
              pneumaticsClose();
          } else {
              end_action(); // possibly move to scoring position?
-
-         } 
-        
+         }
     }
-
-
-
 
 
     /**

@@ -209,7 +209,6 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     pickUpPiecePeriodic();
   
-
     m_arm.armPeriodic();
     m_vision.targeting();
 
@@ -219,7 +218,8 @@ public class Robot extends TimedRobot {
      * block in order for anything in the Command-based framework to work.
      */
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("elevator_position", m_arm.getElevatorPosition());
+    SmartDashboard.putNumber("Vertical elevator_position", m_arm.getVerticalElevatorPosition());
+    SmartDashboard.putNumber("Horizontal elevator_position", m_arm.getHorizontalElevatorPosition());
 
     /*
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
@@ -236,47 +236,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Fid ID 7 Yaw", m_vision.getTag(7).getRotation().getAngle());
     */
     getControllerStates();    // reads all controller inputs
-    if(operator_controller_A_button == true)
-    {
-      m_arm.setIntakeMotor1(.5);
-      // There should be a method to pick an object automatically
 
-      // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
-      //m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
-    }
-    else {
-      m_arm.setIntakeMotor1(0);
-      //m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
-    }
 
-    if(operator_controller_B_button == true)
-    {
-      m_arm.setIntakeMotor2(.5);
-      // There should be a method to AutoBalance on the Charge Station
-      //_RobotPickUpPiece();
-    } else {
-      m_arm.setIntakeMotor2(0);
-      pickupStatus = pickupStatusEnum.idle;
-      //m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
-    }
-    if(operator_controller_X_button == true)
-    { 
-      m_arm.setIntakeMotor1(-.5);
-      // There should be a method that ejects an object
-      m_vision.CS_RGB_measure(); // tests rev color sensor
-      m_vision.CS_Prox_measure(); // tests rev color sensor
+      //m_vision.CS_RGB_measure(); // tests rev color sensor
+      //m_vision.CS_Prox_measure(); // tests rev color sensor
       //SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
-    } else {
-      m_arm.setIntakeMotor1(0);
-    }
 
     double scale = 1.0;
     
-    if(operator_controller_Y_button == true) {
-      m_arm.setIntakeMotor2(-.5);
-    } else {
-      m_arm.setIntakeMotor2(0);
-    }
     /*
     {
       // There should be a method that scores the object
@@ -438,7 +405,36 @@ public class Robot extends TimedRobot {
       //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
     }
 
-    m_arm.move_elevator_height(-1*operator_controller.getRightY());
+    if(operator_controller_A_button == true)
+    {
+      m_arm.setIntakeMotor1(0.5);
+      SmartDashboard.putString("Button State","A pressed");
+      
+    }
+    else if(operator_controller_X_button == true)
+    { 
+      m_arm.setIntakeMotor1(-0.5);
+    }
+    else
+    {
+      m_arm.setIntakeMotor1(0.0);
+      SmartDashboard.putString("Button State","A not pressed");
+    }
+
+    if(operator_controller_B_button == true)
+    {
+      m_arm.setIntakeMotor2(0.5);
+    }
+    else if(operator_controller_Y_button == true) {
+      m_arm.setIntakeMotor2(-.5);
+    }
+    else {
+      m_arm.setIntakeMotor2(0.0);
+      pickupStatus = pickupStatusEnum.idle;
+    }
+
+    m_arm.move_vertical_elevator(-1*operator_controller.getRightY());
+    m_arm.move_horizontal_elevator(-1*operator_controller.getRightX());
   }
 
   @Override
@@ -474,8 +470,6 @@ public class Robot extends TimedRobot {
         m_timeToButtonPress.reset();
     }
   }
-
-  
   
   public void robotInitShuffleboard() {
       // Shuffleboard: Passes options "Red" and "Blue" for Alliance
