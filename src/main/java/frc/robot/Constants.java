@@ -76,6 +76,27 @@ public class Constants {
     public static final double elevator_encoder_lower_position_limit = 0.1;   // ???
     public static final double elevator_encoder_upper_position_limit = 2.3;   // ???
 
+    //home pos
+    public static final double verticalPos1 = 0.0;
+    public static final double horizontalPos1 = 0.0; 
+
+    //game piece ground pickup pos
+    public static final double verticalPos2 = 0.0; 
+    public static final double horizontalPos2 = -20000; //0 to -68000
+
+    //scoring mid cone
+    public static final double verticalPos3 = 450000;
+    public static final double horizontalPos3 = -32000;
+
+    //scoring mid cube
+    public static final double verticalPos4 = 450000;
+    public static final double horizontalPos4 = -32000;
+
+    //scoring high cone
+    public static final double verticalPos5 = 95000;
+    public static final double horizontalPos5 = -40000;
+
+
     public static final class Swerve {
         public static final int pigeonID = 16;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-

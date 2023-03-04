@@ -218,8 +218,15 @@ public class Robot extends TimedRobot {
      * block in order for anything in the Command-based framework to work.
      */
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("Vertical elevator_position", m_arm.getVerticalElevatorPosition());
-    SmartDashboard.putNumber("Horizontal elevator_position", m_arm.getHorizontalElevatorPosition());
+    SmartDashboard.putNumber("Vertical elevator position", m_arm.getVerticalElevatorPosition());
+    SmartDashboard.putNumber("Vertical elevator command", m_arm.current_vertical_elevator_position_command);
+    SmartDashboard.putNumber("Vertical elevator absolute position", m_arm.vertical_elevator_motor_1.getSensorCollection().getIntegratedSensorAbsolutePosition());
+
+    SmartDashboard.putNumber("Horizontal elevator position", m_arm.getHorizontalElevatorPosition());
+    SmartDashboard.putNumber("Horizontal elevator command", m_arm.current_horizontal_elevator_position_command);
+    SmartDashboard.putNumber("Horizontal elevator absolute position", m_arm.horizontal_elevator_motor.getSensorCollection().getIntegratedSensorAbsolutePosition());
+
+    //m_arm.updateFparameter(SmartDashboard.getNumber("Vertical Feed Forward Value", 0.0));
 
     /*
     SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
@@ -424,17 +431,22 @@ public class Robot extends TimedRobot {
     if(operator_controller_B_button == true)
     {
       m_arm.setIntakeMotor2(0.5);
+      m_arm.move_vertical_elevator_to_pos(1000);
+
     }
     else if(operator_controller_Y_button == true) {
       m_arm.setIntakeMotor2(-.5);
+      m_arm.move_vertical_elevator_to_pos(20000);
+
     }
     else {
       m_arm.setIntakeMotor2(0.0);
       pickupStatus = pickupStatusEnum.idle;
     }
 
-    m_arm.move_vertical_elevator(-1*operator_controller.getRightY());
-    m_arm.move_horizontal_elevator(-1*operator_controller.getRightX());
+    //m_arm.move_vertical_elevator(-1*operator_controller.getRightY());
+    
+    m_arm.move_horizontal_elevator(-1*operator_controller.getLeftX());
   }
 
   @Override

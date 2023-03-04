@@ -77,16 +77,20 @@ public class Arm {
 
         vertical_elevator_motor_1.config_kP(0, 0.05, 30);
         vertical_elevator_motor_1.config_kI(0, 0.0, 30);
-        vertical_elevator_motor_1.config_kD(0, 0.0001, 30);
+        vertical_elevator_motor_1.config_kD(0, 0.0, 30);
         vertical_elevator_motor_1.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_1.configClosedloopRamp(0.25);
+
 
         vertical_elevator_motor_2.config_kP(0, 0.05, 30);
         vertical_elevator_motor_2.config_kI(0, 0.0, 30);
-        vertical_elevator_motor_2.config_kD(0, 0.0001, 30);
+        vertical_elevator_motor_2.config_kD(0, 0.0, 30);
         vertical_elevator_motor_2.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_2.configClosedloopRamp(0.25);
 
-        vertical_elevator_motor_1.configAllowableClosedloopError(0, 20, 30);
-        vertical_elevator_motor_2.configAllowableClosedloopError(0, 20, 30);
+
+        //vertical_elevator_motor_1.configAllowableClosedloopError(0, 20, 30);
+        //vertical_elevator_motor_2.configAllowableClosedloopError(0, 20, 30);
 
         vertical_elevator_motor_2.follow(vertical_elevator_motor_1);
         current_vertical_elevator_position_command = vertical_elevator_motor_1.getSelectedSensorPosition();
@@ -138,14 +142,32 @@ public class Arm {
         //elevator_motor_1.set(ControlMode.PercentOutput, controller_input);
     }
 
-    public double getVerticalElevatorPosition() {
-        return vertical_elevator_motor_1.getSelectedSensorPosition();
+    public void move_vertical_elevator_to_pos(double input){
+        current_vertical_elevator_position_command = input;
+        vertical_elevator_motor_1.set(ControlMode.Position, input);
+
     }
 
+    public double getVerticalElevatorPosition() {
+        return vertical_elevator_motor_1.getSelectedSensorPosition();
+        
+    }
+
+/*     public void recalibrateElevatorPositions() {
+        vertical_elevator_motor_1.setSelectedSensorPosition(?, 0, 30);
+        vertical_elevator_motor_2.setSelectedSensorPosition(?, 0, 30);
+        horizontal_elevator_motor.setSelectedSensorPosition(?, 0, 30);
+    } */
+
+    public void updateFparameter(double kF) {
+        vertical_elevator_motor_2.config_kF(0, kF, 30);
+    }
+
+
     public void move_horizontal_elevator(double controller_input){
-        current_horizontal_elevator_position_command = current_horizontal_elevator_position_command + 100*controller_input;
+        current_horizontal_elevator_position_command = current_horizontal_elevator_position_command - 100*controller_input;
         //horizontal_elevator_motor.set(ControlMode.Position, current_horizontal_elevator_position_command);
-        horizontal_elevator_motor.set(ControlMode.PercentOutput, 0.25*controller_input);
+        horizontal_elevator_motor.set(ControlMode.PercentOutput, controller_input);
     }
 
     public double getHorizontalElevatorPosition() {
