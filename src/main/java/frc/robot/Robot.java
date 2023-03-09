@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
-  //XboxController driver_controller = new XboxController(0);
+  XboxController driver_Controller = new XboxController(0);
   XboxController operator_controller = new XboxController(1);
 // maybe put these variables in the constants class? Yes, constants being worked by Gargi, still need these though
   boolean operator_controller_A_button;
@@ -37,9 +37,10 @@ public class Robot extends TimedRobot {
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
+  double speedScale = 0.85;
+
   
   Vision m_vision = new Vision();
-  Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
   Timer m_timeToButtonPress = new Timer();
@@ -100,13 +101,10 @@ public class Robot extends TimedRobot {
   /**
    * This needs to be run whenever the button (assigned to picking up a piece) is pressed. You don't have to worry about adding a debounce to this, it's all handled internally :P
    */
-  private void PickUpPiece() {
+  private void _RobotPickUpPiece() {
     pickupStatus = pickupStatusEnum.in_progress;
   }
 
-  /**
-   * This needs to be run constantly if you want to pickup a game piece. Does not need any parameters.
-   */
   private void pickUpPiecePeriodic() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
@@ -129,11 +127,15 @@ public class Robot extends TimedRobot {
     }
 
     double swerveYchange; // These 5 variables are being used for calculating how far to move towards the game object.
-    double ca = autonomousSwerveCommands[1]; // do not remove these!!!
-    double maxA = Constants.idealConeArea_Standing;
+    double ca = autonomousSwerveCommands[1]; // do not remove these!!! (current area)
+    double idealArea = Constants.idealConeArea_Standing;
     double top_speed = Constants.top_speed_mps;
-    double increment = top_speed / maxA;
+    double increment = top_speed / idealArea;
 
+
+
+
+    SmartDashboard.putNumber("Unofficial status", (ca - idealArea) * increment * -1);
 
 
     if ((Constants.idealConeArea_Standing > (ca - 0.5)) && (Constants.idealConeArea_Standing < (ca + 0.5))) {
@@ -141,7 +143,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("On axis", "true");
 
     } else {
-      swerveYchange = (ca - maxA) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
+      swerveYchange = (ca - idealArea) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
       SmartDashboard.putString("On axis", "false");
 
     }
@@ -186,207 +188,74 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+
+    
+    //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
-    
-    robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
         
   }
  
 
   @Override
   public void robotPeriodic() {
-    pickUpPiecePeriodic();
-  
-
-    m_arm.armPeriodic();
-    m_vision.targeting();
-
-    /* Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-     * commands, running already-scheduled commands, removing finished or interrupted commands,
-     * and running subsystem periodic() methods.  This must be called from the robot's periodic
-     * block in order for anything in the Command-based framework to work.
-     */
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
-    SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
-    SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
-    SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));
-    SmartDashboard.putNumber("position (y)", m_vision.getY());
-    SmartDashboard.putNumber("position (x)", m_vision.getX());
-    SmartDashboard.putNumber("yaw angle", m_vision.getYaw());
-    SmartDashboard.putNumber("AT photonvision yaw", m_vision.target.getBestCameraToTarget().getRotation().getAngle());
+    SmartDashboard.putNumber("SwerveDistanceX", getSwerveDistanceX());
+    SmartDashboard.putNumber("SwerveDistanceY", getSwerveDistanceY());
 
-    SmartDashboard.putNumber("Fid ID 7 Pos X", m_vision.getTag(7).getX());
-    SmartDashboard.putNumber("Fid ID 7 Pos Y", m_vision.getTag(7).getY());
-    SmartDashboard.putNumber("Fid ID 7 Yaw", m_vision.getTag(7).getRotation().getAngle());
-
-    getControllerStates();    // reads all controller inputs
-    if(operator_controller_A_button == true)
-    {
-      // There should be a method to pick an object automatically
-      //m_arm._Eject_Game_Piece();
-
-      // should provide a slow rotation command to the swerve drive, bypassing the normal control scheme
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, -0.5), 0.0, true);
+    if (driver_Controller.getPOV() == 0){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
     }
-    else {
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+    else if (driver_Controller.getPOV() == 90){
+      m_robotContainer.updateSwerveParameters(new Translation2d(2, 0), 0, true);
+
     }
+    else if (driver_Controller.getPOV() == 270){
+      m_robotContainer.updateSwerveParameters(new Translation2d(-2, 0), 0, true);
 
-    if(operator_controller_B_button == true)
-    {
-      // There should be a method to AutoBalance on the Charge Station
-      //m_arm._Pickup_Game_Piece();
-      PickUpPiece();
-    } else {
-      pickupStatus = pickupStatusEnum.idle;
-      m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
     }
-    if(operator_controller_X_button == true)
-    {
-      // There should be a method that ejects an object
-      m_vision.CS_RGB_measure(); // tests rev color sensor
-      m_vision.CS_Prox_measure(); // tests rev color sensor
-      SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
-    }
-    double scale = 1.0;
-    if(operator_controller_Y_button == true)
-    {
-      // There should be a method that scores the object
-      //m_arm._Score_Game_Piece();
-      double targetDistanceX = 1.0;
-      double targetDistanceY = 0;
-      double tol = 0.05;
-
-      double xValue = 0.0;
-      double yVaule = 0.0;
-      double rotationValue = 0.0;
-
-      if (m_vision.getXm() - targetDistanceX < 0.25){
-        scale = 0.75;
-      }
-      else if (m_vision.getX() - targetDistanceX < 0.5){
-        scale = 0.50;
-      }
-      else {
-        scale = 1;
-      }
-
-      //scale = m_vision.getXm() - targetDistanceX;
-
-      if ((Math.abs(m_vision.getZ()) - targetDistanceY) < 1.5){
-        if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
-          yVaule = 0.0;
-          if (m_vision.getYm() < targetDistanceY + 0.1){
-            xValue = -0.75;
-          }
-          else if (m_vision.getYm() > targetDistanceY - 0.1){
-            xValue = 0.75;
-          }
-        }
-        else {
-  
-          if (m_vision.getXm() > targetDistanceX + 0.1){
-      
-            yVaule = -0.75;
-    
-          }
-          else if (m_vision.getXm() < targetDistanceX + 0.1){
-            yVaule = 0.75;
-          }
-
-        }
-      }   
-      else {
-        if ((m_vision.getZ()) > targetDistanceY + 1.5){
-          rotationValue = -0.50;
-        }
-        else if (m_vision.getZ() < targetDistanceY - 1.5){
-          rotationValue = 0.50;
-        }
-        else{
-          rotationValue = 0.0;
-        }
-      }
-
-      /*
-      if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
-        yVaule = 0.0;
-        if (Math.abs(m_vision.getYm()) < 0.1){
-          xValue = 0.0;
-          if ((m_vision.getZ()) > targetDistanceY + 1.5){
-            rotationValue = -0.50;
-          }
-          else if (m_vision.getZ() < targetDistanceY - 1.5){
-            rotationValue = 0.50;
-          }
-          else{
-            rotationValue = 0.0;
-          }
-        }
-        else {
-          if (m_vision.getYm() < targetDistanceY + 0.1){
-            xValue = -0.75;
-          }
-          else if (m_vision.getYm() > targetDistanceY - 0.1){
-            xValue = 0.75;
-          }
-        }
-
-      }
-      else {
-        if (m_vision.getXm() > targetDistanceX + 0.1){
-      
-          yVaule = -0.75;
-  
-        }
-        else if (m_vision.getXm() < targetDistanceX + 0.1){
-          yVaule = 0.75;
-        }
-      }     
-      */
-      m_robotContainer.updateSwerveParameters(new Translation2d(xValue*scale, yVaule*scale), rotationValue, true);
+    else if (driver_Controller.getPOV() == 180){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, -2), 0, true);
 
     }
     else {
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
 
     }
-
-    SmartDashboard.putNumber("auto X", m_vision.getXm());
-    SmartDashboard.putNumber("auto Y", m_vision.getYm());
-    SmartDashboard.putNumber("scale", scale);
-    SmartDashboard.putNumber("z", m_vision.getZ());
-
-
-    /*Maybe we should add the next two methods in the far future
-    if(canAutoPickObj() == true)
-    {
-      driver_controller.setRumble(null, .5);
-    }
-    this method should make the contoller rumble if a game object can be autonomous intaked
-    if(canAutoScoreObj() == true)
-    { 
-      driver_controller.setRumble(null, .5);
-    }
-    this method should make the contoller rumble if a game object can be autonomous scored
-    */
+      
 
    }
 
   @Override
   public void autonomousInit() {
+    m_robotContainer = new RobotContainer();
 
-    autoInitShuffleboard();  // performs autonomous initialization of Shuffleboard usuage
+    /*
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+    */
+
 
   }
 
   @Override
   public void autonomousPeriodic() {
+    /*
+    double distanceY = m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
+    if (distanceY < 5.0){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.95), 0, true);
 
+    }
+    else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+
+    }
+    */
   }
 
   @Override
@@ -396,24 +265,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if (Math.abs(driver_controller_L_X_Axis) <= 0.1){
-      driver_controller_L_X_Axis = 0;
-    }
-    if (Math.abs(driver_controller_L_Y_Axis) <= 0.1){
-      driver_controller_L_Y_Axis = 0;
-    }
-    if (Math.abs(driver_controller_R_X_Axis) <= 0.1){
-      driver_controller_R_X_Axis = 0;
-    }
 
-    if (brake_mode_enabled == true){
-      //m_drive.brake();
-    }
-    else {
-      //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
-    }
 
-    m_arm.move_elevator_height(operator_controller.getRightY());
   }
 
   @Override
@@ -449,8 +302,6 @@ public class Robot extends TimedRobot {
         m_timeToButtonPress.reset();
     }
   }
-
-  
   
   public void robotInitShuffleboard() {
       // Shuffleboard: Passes options "Red" and "Blue" for Alliance
@@ -502,5 +353,12 @@ public class Robot extends TimedRobot {
     // Shuffleboard: Sets Delay Selection to variable and prints to console
     m_delaySelected = m_delay.getSelected();
     System.out.println("Delay Selected: " + m_delaySelected);
+  }
+
+  public double getSwerveDistanceX(){
+    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getX();
+  }
+  public double getSwerveDistanceY(){
+    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
   }
 }
