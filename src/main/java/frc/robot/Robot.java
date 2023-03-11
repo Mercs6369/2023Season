@@ -7,11 +7,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LED_Signaling.LED_State;
 import frc.robot.Vision.gamePiecePipelineIndex;
 import frc.robot.Vision.infoTypeToReturn;
+import frc.robot.commands.TeleopSwerve;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import com.ctre.phoenix.sensors.Pigeon2;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -23,8 +28,10 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  public Pigeon2 gyro;
 
-  //XboxController driver_controller = new XboxController(0);
+
+  XboxController driver_Controller = new XboxController(0);
   XboxController operator_controller = new XboxController(1);
 // maybe put these variables in the constants class? Yes, constants being worked by Gargi, still need these though
   boolean operator_controller_A_button;
@@ -37,13 +44,15 @@ public class Robot extends TimedRobot {
   double driver_controller_R_X_Axis;
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
+  double speedScale = 0.85;
+
   
   Vision m_vision = new Vision();
-  Arm m_arm = new Arm();
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
   Timer m_timeToButtonPress = new Timer();
-
+  Timer charedStationTimer = new Timer();
+  Arm m_arm = new Arm();
 
   double[] autonomousSwerveCommands = {0,0,0};
 
@@ -104,16 +113,6 @@ public class Robot extends TimedRobot {
     pickupStatus = pickupStatusEnum.in_progress;
   }
 
-  /**
-   * This needs to be run constantly if you want to pickup a game piece. Does not need any parameters.
-   */
-
-   private void _RobotEjectPiece() {
-    m_arm._Eject_Game_Piece();
-  }
-  private void _RobotScorePiece() {
-    m_arm._Score_Game_Piece();
-  }
   private void pickUpPiecePeriodic() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
@@ -140,6 +139,7 @@ public class Robot extends TimedRobot {
     double idealArea = Constants.idealConeArea_Standing;
     double top_speed = Constants.top_speed_mps;
     double increment = top_speed / idealArea;
+
 
 
 
@@ -196,196 +196,139 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+
+    
+    //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
-    
-    robotInitShuffleboard();   // performs robot initialization of Shuffleboard usuage
-    m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
+
+    gyro = new Pigeon2(Constants.Swerve.pigeonID);
+    gyro.configFactoryDefault();
+    zeroGyro();
+
+
+    final double xRoll = gyro.getRoll();
+
+
+
         
   }
  
+  boolean gonebackwards = false;
 
   @Override
   public void robotPeriodic() {
-    pickUpPiecePeriodic();
-  
-    m_arm.armPeriodic();
-    m_vision.targeting();
-
-    /* Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-     * commands, running already-scheduled commands, removing finished or interrupted commands,
-     * and running subsystem periodic() methods.  This must be called from the robot's periodic
-     * block in order for anything in the Command-based framework to work.
-     */
+    
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("Vertical elevator position", m_arm.getVerticalElevatorPosition());
-    SmartDashboard.putNumber("Vertical elevator command", m_arm.current_vertical_elevator_position_command);
-    SmartDashboard.putNumber("Vertical elevator absolute position", m_arm.vertical_elevator_motor_1.getSensorCollection().getIntegratedSensorAbsolutePosition());
 
-    SmartDashboard.putNumber("Horizontal elevator position", m_arm.getHorizontalElevatorPosition());
-    SmartDashboard.putNumber("Horizontal elevator command", m_arm.current_horizontal_elevator_position_command);
-    SmartDashboard.putNumber("Horizontal elevator absolute position", m_arm.horizontal_elevator_motor.getSensorCollection().getIntegratedSensorAbsolutePosition());
-
-    //m_arm.updateFparameter(SmartDashboard.getNumber("Vertical Feed Forward Value", 0.0));
-
-    /*
-    SmartDashboard.putNumber("Estimated Cone Node Distance", m_vision.getDistanceLowerConeNode(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0),32.1875));
-    SmartDashboard.putNumber("Game Piece Area", m_vision.getConeInfo(infoTypeToReturn.Area));
-    SmartDashboard.putNumber("Game Piece Yaw", m_vision.getConeInfo(infoTypeToReturn.Yaw));
-    SmartDashboard.putNumber("Game Piece Orientation", m_vision.getConeInfo(infoTypeToReturn.Orientation));
-    SmartDashboard.putNumber("position (y)", m_vision.getY());
-    SmartDashboard.putNumber("position (x)", m_vision.getX());
-    SmartDashboard.putNumber("yaw angle", m_vision.getYaw());
-    SmartDashboard.putNumber("AT photonvision yaw", m_vision.target.getBestCameraToTarget().getRotation().getAngle());
-
-    SmartDashboard.putNumber("Fid ID 7 Pos X", m_vision.getTag(7).getX());
-    SmartDashboard.putNumber("Fid ID 7 Pos Y", m_vision.getTag(7).getY());
-    SmartDashboard.putNumber("Fid ID 7 Yaw", m_vision.getTag(7).getRotation().getAngle());
-    */
-    getControllerStates();    // reads all controller inputs
+    SmartDashboard.putNumber("SwerveDistanceX", getSwerveDistanceX());
+    SmartDashboard.putNumber("SwerveDistanceY", getSwerveDistanceY());
+    SmartDashboard.putNumber("Roll", gyro.getRoll());
+    SmartDashboard.putNumber("Pitch", gyro.getPitch());
+    SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
 
-      //m_vision.CS_RGB_measure(); // tests rev color sensor
-      //m_vision.CS_Prox_measure(); // tests rev color sensor
-      //SmartDashboard.putString("Object Detection Output", m_vision.m_color_sensor.color_string);
 
-    double scale = 1.0;
-    
-    /*
-    {
-      // There should be a method that scores the object
-      double targetDistanceX = 1.0;
-      double targetDistanceY = 0;
-      double tol = 0.05;
 
-      double xValue = 0.0;
-      double yVaule = 0.0;
-      double rotationValue = 0.0;
-
-      if (m_vision.getXm() - targetDistanceX < 0.25){
-        scale = 0.75;
-      }
-      else if (m_vision.getX() - targetDistanceX < 0.5){
-        scale = 0.50;
-      }
-      else {
-        scale = 1;
-      }
-
-      //scale = m_vision.getXm() - targetDistanceX;
-
-      if ((Math.abs(m_vision.getZ()) - targetDistanceY) < 1.5){
-        if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
-          yVaule = 0.0;
-          if (m_vision.getYm() < targetDistanceY + 0.1){
-            xValue = -0.75;
-          }
-          else if (m_vision.getYm() > targetDistanceY - 0.1){
-            xValue = 0.75;
-          }
-        }
-        else {
-  
-          if (m_vision.getXm() > targetDistanceX + 0.1){
-      
-            yVaule = -0.75;
-    
-          }
-          else if (m_vision.getXm() < targetDistanceX + 0.1){
-            yVaule = 0.75;
-          }
-
-        }
-      }   
-      else {
-        if ((m_vision.getZ()) > targetDistanceY + 1.5){
-          rotationValue = -0.50;
-        }
-        else if (m_vision.getZ() < targetDistanceY - 1.5){
-          rotationValue = 0.50;
-        }
-        else{
-          rotationValue = 0.0;
-        }
-      }
-
-      /*
-      if ((Math.abs(m_vision.getXm() - targetDistanceX)) < 0.15){
-        yVaule = 0.0;
-        if (Math.abs(m_vision.getYm()) < 0.1){
-          xValue = 0.0;
-          if ((m_vision.getZ()) > targetDistanceY + 1.5){
-            rotationValue = -0.50;
-          }
-          else if (m_vision.getZ() < targetDistanceY - 1.5){
-            rotationValue = 0.50;
-          }
-          else{
-            rotationValue = 0.0;
-          }
-        }
-        else {
-          if (m_vision.getYm() < targetDistanceY + 0.1){
-            xValue = -0.75;
-          }
-          else if (m_vision.getYm() > targetDistanceY - 0.1){
-            xValue = 0.75;
-          }
-        }
-
-      }
-      
-      else {
-        if (m_vision.getXm() > targetDistanceX + 0.1){
-      
-          yVaule = -0.75;
-  
-        }
-        else if (m_vision.getXm() < targetDistanceX + 0.1){
-          yVaule = 0.75;
-        }
-      }     
-      
-      m_robotContainer.updateSwerveParameters(new Translation2d(xValue*scale, yVaule*scale), rotationValue, true);
+    if (driver_Controller.getPOV() == 0){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
+    }
+    else if (driver_Controller.getPOV() == 90){
+      m_robotContainer.updateSwerveParameters(new Translation2d(2, 0), 0, true);
 
     }
-    
+    else if (driver_Controller.getPOV() == 270){
+      m_robotContainer.updateSwerveParameters(new Translation2d(-2, 0), 0, true);
+
+    }
+    else if (driver_Controller.getPOV() == 180){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, -2), 0, true);
+
+    }
     else {
-      m_robotContainer.updateSwerveParameters(new Translation2d(0.0, 0.0), 0.0, false);
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
 
     }
 
-    SmartDashboard.putNumber("auto X", m_vision.getXm());
-    SmartDashboard.putNumber("auto Y", m_vision.getYm());
-    SmartDashboard.putNumber("scale", scale);
-    SmartDashboard.putNumber("z", m_vision.getZ());
+    if (operator_controller.getRawButton(1) == true){
+      m_arm.setIntakeMotor(0.9);
+    }
+    else if (operator_controller.getRawButton(4) == true) {
+      m_arm.setIntakeMotor(-0.9);
+    }
+    else {
+      m_arm.setIntakeMotor(0.0);
+    }
 
 
-    /*Maybe we should add the next two methods in the far future
-    if(canAutoPickObj() == true)
-    {
-      driver_controller.setRumble(null, .5);
+    if ((driver_Controller.getRawButton(1)) == true){
+      charedStationTimer.start();
+      String xy = "";
+      if (charedStationTimer.get() < 3){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
+        xy = "timer";
+
+      }
+      else if ((gyro.getRoll()) > -3.735 + 0.5){
+        if (gonebackwards == false){
+          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
+          xy = "forward fast";
+        }
+        else {
+          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.3), 0, true);
+          xy = "forward slow";
+        }
+
+      }
+      else if ((gyro.getRoll()) < -3.705 - 0.5){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.4), 0, true);
+        xy = "backwards";
+        gonebackwards = true;
+      }
+      else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+        xy = "level";
+
+      }
+
+      SmartDashboard.putString("Status", xy);
+
+
     }
-    this method should make the contoller rumble if a game object can be autonomous intaked
-    if(canAutoScoreObj() == true)
-    { 
-      driver_controller.setRumble(null, .5);
-    }
-    this method should make the contoller rumble if a game object can be autonomous scored
-    */
+
+
+      
 
    }
 
   @Override
   public void autonomousInit() {
+    m_robotContainer = new RobotContainer();
+        /*
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    autoInitShuffleboard();  // performs autonomous initialization of Shuffleboard usuage
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+    */
+
 
   }
 
   @Override
   public void autonomousPeriodic() {
+    /*
+    double distanceY = m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
+    if (distanceY < 5.0){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.95), 0, true);
 
+    }
+    else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+
+    }
+    */
   }
 
   @Override
@@ -395,58 +338,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if (Math.abs(driver_controller_L_X_Axis) <= 0.1){
-      driver_controller_L_X_Axis = 0;
-    }
-    if (Math.abs(driver_controller_L_Y_Axis) <= 0.1){
-      driver_controller_L_Y_Axis = 0;
-    }
-    if (Math.abs(driver_controller_R_X_Axis) <= 0.1){
-      driver_controller_R_X_Axis = 0;
-    }
 
-    if (brake_mode_enabled == true){
-      //m_drive.brake();
-    }
-    else {
-      //m_drive.drive(new Translation2d(5*driver_controller_L_X_Axis, 5*driver_controller_L_Y_Axis), 1.6*driver_controller_R_X_Axis, false);
-    }
 
-    if(operator_controller_A_button == true)
-    {
-      m_arm.setIntakeMotor1(0.5);
-      SmartDashboard.putString("Button State","A pressed");
-      
-    }
-    else if(operator_controller_X_button == true)
-    { 
-      m_arm.setIntakeMotor1(-0.5);
-    }
-    else
-    {
-      m_arm.setIntakeMotor1(0.0);
-      SmartDashboard.putString("Button State","A not pressed");
-    }
-
-    if(operator_controller_B_button == true)
-    {
-      m_arm.setIntakeMotor2(0.5);
-      m_arm.move_vertical_elevator_to_pos(1000);
-
-    }
-    else if(operator_controller_Y_button == true) {
-      m_arm.setIntakeMotor2(-.5);
-      m_arm.move_vertical_elevator_to_pos(20000);
-
-    }
-    else {
-      m_arm.setIntakeMotor2(0.0);
-      pickupStatus = pickupStatusEnum.idle;
-    }
-
-    //m_arm.move_vertical_elevator(-1*operator_controller.getRightY());
-    
-    m_arm.move_horizontal_elevator(-1*operator_controller.getLeftX());
   }
 
   @Override
@@ -533,5 +426,20 @@ public class Robot extends TimedRobot {
     // Shuffleboard: Sets Delay Selection to variable and prints to console
     m_delaySelected = m_delay.getSelected();
     System.out.println("Delay Selected: " + m_delaySelected);
+  }
+
+  public double getSwerveDistanceX(){
+    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getX();
+  }
+  public double getSwerveDistanceY(){
+    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
+  }
+
+  public void zeroGyro(){
+    gyro.setYaw(0);
+}
+
+  public Rotation2d getYaw() {
+      return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
   }
 }

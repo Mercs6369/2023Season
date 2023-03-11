@@ -129,6 +129,13 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+
+    public void setToBrake(){
+        for(SwerveModule mod : mSwerveMods){
+            mod.setToBrake();
+        }
+    }
+
     public void updateAutoCommandValues(Translation2d strafe, double rotate, boolean autoEnable) {
         this.autoTranslate = strafe;
         this.autoRotation = rotate;
