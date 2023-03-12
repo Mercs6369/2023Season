@@ -246,7 +246,7 @@ public class Robot extends TimedRobot {
 
     }
 
-    if (operator_controller.getRawButton(1) == true){
+    /* if (operator_controller.getRawButton(1) == true){
       m_arm.setIntakeMotor(0.9);
     }
     else if (operator_controller.getRawButton(3) == true) {
@@ -254,7 +254,7 @@ public class Robot extends TimedRobot {
     }
     else {
       m_arm.setIntakeMotor(0.0);
-    }
+    } */
 
 
     if ((driver_Controller.getRawButton(1)) == true){
