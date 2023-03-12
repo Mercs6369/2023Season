@@ -36,19 +36,39 @@ public class Constants {
         public static final double intake_arm_position = 0.18;
         public static final double main_arm_position = -3000;
     }
-    public static final class Cube_Pickup_Position {   // cube pickup position
+    public static final class Cube_Ground_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
-    public static final class Cone_Pickup_Position {   // cone pickup position
+    public static final class Cube_Station_Pickup_Position {   // cube pickup position
+        public static final double intake_arm_position = 0.0;
+        public static final double main_arm_position = 0.0;
+    }
+    public static final class Cone_Ground_Upright_Pickup_Position {   // cone pickup position
         public static final double intake_arm_position = 0.35;
         public static final double main_arm_position = -20356;
+    }
+    public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
+        public static final double intake_arm_position = 0.0;
+        public static final double main_arm_position = 0.0;
+    }
+    public static final class Cone_Station_Pickup_Position {   // cube pickup position
+        public static final double intake_arm_position = 0.0;
+        public static final double main_arm_position = 0.0;
+    }
+    public static final class Cone_Community_Score_Position {   // cone middle scoring position
+        public static final double intake_arm_position = 0.0;
+        public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Mid_Score_Position {   // cone middle scoring position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Top_Score_Position {   // cone top scoring position
+        public static final double intake_arm_position = 0.0;
+        public static final double main_arm_position = 0.0;
+    }
+    public static final class Cube_Community_Score_Position {   // cube middle scoring position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }

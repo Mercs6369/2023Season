@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -34,20 +35,45 @@ public class Arm {
     enum ArmStateEnum {
         Idle,
         Scoring,
-        Ejecting,
         Picking_up,
         error
+    }
+
+    enum GamePieces {
+        Cube,
+        Cone,
+        Neither
+    }
+
+    enum ActiveScorePosition {
+        Top,
+        Middle,
+        Community,
+        Neither
+    }
+
+    enum ActivePickPosition {
+        CubeStation,
+        CubeGround,
+        ConeStation,
+        ConeGroundUp,
+        ConeGroundSide,
+        Neither
     }
 
     // Used to time how long actions take.
     Timer m_time = new Timer();
 
+    double last_button_time = 1;
+
     // GLOBAL_ARM_STATE is used quite a bit.
     ArmStateEnum GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+    GamePieces GLOBAL_OBJECT_STATE = GamePieces.Neither;
+    ActiveScorePosition GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
+    ActivePickPosition GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
 
     // Used to help time/document/run any actions.
     boolean action_finished = false;
-    
     double current_main_arm_position_command, current_intake_arm_position_command;
 
     Arm (){
@@ -140,15 +166,6 @@ public class Arm {
         }
     }
 
-    /**
-     * Call this whenever you need to eject a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
-     */
-    public void _Eject_Game_Piece() {
-        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
-            GLOBAL_ARM_STATE = ArmStateEnum.Ejecting;
-            m_time.start();
-        }
-    }
 
     /**
      * Call this whenever you need to pickup a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
@@ -169,56 +186,11 @@ public class Arm {
         System.out.println("Action duration for the action "+GLOBAL_ARM_STATE+" was (in secs) "+m_time.get()+".");
         m_time.reset();
         m_time.stop();
-        GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+        // GLOBAL_ARM_STATE = ArmStateEnum.Idle;
         actionProgress = 0;
     }
 
-//  These three methods shouldn't need to be run except inside armPeriodic()
-
-    private void ejectPeriodic() {
-       
-        if (actionProgress == 0){
-            pneumaticsOpen();
-
-            if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
-        } else if (actionProgress == 1) {
-
-            // make sure the arm is out of the robot perimeter, so that when we drop the object, we don't drop it on the bot. 
-
-            if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
-        } else {
-            end_action();
-        }
-    }
-
-    private void scorePeriodic() {
-
-        if (actionProgress == 0) {
-           // make sure the robot is in the correct position
-
-           if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
-        } else if (actionProgress == 1) {
-            // angle the arm to scoring position
-
-            if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
-        } else if (actionProgress == 2) {
-            pneumaticsOpen();
-
-            if (true) { // this if statment needs to be true if we're ready to go onto the next state
-                actionProgress ++;
-            }
-        } else {
-            end_action();
-        }
-    }
+    //  These three methods shouldn't need to be run except inside armPeriodic()
 
     private void pickupPeriodic() {
         
@@ -254,15 +226,95 @@ public class Arm {
 
     /**
      * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
+     * button array is 
+     * 0 = X
+     * 1 = Y
+     * 2 = A
+     * 3 = B
+     * 4 = Start
+     * 5 = Back
+     * 6 = LB
+     * 7 = RB
+     * 
      */
-    public void armPeriodic() {
-        
+    public void armPeriodic(boolean operator_buttons[], double operator_triggers[]) {
+
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[6]) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
+            GLOBAL_OBJECT_STATE = GamePieces.Neither;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[7]) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Scoring;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up && operator_buttons[7]) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring && operator_buttons[6]) {
+            GLOBAL_ARM_STATE = ArmStateEnum.Idle;
+        }
+
+        if (operator_buttons[4]) {
+            GLOBAL_OBJECT_STATE = GamePieces.Cone;
+            GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
+        } else if (operator_buttons[5]) {
+            GLOBAL_OBJECT_STATE = GamePieces.Cube;
+            GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
+        }
+
         if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
-            scorePeriodic();
-        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Ejecting) {
-            ejectPeriodic();
-        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
-            pickupPeriodic();
+            if (operator_buttons[0] || operator_buttons[3]) {
+                GLOBAL_SCORE_POSITION = ActiveScorePosition.Middle;
+            } else if (operator_buttons[1]) {
+                GLOBAL_SCORE_POSITION = ActiveScorePosition.Top;
+            } else if (operator_buttons[2]) {
+                GLOBAL_SCORE_POSITION = ActiveScorePosition.Community;
+            }
+        }
+
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
+            GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
+        } else {
+            setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
+        }
+
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
+            if ((operator_buttons[0] || operator_buttons[1] || operator_buttons[3]) && GLOBAL_OBJECT_STATE == GamePieces.Cube) {
+                GLOBAL_PICK_POSITION = ActivePickPosition.CubeStation;
+            }  else if ((operator_buttons[2]) && GLOBAL_OBJECT_STATE == GamePieces.Cube) {
+                GLOBAL_PICK_POSITION = ActivePickPosition.CubeGround;
+            }  else if ((operator_buttons[2]) && GLOBAL_OBJECT_STATE == GamePieces.Cone) {
+                GLOBAL_PICK_POSITION = ActivePickPosition.ConeGroundSide;
+            }  else if ((operator_buttons[0] || operator_buttons[3]) && GLOBAL_OBJECT_STATE == GamePieces.Cone) {
+                GLOBAL_PICK_POSITION = ActivePickPosition.ConeGroundUp;
+            }  else if ((operator_buttons[1]) && GLOBAL_OBJECT_STATE == GamePieces.Cone) {
+                GLOBAL_PICK_POSITION = ActivePickPosition.ConeStation;
+            }  
+        }
+
+        
+        SmartDashboard.putString("Mode", GLOBAL_ARM_STATE.toString());
+        SmartDashboard.putString("Object", GLOBAL_OBJECT_STATE.toString());
+        SmartDashboard.putString("ScorePos", GLOBAL_SCORE_POSITION.toString());
+        SmartDashboard.putString("PickPos", GLOBAL_PICK_POSITION.toString());
+
+        if (actionProgress == 0) {
+           // make sure the robot is in the correct position
+
+           if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else if (actionProgress == 1) {
+            // angle the arm to scoring position
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else if (actionProgress == 2) {
+            pneumaticsOpen();
+
+            if (true) { // this if statment needs to be true if we're ready to go onto the next state
+                actionProgress ++;
+            }
+        } else {
+            end_action();
         }
     }
 }

@@ -46,6 +46,8 @@ public class Robot extends TimedRobot {
   int driver_controller_POV_button;
   double speedScale = 0.85;
 
+  boolean[] operator_buttons = {false, false, false, false, false, false, false, false};
+  double[] operator_triggers = new double[2];
   
   Vision m_vision = new Vision();
   LED_Signaling LEDInstance = new LED_Signaling();
@@ -221,6 +223,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Main Arm Position", m_arm.get_main_arm_position());
     SmartDashboard.putNumber("Intake Arm Position Throughbore", m_arm.get_intake_arm_position());
 
+    getControllerStates();
+
 
     if (driver_Controller.getPOV() == 0){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
@@ -325,14 +329,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
+    m_arm.armPeriodic(operator_buttons, operator_triggers);
     if (operator_controller.getRawButton(2) == true){
       //m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
       m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
     }
     else if (operator_controller.getRawButton(4) == true) {
       //m_arm.move_main_arm_to_position(Constants.Cone_Pickup_Position.main_arm_position);
-      m_arm.move_intake_arm_to_position(Constants.Cone_Pickup_Position.intake_arm_position);
+      //m_arm.move_intake_arm_to_position(Constants.Cone_Pickup_Position.intake_arm_position);
     }
     else {
     }
@@ -355,6 +359,16 @@ public class Robot extends TimedRobot {
     operator_controller_B_button = operator_controller.getBButton();
     operator_controller_X_button = operator_controller.getXButton();
     operator_controller_Y_button = operator_controller.getYButton();
+    operator_buttons[0] = operator_controller_X_button;
+    operator_buttons[1] = operator_controller_Y_button;
+    operator_buttons[2] = operator_controller_A_button;
+    operator_buttons[3] = operator_controller_B_button;
+    operator_buttons[4] = operator_controller.getStartButton();
+    operator_buttons[5] = operator_controller.getBackButton();
+    operator_buttons[6] = operator_controller.getLeftBumperReleased();
+    operator_buttons[7] = operator_controller.getRightBumperReleased();
+    operator_triggers[0] = operator_controller.getLeftTriggerAxis();
+    operator_triggers[1] = operator_controller.getRightTriggerAxis();
     // brake_mode_enabled = driver_controller.getStartButton() && driver_controller.getBackButton();
     int m_buttonPressCount = 0;
     double obtainedButtonTime = 0;
