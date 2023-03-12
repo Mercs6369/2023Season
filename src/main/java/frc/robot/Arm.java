@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -109,7 +110,7 @@ public class Arm {
     public void move_intake_arm_to_position(double input){
         current_intake_arm_position_command = input;
         //intake_arm_motor.set(ControlMode.PercentOutput, 3.0*(get_intake_arm_position() - input));
-        intake_arm_motor.set(intake_arm_PID.calculate(get_intake_arm_position(), input));
+        intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
     public double get_intake_arm_position() {
@@ -154,6 +155,8 @@ public class Arm {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
             m_time.start();
+            //move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+            //move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
         }
     }
 
