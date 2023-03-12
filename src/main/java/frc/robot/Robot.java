@@ -51,11 +51,10 @@ public class Robot extends TimedRobot {
   LED_Signaling LEDInstance = new LED_Signaling();
   long lastnano_time = 0;
   Timer m_timeToButtonPress = new Timer();
-  Timer charedStationTimer = new Timer();
+  Timer chargedStationTimer = new Timer();
   Arm m_arm = new Arm();
 
   double[] autonomousSwerveCommands = {0,0,0};
-
 
   // Shuffleboard: Declares variables associated with Alliance Selection
   private final SendableChooser<String> m_alliance = new SendableChooser<>();
@@ -91,8 +90,6 @@ public class Robot extends TimedRobot {
   private static final String kThreeSeconds = "Three Seconds";
   private static final String kFiveSeconds = "Five Seconds";
   private String m_delaySelected;
-
-
 
 /*
    * 
@@ -196,8 +193,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-
-    
     //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
@@ -206,11 +201,7 @@ public class Robot extends TimedRobot {
     gyro.configFactoryDefault();
     zeroGyro();
 
-
     final double xRoll = gyro.getRoll();
-
-
-
         
   }
  
@@ -227,7 +218,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Pitch", gyro.getPitch());
     SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
-
+    SmartDashboard.putNumber("Main Arm Position", m_arm.get_main_arm_position());
+    SmartDashboard.putNumber("Intake Arm Position Throughbore", m_arm.get_intake_arm_position());
 
 
     if (driver_Controller.getPOV() == 0){
@@ -253,7 +245,7 @@ public class Robot extends TimedRobot {
     if (operator_controller.getRawButton(1) == true){
       m_arm.setIntakeMotor(0.9);
     }
-    else if (operator_controller.getRawButton(4) == true) {
+    else if (operator_controller.getRawButton(3) == true) {
       m_arm.setIntakeMotor(-0.9);
     }
     else {
@@ -262,9 +254,9 @@ public class Robot extends TimedRobot {
 
 
     if ((driver_Controller.getRawButton(1)) == true){
-      charedStationTimer.start();
+      chargedStationTimer.start();
       String xy = "";
-      if (charedStationTimer.get() < 3){
+      if (chargedStationTimer.get() < 3){
         m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
         xy = "timer";
 
@@ -293,11 +285,7 @@ public class Robot extends TimedRobot {
 
       SmartDashboard.putString("Status", xy);
 
-
-    }
-
-
-      
+    }   
 
    }
 
@@ -312,7 +300,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     */
-
 
   }
 
@@ -339,6 +326,16 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    if (operator_controller.getRawButton(2) == true){
+      m_arm.move_main_arm_to_position(10000);
+    }
+    else if (operator_controller.getRawButton(4) == true) {
+      m_arm.move_main_arm_to_position(14000);
+    }
+    else {
+    }
+
+    m_arm.move_intake_arm_to_position(0.50);
 
   }
 
