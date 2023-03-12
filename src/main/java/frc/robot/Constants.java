@@ -33,16 +33,16 @@ public class Constants {
 
     /* Robot Arm Position Combos */
     public static final class Start_Arm_Position {   // starting position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = 0.18;
+        public static final double main_arm_position = -3000;
     }
     public static final class Cube_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Pickup_Position {   // cone pickup position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = 0.35;
+        public static final double main_arm_position = -20356;
     }
     public static final class Cone_Mid_Score_Position {   // cone middle scoring position
         public static final double intake_arm_position = 0.0;
@@ -69,15 +69,15 @@ public class Constants {
             COTSFalconSwerveConstants.SwerveX();
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(24);
-        public static final double wheelBase = Units.inchesToMeters(28);
+        public static final double trackWidth = Units.inchesToMeters(19);
+        public static final double wheelBase = Units.inchesToMeters(23);
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Swerve Kinematics 
          * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
          public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-            new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
-            new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+            new Translation2d(-wheelBase / 2.0, +trackWidth / 2.0),
+            new Translation2d(+wheelBase / 2.0, +trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
             new Translation2d(+wheelBase / 2.0, -trackWidth / 2.0));
 
@@ -173,7 +173,7 @@ public class Constants {
             public static final int driveMotorID = 39;
             public static final int angleMotorID = 40;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(306.7 + 180 + 90);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(75.9 + 90);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

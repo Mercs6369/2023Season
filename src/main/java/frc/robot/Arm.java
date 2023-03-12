@@ -73,20 +73,22 @@ public class Arm {
         main_arm_motor_1.config_kI(0, 0.0, 30);
         main_arm_motor_1.config_kD(0, 0.0, 30);
         main_arm_motor_1.config_kF(0, 0.0, 30);
-        main_arm_motor_1.configClosedloopRamp(0.25);
+        main_arm_motor_1.configClosedloopRamp(0.5);
 
         main_arm_motor_2.config_kP(0, 0.05, 30);
         main_arm_motor_2.config_kI(0, 0.0, 30);
         main_arm_motor_2.config_kD(0, 0.0, 30);
         main_arm_motor_2.config_kF(0, 0.0, 30);
-        main_arm_motor_2.configClosedloopRamp(0.25);
+        main_arm_motor_2.configClosedloopRamp(0.5);
 
         main_arm_motor_2.follow(main_arm_motor_1);
         current_main_arm_position_command = main_arm_motor_1.getSelectedSensorPosition();
 
         intake_arm_motor.setInverted(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
-        intake_arm_motor.configOpenloopRamp(0.15);
+        //intake_arm_motor.configPeakOutputForward(0.8, 30);
+        //intake_arm_motor.configPeakOutputReverse(0.8, 30);
+        intake_arm_motor.configOpenloopRamp(0.5);
     }
     
     public void setIntakeMotor(double input){
@@ -109,8 +111,8 @@ public class Arm {
     
     public void move_intake_arm_to_position(double input){
         current_intake_arm_position_command = input;
-        //intake_arm_motor.set(ControlMode.PercentOutput, 3.0*(get_intake_arm_position() - input));
-        intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
+        intake_arm_motor.set(ControlMode.PercentOutput, 3.0*(get_intake_arm_position() - input));
+        //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
     public double get_intake_arm_position() {

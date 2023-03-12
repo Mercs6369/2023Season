@@ -327,16 +327,15 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (operator_controller.getRawButton(2) == true){
-      m_arm.move_main_arm_to_position(10000);
+      //m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
     }
     else if (operator_controller.getRawButton(4) == true) {
-      m_arm.move_main_arm_to_position(14000);
+      //m_arm.move_main_arm_to_position(Constants.Cone_Pickup_Position.main_arm_position);
+      m_arm.move_intake_arm_to_position(Constants.Cone_Pickup_Position.intake_arm_position);
     }
     else {
     }
-
-    m_arm.move_intake_arm_to_position(0.50);
-
   }
 
   @Override
