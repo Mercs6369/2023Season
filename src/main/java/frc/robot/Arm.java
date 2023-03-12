@@ -9,13 +9,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.MathUtil;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.math.MathUtil;
 
 public class Arm {
     WPI_TalonFX intake = new WPI_TalonFX(Constants.INTAKE_ROLLER_MOTOR_1_ID);
@@ -26,11 +21,6 @@ public class Arm {
     DutyCycleEncoder intake_arm_encoder = new DutyCycleEncoder(intake_arm_encoder_raw);
     PIDController intake_arm_PID = new PIDController(0.25, 0, 0);
     int actionProgress = 0;
-
-    Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);    
-    //Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
-    DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
-    DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
     enum ArmStateEnum {
         Idle,
@@ -76,11 +66,7 @@ public class Arm {
     boolean action_finished = false;
     double current_main_arm_position_command, current_intake_arm_position_command;
 
-    Arm (){
-        phCompressor.enableDigital();
-        //phCompressor.enableAnalog(119, 120);
-        pneumaticsOpen();
-        
+    Arm (){       
         intake.configFactoryDefault();
         intake_arm_motor.configFactoryDefault();
         // elevator motor setups
@@ -145,17 +131,6 @@ public class Arm {
         return intake_arm_encoder.getAbsolutePosition();
     }
 
-    // Pneumatics
-    public void pneumaticsClose(){
-        LeftClawSolenoid.set(Value.kForward);
-        RightClawSolenoid.set(Value.kForward);
-    }
-
-    public void pneumaticsOpen(){
-        LeftClawSolenoid.set(Value.kReverse);
-        RightClawSolenoid.set(Value.kReverse);
-    }
-
         /**
      * Call this whenever you need to score a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
@@ -195,7 +170,6 @@ public class Arm {
     private void pickupPeriodic() {
         
         if (actionProgress == 0) {
-            pneumaticsOpen();
 
             if (true) { // this if statment needs to be true if we're ready to go onto the next state
                 actionProgress ++;
@@ -218,7 +192,6 @@ public class Arm {
                 actionProgress ++;
             }
          } else if (actionProgress == 2) {
-             pneumaticsClose();
          } else {
              end_action(); // possibly move to scoring position?
          }
@@ -309,7 +282,6 @@ public class Arm {
                 actionProgress ++;
             }
         } else if (actionProgress == 2) {
-            pneumaticsOpen();
 
             if (true) { // this if statment needs to be true if we're ready to go onto the next state
                 actionProgress ++;
