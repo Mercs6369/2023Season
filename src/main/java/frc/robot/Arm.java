@@ -20,6 +20,10 @@ public class Arm {
     DigitalInput intake_arm_encoder_raw = new DigitalInput(Constants.INTAKE_ARM_ENCODER_PWM_CHANNEL);
     DutyCycleEncoder intake_arm_encoder = new DutyCycleEncoder(intake_arm_encoder_raw);
     PIDController intake_arm_PID = new PIDController(0.25, 0, 0);
+
+    DigitalInput main_arm_encoder_raw = new DigitalInput(Constants.MAIN_ARM_ENCODER_PWM_CHANNEL);
+    DutyCycleEncoder main_arm_encoder = new DutyCycleEncoder(main_arm_encoder_raw);
+
     int actionProgress = 0;
 
     enum ArmStateEnum {
@@ -101,6 +105,8 @@ public class Arm {
         //intake_arm_motor.configPeakOutputForward(0.8, 30);
         //intake_arm_motor.configPeakOutputReverse(0.8, 30);
         intake_arm_motor.configOpenloopRamp(0.5);
+
+        recal_intake_encoder();
     }
     
     public void setIntakeMotor(double input){
@@ -117,18 +123,21 @@ public class Arm {
     }
 
     public double get_main_arm_position_throughbore() {
-        //return main_arm_encoder.getAbsolutePosition();
-        return 0;
+        return main_arm_encoder.getAbsolutePosition();
     }
     
     public void move_intake_arm_to_position(double input){
         current_intake_arm_position_command = input;
-        intake_arm_motor.set(ControlMode.PercentOutput, 3.0*(get_intake_arm_position() - input));
+        intake_arm_motor.set(ControlMode.PercentOutput, 1.5*(get_intake_arm_position() - input));
         //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
     public double get_intake_arm_position() {
         return intake_arm_encoder.getAbsolutePosition();
+    }
+
+    public void recal_intake_encoder() {
+        //intake_arm_encoder.setPositionOffset(intake_arm_encoder.getAbsolutePosition());
     }
 
         /**

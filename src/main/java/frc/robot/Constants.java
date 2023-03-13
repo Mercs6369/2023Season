@@ -33,7 +33,7 @@ public class Constants {
 
     /* Robot Arm Position Combos */
     public static final class Start_Arm_Position {   // starting position
-        public static final double intake_arm_position = 0.18;
+        public static final double intake_arm_position = 0.42;
         public static final double main_arm_position = -3000;
     }
     public static final class Cube_Ground_Pickup_Position {   // cube pickup position
@@ -45,8 +45,8 @@ public class Constants {
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Ground_Upright_Pickup_Position {   // cone pickup position
-        public static final double intake_arm_position = 0.35;
-        public static final double main_arm_position = -20356;
+        public static final double intake_arm_position = 0.10;
+        public static final double main_arm_position = -20000;
     }
     public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;
