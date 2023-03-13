@@ -263,22 +263,22 @@ public class Robot extends TimedRobot {
       chargedStationTimer.start();
       String xy = "";
       if (chargedStationTimer.get() < 3){
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.6), 0, true);
         xy = "timer";
 
       }
-      else if ((gyro.getRoll()) > -3.735 + 0.5){
+      else if ((gyro.getRoll()) > 0 + 0.5){
         if (gonebackwards == false){
           m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
           xy = "forward fast";
         }
         else {
-          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.3), 0, true);
+          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.25), 0, true);
           xy = "forward slow";
         }
 
       }
-      else if ((gyro.getRoll()) < -3.705 - 0.5){
+      else if ((gyro.getRoll()) < 0 - 0.5){
         m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.4), 0, true);
         xy = "backwards";
         gonebackwards = true;
@@ -291,7 +291,7 @@ public class Robot extends TimedRobot {
 
       SmartDashboard.putString("Status", xy);
 
-    }   
+    }  
 
    }
 
