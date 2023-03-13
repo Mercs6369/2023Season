@@ -106,7 +106,7 @@ public class Arm {
         //intake_arm_motor.configPeakOutputReverse(0.8, 30);
         intake_arm_motor.configOpenloopRamp(0.5);
 
-        recal_intake_encoder();
+        recalibrate_intake_encoder();
     }
     
     public void setIntakeMotor(double input){
@@ -136,8 +136,13 @@ public class Arm {
         return intake_arm_encoder.getAbsolutePosition();
     }
 
-    public void recal_intake_encoder() {
-        //intake_arm_encoder.setPositionOffset(intake_arm_encoder.getAbsolutePosition());
+    public void recalibrate_intake_arm_encoder() {
+        //intake_arm_encoder.setPositionOffset(0.9);
+    }
+
+    public void recalibrate_main_arm_encoder() {
+        //main_arm_encoder.setPositionOffset(0.9);
+        //main_arm_motor_1.setSelectedSensorPosition(0.0, 0, 30)
     }
 
         /**
