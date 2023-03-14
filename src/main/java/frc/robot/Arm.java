@@ -1,33 +1,32 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.MathUtil;
+
+import java.util.TimerTask;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Arm {
-    WPI_TalonFX intake = new WPI_TalonFX(Constants.INTAKE_ROLLER_MOTOR_1_ID);
-    WPI_TalonFX main_arm_motor_1 = new WPI_TalonFX(Constants.MAIN_ARM_MOTOR_1_ID, "rio"); 
-    WPI_TalonFX main_arm_motor_2 = new WPI_TalonFX(Constants.MAIN_ARM_MOTOR_2_ID, "rio");
-    WPI_TalonSRX intake_arm_motor = new WPI_TalonSRX(Constants.INTAKE_ARM_MOTOR_ID);
-    DigitalInput intake_arm_encoder_raw = new DigitalInput(Constants.INTAKE_ARM_ENCODER_PWM_CHANNEL);
-    DutyCycleEncoder intake_arm_encoder = new DutyCycleEncoder(intake_arm_encoder_raw);
-    PIDController intake_arm_PID = new PIDController(0.25, 0, 0);
-    int actionProgress = 0;
 
     Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);    
-    //Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+//Compressor phCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
     DoubleSolenoid LeftClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     DoubleSolenoid RightClawSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
 
@@ -38,85 +37,74 @@ public class Arm {
         Picking_up,
         error
     }
-
-    // Used to time how long actions take.
-    Timer m_time = new Timer();
-
+    
     // GLOBAL_ARM_STATE is used quite a bit.
     ArmStateEnum GLOBAL_ARM_STATE = ArmStateEnum.Idle;
 
+    // I don't think this has a use.
+    double arm_length;
+    double current_vertical_elevator_position_command, current_horizontal_elevator_position_command;
+    
+    // Used to time how long actions take.
+    Timer m_time = new Timer();
+
     // Used to help time/document/run any actions.
     boolean action_finished = false;
-    
-    double current_main_arm_position_command, current_intake_arm_position_command;
 
-    Arm (){
+    // Motors
+    //CANSparkMax intake_motor_1 = new CANSparkMax(Constants.INTAKE_MOTOR_1_ID, MotorType.kBrushless);
+    //CANSparkMax intake_motor_2 = new CANSparkMax(Constants.INTAKE_MOTOR_2_ID, MotorType.kBrushless);
+    WPI_TalonFX vertical_elevator_motor_1 = new WPI_TalonFX(Constants.VERTICAL_ELEVATOR_MOTOR_1_ID, "rio"); 
+    WPI_TalonFX vertical_elevator_motor_2 = new WPI_TalonFX(Constants.VERTICAL_ELEVATOR_MOTOR_2_ID, "rio");
+    //WPI_TalonFX horizontal_elevator_motor = new WPI_TalonFX(Constants.HORIZONTAL_ELEVATOR_MOTOR_ID, "rio");
+
+    public Arm() { // constructor
         phCompressor.enableDigital();
         //phCompressor.enableAnalog(119, 120);
         pneumaticsOpen();
-        
-        intake.configFactoryDefault();
-        intake_arm_motor.configFactoryDefault();
+
         // elevator motor setups
-        main_arm_motor_1.configFactoryDefault();
-        main_arm_motor_2.configFactoryDefault();
+        vertical_elevator_motor_1.configFactoryDefault();
+        vertical_elevator_motor_1.configFactoryDefault();
         
-        main_arm_motor_1.setInverted(false);
-        main_arm_motor_1.setSensorPhase(true);
-        main_arm_motor_1.setNeutralMode(NeutralMode.Brake);
+        vertical_elevator_motor_1.setInverted(false);
+        vertical_elevator_motor_1.setSensorPhase(false);
+        vertical_elevator_motor_1.setNeutralMode(NeutralMode.Coast);
 
-        main_arm_motor_2.setInverted(true);        
-        main_arm_motor_2.setSensorPhase(false);
-        main_arm_motor_2.setNeutralMode(NeutralMode.Brake);
+        vertical_elevator_motor_2.setInverted(false);        
+        vertical_elevator_motor_2.setSensorPhase(false);
+        vertical_elevator_motor_2.setNeutralMode(NeutralMode.Coast);
 
-        main_arm_motor_1.config_kP(0, 0.05, 30);
-        main_arm_motor_1.config_kI(0, 0.0, 30);
-        main_arm_motor_1.config_kD(0, 0.0, 30);
-        main_arm_motor_1.config_kF(0, 0.0, 30);
-        main_arm_motor_1.configClosedloopRamp(0.5);
+        
+        vertical_elevator_motor_1.config_kP(0, 0.05, 30);
+        vertical_elevator_motor_1.config_kI(0, 0.0, 30);
+        vertical_elevator_motor_1.config_kD(0, 0.0, 30);
+        vertical_elevator_motor_1.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_1.configClosedloopRamp(0.25);
 
-        main_arm_motor_2.config_kP(0, 0.05, 30);
-        main_arm_motor_2.config_kI(0, 0.0, 30);
-        main_arm_motor_2.config_kD(0, 0.0, 30);
-        main_arm_motor_2.config_kF(0, 0.0, 30);
-        main_arm_motor_2.configClosedloopRamp(0.5);
 
-        main_arm_motor_2.follow(main_arm_motor_1);
-        current_main_arm_position_command = main_arm_motor_1.getSelectedSensorPosition();
+        vertical_elevator_motor_2.config_kP(0, 0.05, 30);
+        vertical_elevator_motor_2.config_kI(0, 0.0, 30);
+        vertical_elevator_motor_2.config_kD(0, 0.0, 30);
+        vertical_elevator_motor_2.config_kF(0, 0.0, 30);
+        vertical_elevator_motor_2.configClosedloopRamp(0.25);
 
-        intake_arm_motor.setInverted(false);
-        intake_arm_motor.setNeutralMode(NeutralMode.Brake);
-        //intake_arm_motor.configPeakOutputForward(0.8, 30);
-        //intake_arm_motor.configPeakOutputReverse(0.8, 30);
-        intake_arm_motor.configOpenloopRamp(0.5);
-    }
-    
-    public void setIntakeMotor(double input){
-        intake.set(ControlMode.PercentOutput, input);
-    }
 
-    public void move_main_arm_to_position(double input){
-        current_main_arm_position_command = input;
-        main_arm_motor_1.set(ControlMode.Position, input);
-    }
+        vertical_elevator_motor_1.configAllowableClosedloopError(0, 20, 30);
+        vertical_elevator_motor_2.configAllowableClosedloopError(0, 20, 30);
 
-    public double get_main_arm_position() {
-        return main_arm_motor_1.getSelectedSensorPosition();
-    }
+        vertical_elevator_motor_1.follow(vertical_elevator_motor_2);
 
-    public double get_main_arm_position_throughbore() {
-        //return main_arm_encoder.getAbsolutePosition();
-        return 0;
-    }
-    
-    public void move_intake_arm_to_position(double input){
-        current_intake_arm_position_command = input;
-        intake_arm_motor.set(ControlMode.PercentOutput, 3.0*(get_intake_arm_position() - input));
-        //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
-    }
+        current_vertical_elevator_position_command = vertical_elevator_motor_2.getSelectedSensorPosition();
 
-    public double get_intake_arm_position() {
-        return intake_arm_encoder.getAbsolutePosition();
+        // horizontal_elevator_motor.setInverted(false);        
+        // horizontal_elevator_motor.setSensorPhase(false);
+        // horizontal_elevator_motor.setNeutralMode(NeutralMode.Coast);
+
+        // horizontal_elevator_motor.config_kP(0, 0.2, 30);
+        // horizontal_elevator_motor.config_kI(0, 0.0, 30);
+        // horizontal_elevator_motor.config_kD(0, 0.0, 30);
+        // horizontal_elevator_motor.config_kF(0, 0.0, 30);
     }
 
     // Pneumatics
@@ -130,7 +118,49 @@ public class Arm {
         RightClawSolenoid.set(Value.kReverse);
     }
 
-        /**
+    // Coach Dan testing I think.
+    public void move_vertical_elevator(double controller_input){
+
+        if (Math.abs(controller_input) > 0.1){
+            current_vertical_elevator_position_command = current_vertical_elevator_position_command + 75*controller_input;
+        }
+        vertical_elevator_motor_2.set(ControlMode.Position, current_vertical_elevator_position_command);
+    }
+
+    public void move_vertical_elevator_to_pos(double input){
+        current_vertical_elevator_position_command = input;
+        vertical_elevator_motor_1.set(ControlMode.Position, input);
+
+    }
+
+    public double getVerticalElevatorPosition() {
+        return vertical_elevator_motor_2.getSelectedSensorPosition();
+        
+    }
+
+/*     public void recalibrateElevatorPositions() {
+        vertical_elevator_motor_1.setSelectedSensorPosition(?, 0, 30);
+        vertical_elevator_motor_2.setSelectedSensorPosition(?, 0, 30);
+        horizontal_elevator_motor.setSelectedSensorPosition(?, 0, 30);
+    } */
+
+    public void updateFparameter(double kF) {
+        vertical_elevator_motor_2.config_kF(0, kF, 30);
+    }
+
+/*
+    public void move_horizontal_elevator(double controller_input){
+        current_horizontal_elevator_position_command = current_horizontal_elevator_position_command - 100*controller_input;
+        //horizontal_elevator_motor.set(ControlMode.Position, current_horizontal_elevator_position_command);
+        horizontal_elevator_motor.set(ControlMode.PercentOutput, controller_input);
+    }
+
+    public double getHorizontalElevatorPosition() {
+        return horizontal_elevator_motor.getSelectedSensorPosition();
+    }
+*/
+
+    /**
      * Call this whenever you need to score a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
     public void _Score_Game_Piece() {
@@ -157,10 +187,12 @@ public class Arm {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
             m_time.start();
-            //move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
-            //move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
         }
     }
+
+//  ^^^ These three methods you would call when you want to eject/score/pickup. 
+//      Theoretically these can be run however many times you want, you shouldn't have to implement a debounce thingy :P
+
 
     /**
      * You shouldn't have to run this method. It should all be handled internally, which is why it's private, and not public. But it just ends the current action.
@@ -174,6 +206,8 @@ public class Arm {
     }
 
 //  These three methods shouldn't need to be run except inside armPeriodic()
+
+    int actionProgress = 0;
 
     private void ejectPeriodic() {
        
@@ -252,6 +286,7 @@ public class Arm {
          }
     }
 
+
     /**
      * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
      */
@@ -265,4 +300,4 @@ public class Arm {
             pickupPeriodic();
         }
     }
-}
+};

@@ -205,7 +205,8 @@ public class Robot extends TimedRobot {
         
   }
  
-  boolean gonebackwards = false;
+  double stage = 0;
+
 
   @Override
   public void robotPeriodic() {
@@ -218,8 +219,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Pitch", gyro.getPitch());
     SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
-    SmartDashboard.putNumber("Main Arm Position", m_arm.get_main_arm_position());
-    SmartDashboard.putNumber("Intake Arm Position Throughbore", m_arm.get_intake_arm_position());
+    //SmartDashboard.putNumber("getVerticalElevatorPosition", m_arm.getVerticalElevatorPosition());
+
+    SmartDashboard.putNumber("operator controller", operator_controller.getLeftY());
+
 
 
     if (driver_Controller.getPOV() == 0){
@@ -241,51 +244,22 @@ public class Robot extends TimedRobot {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
 
     }
-
-    if (operator_controller.getRawButton(1) == true){
-      m_arm.setIntakeMotor(0.9);
-    }
-    else if (operator_controller.getRawButton(3) == true) {
-      m_arm.setIntakeMotor(-0.9);
-    }
-    else {
-      m_arm.setIntakeMotor(0.0);
-    }
+    LEDInstance.SetLEDS(LED_State.Decoration);
 
 
     if ((driver_Controller.getRawButton(1)) == true){
       chargedStationTimer.start();
-      String xy = "";
-      if (chargedStationTimer.get() < 3){
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
-        xy = "timer";
-
+      double gyroRoll = gyro.getRoll();
+      if (chargedStationTimer.get() < 2.7){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.8), 0, true);
+      } else if (chargedStationTimer.get() <= 7) {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, (gyroRoll/21)), 0, true);
+      } else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, (gyroRoll/22)), 0, true);
       }
-      else if ((gyro.getRoll()) > -3.735 + 0.5){
-        if (gonebackwards == false){
-          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
-          xy = "forward fast";
-        }
-        else {
-          m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.3), 0, true);
-          xy = "forward slow";
-        }
+        
 
-      }
-      else if ((gyro.getRoll()) < -3.705 - 0.5){
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.4), 0, true);
-        xy = "backwards";
-        gonebackwards = true;
-      }
-      else {
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
-        xy = "level";
-
-      }
-
-      SmartDashboard.putString("Status", xy);
-
-    }   
+    }  
 
    }
 
@@ -323,18 +297,16 @@ public class Robot extends TimedRobot {
 
   }
 
+  //Button Press to Move elevator to a predetermined height or return. 
+  // B buttoin will return to rest position. 
   @Override
   public void teleopPeriodic() {
-
-    if (operator_controller.getRawButton(2) == true){
-      //m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
-      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+    m_arm.move_vertical_elevator(operator_controller.getLeftY());
+    if (operator_controller.getAButton() == true){
+      m_arm.move_vertical_elevator_to_pos(-15000);
     }
-    else if (operator_controller.getRawButton(4) == true) {
-      //m_arm.move_main_arm_to_position(Constants.Cone_Pickup_Position.main_arm_position);
-      m_arm.move_intake_arm_to_position(Constants.Cone_Pickup_Position.intake_arm_position);
-    }
-    else {
+    else if (operator_controller.getBButton() == true){
+      m_arm.move_vertical_elevator_to_pos(-400);
     }
   }
 
