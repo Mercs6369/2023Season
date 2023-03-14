@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Arm.ArmStateEnum;
 import frc.robot.LED_Signaling.LED_State;
 import frc.robot.Vision.gamePiecePipelineIndex;
 import frc.robot.Vision.infoTypeToReturn;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
   double driver_controller_R_Y_Axis;
   int driver_controller_POV_button;
   double speedScale = 0.85;
+  double max_speed_limiter = 0.1;  // 10% of the maximum translation velocity and angular velocity
 
   boolean[] operator_buttons = {false, false, false, false, false, false, false, false};
   double[] operator_triggers = new double[2];
@@ -211,6 +213,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    LEDInstance.SetLEDS(m_arm.colorValue);
     
     CommandScheduler.getInstance().run();
 
@@ -331,7 +334,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    //m_arm.armPeriodic(operator_buttons, operator_triggers);
+    m_arm.armPeriodic(operator_buttons, operator_triggers);
     if (operator_controller.getRawButton(2) == true){
       m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
       m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
@@ -341,6 +344,14 @@ public class Robot extends TimedRobot {
       m_arm.move_intake_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.intake_arm_position);
     }
     else {
+    }
+
+    if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
+      m_robotContainer.updateSwerveParameters(new Translation2d(Constants.max_speed_limit * driver_Controller.getLeftX(), 
+                                                                Constants.max_speed_limit * driver_Controller.getLeftY()),
+                                                                Constants.max_speed_limit * driver_Controller.getRightX(), true);
+    } else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
   }
 

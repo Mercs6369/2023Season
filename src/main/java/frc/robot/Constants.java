@@ -15,6 +15,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public class Constants {
 
+    public static final double max_speed_limit = 0.1;
+
     public static final double stickDeadband = 0.1;
 
     /* Cone Area Movement */

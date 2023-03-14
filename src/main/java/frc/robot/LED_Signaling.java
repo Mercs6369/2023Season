@@ -13,10 +13,12 @@ public class LED_Signaling {
 
     double[] BlinkinValues = {
            // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
-        -.43, // Decoration
+        -0.43, // Decoration
         0.59, // Error
-        -.33, // Idle
+        0.93, // Idle
         0.75, // ReadyToScore
+        0.91, // Cube
+        0.69  // Cone
     };
 
 
@@ -31,7 +33,9 @@ public class LED_Signaling {
         Decoration, // Probably for AhTahn Mode
         Error, // Error
         Idle, // When Idle/not doing anything
-        ReadyToScore; // Item in claw/intake
+        ReadyToScore, // Item in claw/intake
+        Cube,
+        Cone
     }
 
     public void changepattern(double m_value) {
@@ -57,6 +61,13 @@ public class LED_Signaling {
 
         } else if (Status == LED_State.ReadyToScore) {
             Spark.set(BlinkinValues[3]);
+
+        } else if (Status == LED_State.Cube) {
+            Spark.set(BlinkinValues[4]);
+
+        } else if (Status == LED_State.Cone) {
+            Spark.set(BlinkinValues[5]);
+
         }
     }
     

@@ -10,23 +10,26 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.LED_Signaling.LED_State;
 import edu.wpi.first.math.MathUtil;
 
 public class Arm {
     WPI_TalonFX intake = new WPI_TalonFX(Constants.INTAKE_ROLLER_MOTOR_1_ID);
     WPI_TalonFX main_arm_motor_1 = new WPI_TalonFX(Constants.MAIN_ARM_MOTOR_1_ID, "rio"); 
     WPI_TalonFX main_arm_motor_2 = new WPI_TalonFX(Constants.MAIN_ARM_MOTOR_2_ID, "rio");
-    WPI_TalonSRX intake_arm_motor = new WPI_TalonSRX(Constants.INTAKE_ARM_MOTOR_ID);
+    //WPI_TalonSRX intake_arm_motor = new WPI_TalonSRX(Constants.INTAKE_ARM_MOTOR_ID);
+    WPI_TalonFX intake_arm_motor = new WPI_TalonFX(Constants.INTAKE_ARM_MOTOR_ID, "rio");
+
     DigitalInput intake_arm_encoder_raw = new DigitalInput(Constants.INTAKE_ARM_ENCODER_PWM_CHANNEL);
     DutyCycleEncoder intake_arm_encoder = new DutyCycleEncoder(intake_arm_encoder_raw);
-    PIDController intake_arm_PID = new PIDController(0.25, 0, 0);
+    //PIDController intake_arm_PID = new PIDController(0.25, 0, 0);
 
     DigitalInput main_arm_encoder_raw = new DigitalInput(Constants.MAIN_ARM_ENCODER_PWM_CHANNEL);
     DutyCycleEncoder main_arm_encoder = new DutyCycleEncoder(main_arm_encoder_raw);
 
     int actionProgress = 0;
 
-    enum ArmStateEnum {
+    public enum ArmStateEnum {
         Idle,
         Scoring,
         Picking_up,
@@ -101,12 +104,14 @@ public class Arm {
         current_main_arm_position_command = main_arm_motor_1.getSelectedSensorPosition();
 
         intake_arm_motor.setInverted(false);
+        intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
         //intake_arm_motor.configPeakOutputForward(0.8, 30);
         //intake_arm_motor.configPeakOutputReverse(0.8, 30);
         intake_arm_motor.configOpenloopRamp(0.5);
 
-        recalibrate_intake_encoder();
+        recalibrate_intake_arm_encoder();
+        recalibrate_main_arm_encoder();
     }
     
     public void setIntakeMotor(double input){
@@ -127,8 +132,8 @@ public class Arm {
     }
     
     public void move_intake_arm_to_position(double input){
-        current_intake_arm_position_command = input;
-        intake_arm_motor.set(ControlMode.PercentOutput, 1.5*(get_intake_arm_position() - input));
+        current_intake_arm_position_command = current_intake_arm_position_command + 100*input;
+        intake_arm_motor.set(ControlMode.Position, current_intake_arm_position_command);
         //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
@@ -136,6 +141,9 @@ public class Arm {
         return intake_arm_encoder.getAbsolutePosition();
     }
 
+    public double get_intake_arm_position_selected(){
+        return intake_arm_motor.getSelectedSensorPosition();
+    }
     public void recalibrate_intake_arm_encoder() {
         //intake_arm_encoder.setPositionOffset(0.9);
     }
@@ -224,11 +232,13 @@ public class Arm {
      * 7 = RB
      * 
      */
+    public LED_State colorValue = LED_State.Idle;
     public void armPeriodic(boolean operator_buttons[], double operator_triggers[]) {
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[6]) {
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
             GLOBAL_OBJECT_STATE = GamePieces.Neither;
+            colorValue = LED_State.Idle;
         } else if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[7]) {
             GLOBAL_ARM_STATE = ArmStateEnum.Scoring;
         } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up && operator_buttons[7]) {
@@ -239,9 +249,11 @@ public class Arm {
 
         if (operator_buttons[4]) {
             GLOBAL_OBJECT_STATE = GamePieces.Cone;
+            colorValue = LED_State.Cone;
             GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
         } else if (operator_buttons[5]) {
             GLOBAL_OBJECT_STATE = GamePieces.Cube;
+            colorValue = LED_State.Cube;
             GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
         }
 
