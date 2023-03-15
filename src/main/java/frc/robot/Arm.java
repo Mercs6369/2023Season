@@ -233,6 +233,7 @@ public class Arm {
      * 
      */
     public LED_State colorValue = LED_State.Idle;
+    public LED_State colorValue2 = LED_State.Idle;
     public void armPeriodic(boolean operator_buttons[], double operator_triggers[]) {
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[6]) {
@@ -265,17 +266,7 @@ public class Arm {
             } else if (operator_buttons[2]) {
                 GLOBAL_SCORE_POSITION = ActiveScorePosition.Community;
             }
-        }
-
-        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
-            GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
-            GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
-            setIntakeMotor(0.0);
-        } else {
-            setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
-        }
-
-        if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
             if ((operator_buttons[0] || operator_buttons[1] || operator_buttons[3]) && GLOBAL_OBJECT_STATE == GamePieces.Cube) {
                 GLOBAL_PICK_POSITION = ActivePickPosition.CubeStation;
             }  else if ((operator_buttons[2]) && GLOBAL_OBJECT_STATE == GamePieces.Cube) {
@@ -287,6 +278,24 @@ public class Arm {
             }  else if ((operator_buttons[1]) && GLOBAL_OBJECT_STATE == GamePieces.Cone) {
                 GLOBAL_PICK_POSITION = ActivePickPosition.ConeStation;
             }  
+        }
+
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
+            GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
+            setIntakeMotor(0.0);
+        } else {
+            setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
+        }
+
+        if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
+            colorValue2 = LED_State.Idle;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
+            colorValue2 = LED_State.ScoreMode;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up) {
+            colorValue2 = LED_State.PickMode;
+        } else if (GLOBAL_ARM_STATE == ArmStateEnum.error) {
+            colorValue2 = LED_State.Error;
         }
 
         

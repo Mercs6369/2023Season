@@ -7,9 +7,7 @@ public class LED_Signaling {
     
 
     // Defines the Spark motor controller.
-    public PWMSparkMax Spark = new PWMSparkMax(1);
-
-
+    public PWMSparkMax Spark;
 
     double[] BlinkinValues = {
            // The following values will be used for the Blinkin, and are assigned to the relative action. Just change it here, and it should update everywhere else in the code :) 
@@ -18,14 +16,17 @@ public class LED_Signaling {
         0.93, // Idle
         0.75, // ReadyToScore
         0.91, // Cube
-        0.69  // Cone
+        0.69, // Cone
+        0.75, // Score
+        0.81  // Pick
     };
 
 
     // Sets the LED pattern to Idle at startup.
-    public LED_Signaling() {
+    public LED_Signaling(int channel) {
         //SetLEDS(LED_State.Idle);
-        Spark.set(-0.99);
+        Spark = new PWMSparkMax(channel);
+        Spark.set(BlinkinValues[2]);
     }
 
     // I mean, it's an enum, need I say more?
@@ -35,7 +36,9 @@ public class LED_Signaling {
         Idle, // When Idle/not doing anything
         ReadyToScore, // Item in claw/intake
         Cube,
-        Cone
+        Cone,
+        ScoreMode,
+        PickMode
     }
 
     public void changepattern(double m_value) {
@@ -67,6 +70,12 @@ public class LED_Signaling {
 
         } else if (Status == LED_State.Cone) {
             Spark.set(BlinkinValues[5]);
+
+        } else if (Status == LED_State.ScoreMode) {
+            Spark.set(BlinkinValues[6]);
+
+        } else if (Status == LED_State.PickMode) {
+            Spark.set(BlinkinValues[7]);
 
         }
     }

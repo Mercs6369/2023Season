@@ -52,7 +52,8 @@ public class Robot extends TimedRobot {
   double[] operator_triggers = new double[2];
   
   Vision m_vision = new Vision();
-  LED_Signaling LEDInstance = new LED_Signaling();
+  LED_Signaling LEDInstance = new LED_Signaling(9);
+  LED_Signaling LEDInstance2 = new LED_Signaling(8);
   long lastnano_time = 0;
   Timer m_timeToButtonPress = new Timer();
   Timer chargedStationTimer = new Timer();
@@ -214,6 +215,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     LEDInstance.SetLEDS(m_arm.colorValue);
+    LEDInstance2.SetLEDS(m_arm.colorValue2);
     
     CommandScheduler.getInstance().run();
 
