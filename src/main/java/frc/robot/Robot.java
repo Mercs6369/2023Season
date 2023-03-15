@@ -238,7 +238,6 @@ public class Robot extends TimedRobot {
     }
     else if (driver_Controller.getPOV() == 180){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, -2), 0, true);
-
     }
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
@@ -294,6 +293,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    autoPeriodic();
+    if (driver_Controller.getAButton() == true) {
+      moveTo(2, 0);
+    }
 
   }
 
@@ -405,9 +408,51 @@ public class Robot extends TimedRobot {
 
   public void zeroGyro(){
     gyro.setYaw(0);
-}
+  }
 
   public Rotation2d getYaw() {
       return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
+  }
+  // moveTo(20, 15)
+  double xVelocity = 0;
+  double yVelocity = 0;
+  double xDestination = 0;
+  double yDestination = 0;
+
+
+  public void moveTo(double x, double y) {
+    xDestination = x;
+    yDestination = y;
+    
+  
+    if (Math.abs(xDestination - getSwerveDistanceX()) <= 2) {
+      if (xDestination > 0) {
+        xVelocity = .4;
+      } else {
+        xVelocity = -.4;
+      }
+    }
+
+    if (Math.abs(yDestination - getSwerveDistanceY()) <= 2) {
+      if (yDestination > 0) {
+        yVelocity = .4;
+      } else {
+        yVelocity = -.4;
+      }
+    }
+
+  }
+
+
+
+
+  public void autoPeriodic() {
+    if (Math.abs(xDestination - getSwerveDistanceX()) <= 1) {
+      xVelocity = 0;
+    }
+    if (Math.abs(yDestination - getSwerveDistanceY()) <= 1) {
+      yVelocity = 0;
+    }
+    m_robotContainer.updateSwerveParameters(new Translation2d(xVelocity, yVelocity), 0, true);
   }
 }
