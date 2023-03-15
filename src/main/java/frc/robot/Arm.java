@@ -73,7 +73,7 @@ public class Arm {
     boolean action_finished = false;
     double current_main_arm_position_command, current_intake_arm_position_command;
 
-    Arm (){       
+        Arm (){       
         intake.configFactoryDefault();
         intake_arm_motor.configFactoryDefault();
         // elevator motor setups
@@ -88,17 +88,18 @@ public class Arm {
         main_arm_motor_2.setSensorPhase(false);
         main_arm_motor_2.setNeutralMode(NeutralMode.Brake);
 
-        main_arm_motor_1.config_kP(0, 0.05, 30);
+        main_arm_motor_1.config_kP(0, 0.04, 30);
         main_arm_motor_1.config_kI(0, 0.0, 30);
         main_arm_motor_1.config_kD(0, 0.0, 30);
         main_arm_motor_1.config_kF(0, 0.0, 30);
-        main_arm_motor_1.configClosedloopRamp(0.5);
+        main_arm_motor_1.configClosedloopRamp(1.0);
 
-        main_arm_motor_2.config_kP(0, 0.05, 30);
+        main_arm_motor_2.config_kP(0, 0.04, 30);
         main_arm_motor_2.config_kI(0, 0.0, 30);
         main_arm_motor_2.config_kD(0, 0.0, 30);
         main_arm_motor_2.config_kF(0, 0.0, 30);
-        main_arm_motor_2.configClosedloopRamp(0.5);
+        main_arm_motor_2.configClosedloopRamp(1.0);
+
 
         main_arm_motor_2.follow(main_arm_motor_1);
         current_main_arm_position_command = main_arm_motor_1.getSelectedSensorPosition();
@@ -106,12 +107,16 @@ public class Arm {
         intake_arm_motor.setInverted(false);
         intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
+        intake_arm_motor.config_kP(0, 0.02, 30);
+        intake_arm_motor.config_kI(0, 0.0, 30);
+        intake_arm_motor.config_kD(0, 0.0, 30);
+        intake_arm_motor.config_kF(0, 0.0, 30);
+        intake_arm_motor.configClosedloopRamp(1.5);
         //intake_arm_motor.configPeakOutputForward(0.8, 30);
         //intake_arm_motor.configPeakOutputReverse(0.8, 30);
-        intake_arm_motor.configOpenloopRamp(0.5);
 
-        recalibrate_intake_arm_encoder();
-        recalibrate_main_arm_encoder();
+        // recalibrate_intake_arm_encoder();
+        // recalibrate_main_arm_encoder();
     }
     
     public void setIntakeMotor(double input){
