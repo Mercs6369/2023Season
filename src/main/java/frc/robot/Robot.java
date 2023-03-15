@@ -293,10 +293,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    autoPeriodic();
-    if (driver_Controller.getAButton() == true) {
-      moveTo(2, 0);
-    }
+    
 
   }
 
@@ -304,13 +301,28 @@ public class Robot extends TimedRobot {
   // B buttoin will return to rest position. 
   @Override
   public void teleopPeriodic() {
-    m_arm.move_vertical_elevator(operator_controller.getLeftY());
+
+    if (driver_Controller.getAButton() == true) {
+      moveTo(20, 50);
+      SmartDashboard.putBoolean("Button Down", true);
+
+    } else {
+      SmartDashboard.putBoolean("Button Down", false);
+      xVelocity = 0;
+      yVelocity = 0;
+      xDestination = 0;
+      yDestination = 0;
+    }
+    autoPeriodic();
+
+
+    /* m_arm.move_vertical_elevator(operator_controller.getLeftY());
     if (operator_controller.getAButton() == true){
       m_arm.move_vertical_elevator_to_pos(-15000);
     }
     else if (operator_controller.getBButton() == true){
       m_arm.move_vertical_elevator_to_pos(-400);
-    }
+    } */
   }
 
   @Override
@@ -421,25 +433,33 @@ public class Robot extends TimedRobot {
 
 
   public void moveTo(double x, double y) {
+    xVelocity = 0;
+    yVelocity = 0;
     xDestination = x;
     yDestination = y;
-    
-  
-    if (Math.abs(xDestination - getSwerveDistanceX()) <= 2) {
-      if (xDestination > 0) {
-        xVelocity = .4;
-      } else {
-        xVelocity = -.4;
-      }
+    SmartDashboard.putNumber("Attempted Position Y", y);
+    SmartDashboard.putNumber("Attempted Position X", x);
+
+
+    if (yDestination > 0) {
+      yVelocity = .4;
+    } else {
+      yVelocity = -.4;
     }
 
-    if (Math.abs(yDestination - getSwerveDistanceY()) <= 2) {
-      if (yDestination > 0) {
-        yVelocity = .4;
-      } else {
-        yVelocity = -.4;
-      }
+    if (xDestination > 0) {
+      xVelocity = .4;
+    } else {
+      xVelocity = -.4;
     }
+    if (xDestination == 0) {
+      xVelocity = 0;
+    }
+    if (yDestination == 0) {
+      yVelocity = 0;
+    }
+
+    
 
   }
 
@@ -447,12 +467,26 @@ public class Robot extends TimedRobot {
 
 
   public void autoPeriodic() {
-    if (Math.abs(xDestination - getSwerveDistanceX()) <= 1) {
-      xVelocity = 0;
-    }
-    if (Math.abs(yDestination - getSwerveDistanceY()) <= 1) {
+
+    SmartDashboard.putNumber("VelocityX - Before", xVelocity);
+    SmartDashboard.putNumber("VelocityY - Before", yVelocity);
+
+    if (Math.abs(yDestination - getSwerveDistanceY()) <= 7) {
       yVelocity = 0;
     }
-    m_robotContainer.updateSwerveParameters(new Translation2d(xVelocity, yVelocity), 0, true);
+    if (Math.abs(xDestination - getSwerveDistanceX()) <= 7) {
+      xVelocity = 0;
+    }
+     
+    SmartDashboard.putNumber("DestinationX", xDestination);
+    SmartDashboard.putNumber("DestinationY", yDestination);
+    SmartDashboard.putNumber("VelocityX - After", xVelocity);
+    SmartDashboard.putNumber("VelocityY - After", yVelocity);
+    if (xVelocity == 0 && yVelocity == 0) {
+
+    } else {
+      m_robotContainer.updateSwerveParameters(new Translation2d(xVelocity, yVelocity), 0, true);
+    }
+
   }
 }

@@ -86,7 +86,7 @@ public class COTSFalconSwerveConstants {
 
         /** Swerve X*/
         public static COTSFalconSwerveConstants SwerveX(){
-            double wheelDiameter = 2.0*Math.PI*0.0508;
+            double wheelDiameter = Math.PI*4;
     
             double angleGearRatio = (15.43 / 1);
             double driveGearRatio = (7.63 / 1);
