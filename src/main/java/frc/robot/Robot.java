@@ -331,22 +331,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
+    
   }
 
   @Override
   public void teleopPeriodic() {
     m_arm.armPeriodic(operator_buttons, operator_triggers);
-    if (operator_controller.getRawButton(2) == true){
-      m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
-      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
-    }
-    else if (operator_controller.getRawButton(4) == true) {
-      m_arm.move_main_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position); 
-      m_arm.move_intake_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.intake_arm_position);
-    }
-    else {
-    }
 
     if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
       m_robotContainer.updateSwerveParameters(new Translation2d(Constants.max_speed_limit * driver_Controller.getLeftX(), 
