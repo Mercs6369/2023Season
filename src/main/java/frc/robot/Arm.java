@@ -88,17 +88,19 @@ public class Arm {
         main_arm_motor_2.setSensorPhase(false);
         main_arm_motor_2.setNeutralMode(NeutralMode.Brake);
 
-        main_arm_motor_1.config_kP(0, 0.04, 30);
+        main_arm_motor_1.config_kP(0, 0.025, 30);
         main_arm_motor_1.config_kI(0, 0.0, 30);
         main_arm_motor_1.config_kD(0, 0.0, 30);
         main_arm_motor_1.config_kF(0, 0.0, 30);
-        main_arm_motor_1.configClosedloopRamp(1.0);
+        main_arm_motor_1.configClosedloopRamp(0.23);
+        main_arm_motor_1.configNeutralDeadband(0.001);
 
-        main_arm_motor_2.config_kP(0, 0.04, 30);
+        main_arm_motor_2.config_kP(0, 0.025, 30);
         main_arm_motor_2.config_kI(0, 0.0, 30);
         main_arm_motor_2.config_kD(0, 0.0, 30);
         main_arm_motor_2.config_kF(0, 0.0, 30);
-        main_arm_motor_2.configClosedloopRamp(1.0);
+        main_arm_motor_2.configClosedloopRamp(0.23);
+        main_arm_motor_2.configNeutralDeadband(0.001);
 
 
         main_arm_motor_2.follow(main_arm_motor_1);
@@ -107,11 +109,12 @@ public class Arm {
         intake_arm_motor.setInverted(false);
         intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
-        intake_arm_motor.config_kP(0, 0.02, 30);
+        intake_arm_motor.config_kP(0, 0.025, 30);
         intake_arm_motor.config_kI(0, 0.0, 30);
         intake_arm_motor.config_kD(0, 0.0, 30);
         intake_arm_motor.config_kF(0, 0.0, 30);
         intake_arm_motor.configClosedloopRamp(1.5);
+        intake_arm_motor.configNeutralDeadband(0.001);
         //intake_arm_motor.configPeakOutputForward(0.8, 30);
         //intake_arm_motor.configPeakOutputReverse(0.8, 30);
 
@@ -137,8 +140,17 @@ public class Arm {
     }
     
     public void move_intake_arm_to_position(double input){
-        current_intake_arm_position_command = current_intake_arm_position_command + 100*input;
+        current_intake_arm_position_command = input;
         intake_arm_motor.set(ControlMode.Position, current_intake_arm_position_command);
+        //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
+    }
+
+    public void move_intake_arm_to_position(double input, double getLeftY){
+        if (Math.abs(getLeftY) > 0.1){
+            current_intake_arm_position_command = current_intake_arm_position_command + 150*getLeftY;
+        }
+        intake_arm_motor.set(ControlMode.Position, current_intake_arm_position_command);
+        SmartDashboard.putNumber("current_intake_arm_position_command", current_intake_arm_position_command);
         //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
@@ -159,7 +171,7 @@ public class Arm {
         main_arm_motor_1.setSelectedSensorPosition(0.0, 0, 30);
     }
 
-    public void processArmCommands(double intake_setpoint, double main_setpoint){
+    public void processArmCommands0(double intake_setpoint, double main_setpoint){
         move_intake_arm_to_position(intake_setpoint);
         if (Math.abs((get_intake_arm_position_selected() - intake_setpoint)) < Constants.ARM_COMMAND_CHECK_LIMIT){
             move_main_arm_to_position(main_setpoint);
@@ -247,7 +259,7 @@ public class Arm {
      */
     public LED_State colorValue = LED_State.Idle;
     public LED_State colorValue2 = LED_State.Idle;
-    public void armPeriodic(boolean operator_buttons[], double operator_triggers[]) {
+    public void armPeriodic(boolean operator_buttons[], double operator_triggers[], double getLeftY) {
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[6]) {
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
@@ -296,7 +308,6 @@ public class Arm {
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {
             GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
             GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
-            setIntakeMotor(0.0);
         } else {
             setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
         }
@@ -318,16 +329,22 @@ public class Arm {
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle){
             move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
-            if (Math.abs((get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 500){
-                move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+            if (Math.abs((get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+                if (Math.abs((get_main_arm_position() - Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position)) < 1000){
+                    main_arm_motor_1.set(ControlMode.PercentOutput, 0.0);
+                }
+                else {
+                    move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+                }
             }
         }
         else if (GLOBAL_ARM_STATE == ArmStateEnum.Picking_up){
             if (GLOBAL_OBJECT_STATE == GamePieces.Cone){
                 if (GLOBAL_PICK_POSITION == ActivePickPosition.ConeGroundUp){
-                    move_intake_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.intake_arm_position);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cone_Ground_Upright_Pickup_Position.intake_arm_position)) < 500){
-                        move_main_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position);
+                    move_main_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position);
+                    if (Math.abs((get_main_arm_position() - Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position)) < 1000){
+                        move_intake_arm_to_position(Constants.Cone_Ground_Upright_Pickup_Position.intake_arm_position);
+
                     }
                 }
                 else if (GLOBAL_PICK_POSITION == ActivePickPosition.ConeGroundSide){
@@ -375,29 +392,33 @@ public class Arm {
             }
             else if (GLOBAL_SCORE_POSITION == ActiveScorePosition.Middle){
                 if (GLOBAL_OBJECT_STATE == GamePieces.Cone){
-                    move_intake_arm_to_position(Constants.Cone_Mid_Score_Position.intake_arm_position);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cone_Mid_Score_Position.intake_arm_position)) < 500){
-                        move_main_arm_to_position(Constants.Cone_Mid_Score_Position.main_arm_position);
+                    move_main_arm_to_position(Constants.Cone_Mid_Score_Position.main_arm_position);
+                    if (Math.abs((get_main_arm_position() - Constants.Cone_Mid_Score_Position.main_arm_position)) < 1000){
+                        move_intake_arm_to_position(Constants.Cone_Mid_Score_Position.intake_arm_position);
+
                     }
                 }
                 else if (GLOBAL_OBJECT_STATE == GamePieces.Cube){
-                    move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position)) < 500){
-                        move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+                    move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+                    if (Math.abs((get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+                        move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+
                     }
                 }
             }
             else if (GLOBAL_SCORE_POSITION == ActiveScorePosition.Top){
                 if (GLOBAL_OBJECT_STATE == GamePieces.Cone){
-                    move_intake_arm_to_position(Constants.Cone_Top_Score_Position.intake_arm_position);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cone_Top_Score_Position.intake_arm_position)) < 500){
-                        move_main_arm_to_position(Constants.Cone_Top_Score_Position.main_arm_position);
+                    move_main_arm_to_position(Constants.Cone_Top_Score_Position.main_arm_position);
+                    if (Math.abs((get_main_arm_position() - Constants.Cone_Top_Score_Position.main_arm_position)) < 1000){
+                        move_intake_arm_to_position(Constants.Cone_Top_Score_Position.intake_arm_position);
+
                     }
                 }
                 else if (GLOBAL_OBJECT_STATE == GamePieces.Cube){
-                    move_intake_arm_to_position(Constants.Cube_Top_Score_Position.intake_arm_position);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cube_Top_Score_Position.intake_arm_position)) < 500){
-                        move_main_arm_to_position(Constants.Cube_Top_Score_Position.main_arm_position);
+                    move_main_arm_to_position(Constants.Cube_Top_Score_Position.main_arm_position);
+                    if (Math.abs((get_main_arm_position() - Constants.Cube_Top_Score_Position.main_arm_position)) < 1000){
+                        move_intake_arm_to_position(Constants.Cube_Top_Score_Position.intake_arm_position);
+
                     }
                 }
             }
