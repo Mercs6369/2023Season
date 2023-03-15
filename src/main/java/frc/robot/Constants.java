@@ -19,6 +19,8 @@ public class Constants {
 
     public static final double stickDeadband = 0.1;
 
+    public static final double ARM_COMMAND_CHECK_LIMIT = 500;
+
     /* Cone Area Movement */
     public static final double top_speed_mps = 1.5;
     public static final double idealConeArea_Standing = 11.3;

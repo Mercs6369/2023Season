@@ -159,6 +159,13 @@ public class Arm {
         main_arm_motor_1.setSelectedSensorPosition(0.0, 0, 30);
     }
 
+    public void processArmCommands(double intake_setpoint, double main_setpoint){
+        move_intake_arm_to_position(intake_setpoint);
+        if (Math.abs((get_intake_arm_position_selected() - intake_setpoint)) < Constants.ARM_COMMAND_CHECK_LIMIT){
+            move_main_arm_to_position(main_setpoint);
+        }
+    }
+
         /**
      * Call this whenever you need to score a game piece. You do not have to worry about running this repeatedly, you can run it as many times as you need. You don't need to worry about adding a debounce.
      */
@@ -304,7 +311,6 @@ public class Arm {
             colorValue2 = LED_State.Error;
         }
 
-        
         SmartDashboard.putString("Mode", GLOBAL_ARM_STATE.toString());
         SmartDashboard.putString("Object", GLOBAL_OBJECT_STATE.toString());
         SmartDashboard.putString("ScorePos", GLOBAL_SCORE_POSITION.toString());
