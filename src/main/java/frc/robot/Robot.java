@@ -15,6 +15,12 @@ import frc.robot.Vision.infoTypeToReturn;
 import frc.robot.commands.TeleopSwerve;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.naming.spi.DirObjectFactory;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -201,11 +207,9 @@ public class Robot extends TimedRobot {
     gyro.configFactoryDefault();
     zeroGyro();
 
-    final double xRoll = gyro.getRoll();
         
   }
  
-  double stage = 0;
 
 
   @Override
@@ -291,29 +295,50 @@ public class Robot extends TimedRobot {
     */
   }
 
+  
+  double[] path = {0,50,20,50,20,40,0,40,0,-20,0,0};
+  double[] testpath = path;
+
+
   @Override
   public void teleopInit() {
+    //for (int i = 0; i < path.length; i = i + 1) {
+      //testpath[i] = path[path.length-1-i]; 
+    //}
     
-
+    SmartDashboard.putNumberArray("orgin path", path);
+    SmartDashboard.putNumberArray("testpath", testpath);
   }
 
+
   //Button Press to Move elevator to a predetermined height or return. 
-  // B buttoin will return to rest position. 
+  // B buttoin will return to rest position.
+
+
+
+
   @Override
   public void teleopPeriodic() {
 
-    if (driver_Controller.getAButton() == true) {
-      moveTo(20, 50);
-      SmartDashboard.putBoolean("Button Down", true);
+    xVelocity = 0;
+    yVelocity = 0;
 
+    if (driver_Controller.getAButton() == true) {
+      runPath(path);
+      
+    } else if (driver_Controller.getBButton() == true) {
+      runBackwards(path);
     } else {
-      SmartDashboard.putBoolean("Button Down", false);
       xVelocity = 0;
       yVelocity = 0;
+
       xDestination = 0;
       yDestination = 0;
     }
-    autoPeriodic();
+    if (driver_Controller.getYButton() == true) {
+      stage = 0;
+    }
+    movePeriodic();
 
 
     /* m_arm.move_vertical_elevator(operator_controller.getLeftY());
@@ -425,6 +450,7 @@ public class Robot extends TimedRobot {
   public Rotation2d getYaw() {
       return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
   }
+
   // moveTo(20, 15)
   double xVelocity = 0;
   double yVelocity = 0;
@@ -437,27 +463,23 @@ public class Robot extends TimedRobot {
     yVelocity = 0;
     xDestination = x;
     yDestination = y;
-    SmartDashboard.putNumber("Attempted Position Y", y);
-    SmartDashboard.putNumber("Attempted Position X", x);
+    SmartDashboard.putNumber("zAttempted Position Y", y);
+    SmartDashboard.putNumber("zAttempted Position X", x);
 
 
-    if (yDestination > 0) {
-      yVelocity = .4;
+    if (yDestination > getSwerveDistanceY()) {
+      yVelocity = 0.7;
     } else {
-      yVelocity = -.4;
+      yVelocity = -0.7;
     }
 
-    if (xDestination > 0) {
-      xVelocity = .4;
+    if (xDestination > getSwerveDistanceX()) {
+      xVelocity = 0.6;
     } else {
-      xVelocity = -.4;
+      xVelocity = -0.6;
     }
-    if (xDestination == 0) {
-      xVelocity = 0;
-    }
-    if (yDestination == 0) {
-      yVelocity = 0;
-    }
+
+    
 
     
 
@@ -466,27 +488,119 @@ public class Robot extends TimedRobot {
 
 
 
-  public void autoPeriodic() {
-
+  public boolean movePeriodic() {
     SmartDashboard.putNumber("VelocityX - Before", xVelocity);
     SmartDashboard.putNumber("VelocityY - Before", yVelocity);
 
-    if (Math.abs(yDestination - getSwerveDistanceY()) <= 7) {
+    if (Math.abs(yDestination - getSwerveDistanceY()) <= 6) {
       yVelocity = 0;
     }
-    if (Math.abs(xDestination - getSwerveDistanceX()) <= 7) {
+    if (Math.abs(xDestination - getSwerveDistanceX()) <= 6) {
       xVelocity = 0;
     }
+
+
+   
      
     SmartDashboard.putNumber("DestinationX", xDestination);
     SmartDashboard.putNumber("DestinationY", yDestination);
     SmartDashboard.putNumber("VelocityX - After", xVelocity);
     SmartDashboard.putNumber("VelocityY - After", yVelocity);
     if (xVelocity == 0 && yVelocity == 0) {
-
+      return true;
     } else {
+      
       m_robotContainer.updateSwerveParameters(new Translation2d(xVelocity, yVelocity), 0, true);
+      return false;
     }
 
+  }
+
+  int stage = 0;
+  boolean hasDashboarded = false;
+  boolean hasCompletedStage = false;
+
+  public void runPath(double... values) {
+    SmartDashboard.putNumber("Stage", stage);
+    if (stage < values.length) {
+      SmartDashboard.putString("Under length", "yessss");
+
+     
+      moveTo(values[stage], values[stage+1]);
+
+      if (movePeriodic() == true) { // completed current moveTo
+
+        if (stage < values.length) {
+          
+
+          hasDashboarded = true;
+          stage = stage + 2;
+          hasCompletedStage = true;
+
+          //xDestination = values[2];
+          //yDestination = values[3];
+        } else {
+          // finisheddddddddddddd
+          SmartDashboard.putString("Finished", "yay we finished lets go #poppingoff #letsgooo #blessed");
+        }
+        
+      }
+    } else {
+      xDestination = getSwerveDistanceX();
+      yDestination = getSwerveDistanceY();
+      SmartDashboard.putString("Under length", "nooooo");
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public void runBackwards(double... values) {
+    SmartDashboard.putNumber("Stage", stage);
+    if (stage > values.length) {
+      SmartDashboard.putString("Under length", "yessss");
+
+      moveTo(values[stage], values[stage]);
+
+      if (movePeriodic() == true) { // completed current moveTo
+
+        if (stage > values.length) {
+          
+
+          hasDashboarded = true;
+          stage = stage - 2;
+          hasCompletedStage = true;
+
+          //xDestination = values[2];
+          //yDestination = values[3];
+        } else {
+          // finisheddddddddddddd
+          SmartDashboard.putString("Finished", "yay we finished lets go #poppingoff #letsgooo #blessed");
+        }
+        
+      }
+    } else {
+      xDestination = getSwerveDistanceX();
+      yDestination = getSwerveDistanceY();
+      SmartDashboard.putString("Under length", "nooooo");
+    }
   }
 }
