@@ -348,7 +348,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    LEDInstance.SetLEDS(LED_State.Off);
+    LEDInstance2.SetLEDS(LED_State.Off);
+  }
 
   @Override
   public void disabledPeriodic() {}
