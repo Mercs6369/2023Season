@@ -575,18 +575,18 @@ public class Robot extends TimedRobot {
 
   public void runBackwards(double... values) {
     SmartDashboard.putNumber("Stage", stage);
-    if (stage > values.length) {
+    if (stage < values.length) {
       SmartDashboard.putString("Under length", "yessss");
 
-      moveTo(values[stage], values[stage]);
+      moveTo(values[values.length - stage - 2], values[values.length - stage - 1]);
 
       if (movePeriodic() == true) { // completed current moveTo
 
-        if (stage > values.length) {
+        if (stage < values.length) {
           
 
           hasDashboarded = true;
-          stage = stage - 2;
+          stage = stage + 2;
           hasCompletedStage = true;
 
           //xDestination = values[2];
