@@ -49,8 +49,8 @@ public class Constants {
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Ground_Upright_Pickup_Position {   // cone pickup position
-        public static final double intake_arm_position = -40082;
-        public static final double main_arm_position = -20444;
+        public static final double intake_arm_position = -39515;
+        public static final double main_arm_position = -21997;
     }
     public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = -33524;
@@ -65,12 +65,12 @@ public class Constants {
         public static final double main_arm_position = -26746;
     }
     public static final class Cone_Mid_Score_Position {   // cone middle scoring position
-        public static final double intake_arm_position = -1357;//-14840;
-        public static final double main_arm_position = -79976;
+        public static final double intake_arm_position = -27100;//-10642;
+        public static final double main_arm_position = -84500;//-73481;
     }
     public static final class Cone_Top_Score_Position {   // cone top scoring position
-        public static final double intake_arm_position = -27100;
-        public static final double main_arm_position = -84500;
+        public static final double intake_arm_position = -25602;
+        public static final double main_arm_position = -77585;
     }
     public static final class Cube_Community_Score_Position {   // cube middle scoring position
         public static final double intake_arm_position = -1026;
