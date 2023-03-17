@@ -226,7 +226,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
     SmartDashboard.putNumber("Main Arm Position", m_arm.get_main_arm_position());
-    SmartDashboard.putNumber("Intake Arm Position Throughbore", m_arm.get_intake_arm_position());
+    SmartDashboard.putNumber("Intake Arm Position", m_arm.get_intake_arm_position_selected());
     SmartDashboard.putNumber("Main Arm Position Throughbore", m_arm.get_main_arm_position_throughbore());
 
 
@@ -336,19 +336,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_arm.armPeriodic(operator_buttons, operator_triggers);
+    m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY());
 
     if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
-      m_robotContainer.updateSwerveParameters(new Translation2d(Constants.max_speed_limit * driver_Controller.getLeftX(), 
-                                                                Constants.max_speed_limit * driver_Controller.getLeftY()),
-                                                                Constants.max_speed_limit * driver_Controller.getRightX(), true);
+      m_robotContainer.updateSwerveParameters(new Translation2d(Constants.Swerve.maxSpeed/2 * -driver_Controller.getLeftX(), 
+                                                                Constants.Swerve.maxSpeed/2 * driver_Controller.getLeftY()),
+                                                                Constants.Swerve.maxSpeed/2 * -driver_Controller.getRightX(), true);
     } else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    LEDInstance.SetLEDS(LED_State.Off);
+    LEDInstance2.SetLEDS(LED_State.Off);
+  }
 
   @Override
   public void disabledPeriodic() {}

@@ -18,7 +18,8 @@ public class LED_Signaling {
         0.91, // Cube
         0.69, // Cone
         0.75, // Score
-        0.81  // Pick
+        0.81, // Pick
+        0.99
     };
 
 
@@ -38,7 +39,8 @@ public class LED_Signaling {
         Cube,
         Cone,
         ScoreMode,
-        PickMode
+        PickMode,
+        Off
     }
 
     public void changepattern(double m_value) {
@@ -76,6 +78,9 @@ public class LED_Signaling {
 
         } else if (Status == LED_State.PickMode) {
             Spark.set(BlinkinValues[7]);
+
+        } else if (Status == LED_State.Off) {
+            Spark.set(BlinkinValues[8]);
 
         }
     }
