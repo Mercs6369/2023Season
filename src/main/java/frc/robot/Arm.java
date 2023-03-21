@@ -94,7 +94,7 @@ public class Arm {
         main_arm_motor_1.config_kF(0, 0.0, 30);
         main_arm_motor_1.configClosedloopRamp(0.3);
         main_arm_motor_1.configNeutralDeadband(0.001);
-        main_arm_motor_1.configClosedLoopPeakOutput(0, 0.5);
+        main_arm_motor_1.configClosedLoopPeakOutput(0, 0.375);
         // main_arm_motor_1.configPeakOutputForward(0.85);
         // main_arm_motor_1.configPeakOutputReverse(0.85);
         
@@ -104,7 +104,7 @@ public class Arm {
         main_arm_motor_2.config_kF(0, 0.0, 30);
         main_arm_motor_2.configClosedloopRamp(0.3);
         main_arm_motor_2.configNeutralDeadband(0.001);
-        main_arm_motor_2.configClosedLoopPeakOutput(0, 0.5);
+        main_arm_motor_2.configClosedLoopPeakOutput(0, 0.375);
 
         // main_arm_motor_2.configPeakOutputForward(0.85);
         // main_arm_motor_2.configPeakOutputReverse(0.85);
@@ -122,7 +122,7 @@ public class Arm {
         intake_arm_motor.config_kF(0, 0.0, 30);
         intake_arm_motor.configClosedloopRamp(0.25);
         intake_arm_motor.configNeutralDeadband(0.001);
-        intake_arm_motor.configClosedLoopPeakOutput(0, 0.75);
+        intake_arm_motor.configClosedLoopPeakOutput(0, 0.2); //0.65
 
 
         // intake_arm_motor.configPeakOutputForward(0.9, 30);
@@ -141,6 +141,17 @@ public class Arm {
         main_arm_motor_1.set(ControlMode.Position, input);
     }
 
+    public void move_main_arm_to_position(double input, double getRightY){
+        if (Math.abs(getRightY) > 0.1){
+            current_main_arm_position_command = current_main_arm_position_command + 500*getRightY;
+        }
+        else {
+            current_main_arm_position_command = input;
+
+        }
+        main_arm_motor_1.set(ControlMode.Position, current_main_arm_position_command);
+    }
+
     public double get_main_arm_position() {
         return main_arm_motor_1.getSelectedSensorPosition();
     }
@@ -157,7 +168,7 @@ public class Arm {
 
     public void move_intake_arm_to_position(double input, double getLeftY){
         if (Math.abs(getLeftY) > 0.1){
-            current_intake_arm_position_command = current_intake_arm_position_command + 2500*getLeftY;
+            current_intake_arm_position_command = current_intake_arm_position_command + 500*getLeftY;
         }
         else {
             current_intake_arm_position_command = input;
@@ -258,6 +269,10 @@ public class Arm {
          }
     }
 
+    public void setMianArmToZero(){
+        main_arm_motor_1.set(ControlMode.PercentOutput, 0.0);
+    }
+
     /**
      * This needs to be run constantly to do anything. So teleopPeriodic, autoPeriodic, etc.
      * button array is 
@@ -273,7 +288,7 @@ public class Arm {
      */
     public LED_State colorValue = LED_State.Idle;
     public LED_State colorValue2 = LED_State.Idle;
-    public void armPeriodic(boolean operator_buttons[], double operator_triggers[], double getLeftY) {
+    public void armPeriodic(boolean operator_buttons[], double operator_triggers[], double getLeftY, double getRightY) {
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle && operator_buttons[6]) {
             GLOBAL_ARM_STATE = ArmStateEnum.Picking_up;
@@ -378,7 +393,7 @@ public class Arm {
             else if (GLOBAL_OBJECT_STATE == GamePieces.Cube){
                 if (GLOBAL_PICK_POSITION == ActivePickPosition.CubeGround){
                     move_intake_arm_to_position(Constants.Cube_Ground_Pickup_Position.intake_arm_position, getLeftY);
-                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cube_Ground_Pickup_Position.intake_arm_position)) < 500){
+                    if (Math.abs((get_intake_arm_position_selected() - Constants.Cube_Ground_Pickup_Position.intake_arm_position)) < 1000){
                         move_main_arm_to_position(Constants.Cube_Ground_Pickup_Position.main_arm_position);
                     }
                 }
