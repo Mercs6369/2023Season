@@ -41,10 +41,11 @@ public class Constants {
         public static final double main_arm_position = -1400;
     }
     public static final class Cube_Ground_Pickup_Position {   // cube pickup position
-        public static final double intake_arm_position = -22538;
-        public static final double main_arm_position = -1587;
+        public static final double intake_arm_position = -22083.0;//-22040.0;//-22575.0;//-22538;
+        public static final double main_arm_position = -6703.0;//-5698.0;//-7450.0;
     }
-    public static final class Cube_Station_Pickup_Position {   // cube pickup position
+    public static final class Cube_Station_Pickup_Position { 
+          // cube pickup position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
@@ -53,8 +54,8 @@ public class Constants {
         public static final double main_arm_position = -21997;
     }
     public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
-        public static final double intake_arm_position = -33524;
-        public static final double main_arm_position = -10258;
+        public static final double intake_arm_position = -29861.0;//-26529.0;//-33351.0;//-33524;
+        public static final double main_arm_position = -8805.0;//-7033.0;//-10097.0;//-10258;
     }
     public static final class Cone_Station_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;
@@ -81,8 +82,8 @@ public class Constants {
         public static final double main_arm_position = -78904;
     }
     public static final class Cube_Top_Score_Position {   // cube top scoring position
-        public static final double intake_arm_position = -21255;
-        public static final double main_arm_position = -82527;
+        public static final double intake_arm_position = -17589.0;
+        public static final double main_arm_position = -77457.0;
     }
 
     public static final class Swerve {
