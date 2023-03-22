@@ -15,7 +15,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public class Constants {
 
-    public static final double max_speed_limit = 0.1;
+    public static final double max_speed_limit = 0.65;
 
     public static final double stickDeadband = 0.1;
 
@@ -41,48 +41,49 @@ public class Constants {
         public static final double main_arm_position = -1400;
     }
     public static final class Cube_Ground_Pickup_Position {   // cube pickup position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -22083.0;//-22040.0;//-22575.0;//-22538;
+        public static final double main_arm_position = -6703.0;//-5698.0;//-7450.0;
     }
-    public static final class Cube_Station_Pickup_Position {   // cube pickup position
+    public static final class Cube_Station_Pickup_Position { 
+          // cube pickup position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Ground_Upright_Pickup_Position {   // cone pickup position
-        public static final double intake_arm_position = -44721;
-        public static final double main_arm_position = -24623;
+        public static final double intake_arm_position = -39515;
+        public static final double main_arm_position = -21997;
     }
     public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -29861.0;//-26529.0;//-33351.0;//-33524;
+        public static final double main_arm_position = -8805.0;//-7033.0;//-10097.0;//-10258;
     }
     public static final class Cone_Station_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;
         public static final double main_arm_position = 0.0;
     }
     public static final class Cone_Community_Score_Position {   // cone middle scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -46616;
+        public static final double main_arm_position = -26746;
     }
     public static final class Cone_Mid_Score_Position {   // cone middle scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -27100;//-10642;
+        public static final double main_arm_position = -84500;//-73481;
     }
     public static final class Cone_Top_Score_Position {   // cone top scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -25602;
+        public static final double main_arm_position = -77585;
     }
     public static final class Cube_Community_Score_Position {   // cube middle scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -1026;
+        public static final double main_arm_position = -1400;
     }
     public static final class Cube_Mid_Score_Position {   // cube middle scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -8124;
+        public static final double main_arm_position = -78904;
     }
     public static final class Cube_Top_Score_Position {   // cube top scoring position
-        public static final double intake_arm_position = 0.0;
-        public static final double main_arm_position = 0.0;
+        public static final double intake_arm_position = -17589.0;
+        public static final double main_arm_position = -77457.0;
     }
 
     public static final class Swerve {
