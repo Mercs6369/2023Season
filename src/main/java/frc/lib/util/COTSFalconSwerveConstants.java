@@ -86,7 +86,7 @@ public class COTSFalconSwerveConstants {
 
         /** Swerve X*/
         public static COTSFalconSwerveConstants SwerveX(){
-            double wheelDiameter = 4.0;
+            double wheelDiameter = 4.0; //inches; can do Units.inchesToMeters(4.0); if we want units in m
     
             double angleGearRatio = (15.43 / 1);
             double driveGearRatio = (7.63 / 1);
