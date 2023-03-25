@@ -59,6 +59,7 @@ public class Robot extends TimedRobot {
   Timer m_timeToButtonPress = new Timer();
   Timer chargedStationTimer = new Timer();
   Timer moveAutoTimer = new Timer();
+  Timer autoIntake = new Timer();
   Arm m_arm = new Arm();
 
   double[] autonomousSwerveCommands = {0,0,0};
@@ -203,6 +204,7 @@ public class Robot extends TimedRobot {
     //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
+    robotInitShuffleboard();
 
     gyro = new Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
@@ -272,7 +274,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer = new RobotContainer();
+    autoInitShuffleboard();
+    //m_robotContainer = new RobotContainer(); //WHY IS THIS HERE... ITS ALREADY RUN ONCE UNDER INIT
         /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -285,7 +288,6 @@ public class Robot extends TimedRobot {
 
 
   }
-  Timer autoIntake = new Timer();
 
   @Override
   public void autonomousPeriodic() {
@@ -469,7 +471,7 @@ public class Robot extends TimedRobot {
   public void robotInitShuffleboard() {
       // Shuffleboard: Passes options "Red" and "Blue" for Alliance
       m_alliance.setDefaultOption("Red", kRed);
-      m_alliance.setDefaultOption("Blue", kBlue);
+      m_alliance.addOption("Blue", kBlue);
       SmartDashboard.putData("Alliance", m_alliance);
       // Shuffleboard: Passes options "Yes" and "No" for Idle
       m_idle.setDefaultOption("No", kNotIdle);
