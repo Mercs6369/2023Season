@@ -482,7 +482,7 @@ public class Vision {
             return "No Target";
         }
 
-        if (CubeArea > ConeArea) {
+        if (CubeArea >= ConeArea) {
             return "Cube";
         } else {
             return "Cone";
@@ -558,11 +558,11 @@ public class Vision {
      */
     public void setGamePiecePipeline(gamePiecePipelineIndex newPipelineName) {
        if (newPipelineName == gamePiecePipelineIndex.driver) {
-        gamePieceCamera.setPipelineIndex(2); // idx 2 is driver
+        gamePieceCamera.setPipelineIndex(1); // idx 2 is driver
        } else if (newPipelineName == gamePiecePipelineIndex.cone) {
-        gamePieceCamera.setPipelineIndex(0); // idx 0 is cone
+        gamePieceCamera.setPipelineIndex(1); // idx 0 is cone
        } else if (newPipelineName == gamePiecePipelineIndex.cube) {
-        gamePieceCamera.setPipelineIndex(1); // idx 1 is cube
+        gamePieceCamera.setPipelineIndex(2); // idx 1 is cube
        } else {
         System.out.println("Error in Vision.java - newPipelineName wasn't of the proper enum. Not sure how this is possible :P");
        }
@@ -577,44 +577,20 @@ public class Vision {
     public double[] runAlignmentProcess() {    
         String best_Target_Global = getBestTargetGlobal();
         
-        
+        best_Target_Global = "Cube";
+
         if (!(best_Target_Global == "No Target")) {
             gamePieceSwerveCommands[0] = 0.0;
             gamePieceSwerveCommands[1] = 0.0;
             
             if (best_Target_Global == "Cube") {
                 setGamePiecePipeline(gamePiecePipelineIndex.cube);
-                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw); // x
-                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
-                if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
-                    gamePieceSwerveCommands[0] = 0;
-                }
-                if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
-                    gamePieceSwerveCommands[0] = .65;
-                }
-                if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
-                    gamePieceSwerveCommands[0] = -.65;
-                }
-
-             
-                
-
+                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw) - 13; // x
+                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch) + 5;
             } else {
                 setGamePiecePipeline(gamePiecePipelineIndex.cone);
                 gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
-                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Area);
-                if (gamePieceSwerveCommands[0] < 4 && gamePieceSwerveCommands[0] > -4) {
-                    gamePieceSwerveCommands[0] = 0;
-                }
-                if (gamePieceSwerveCommands[0] > 4 && gamePieceSwerveCommands[0] < 7) {
-                    gamePieceSwerveCommands[0] = 4.39822971504;
-                }
-                if (gamePieceSwerveCommands[0] < -4 && gamePieceSwerveCommands[0] > -7) {
-                    gamePieceSwerveCommands[0] = -4.39822971504;
-                }
-
-              
-
+                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch);
             }
             return gamePieceSwerveCommands;
         } else {

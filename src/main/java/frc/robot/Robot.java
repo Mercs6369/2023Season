@@ -114,79 +114,34 @@ public class Robot extends TimedRobot {
   /**
    * This needs to be run whenever the button (assigned to picking up a piece) is pressed. You don't have to worry about adding a debounce to this, it's all handled internally :P
    */
-  private void _RobotPickUpPiece() {
-    pickupStatus = pickupStatusEnum.in_progress;
-  }
 
-  private void pickUpPiecePeriodic() {
+  private void _RobotPickUpPiece() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
-    SmartDashboard.putNumber("Area", autonomousSwerveCommands[1]);
+    SmartDashboard.putNumber("Pitch", autonomousSwerveCommands[1]);
     
-    double rotation = -1*((0-autonomousSwerveCommands[0])/28);
-    rotation = rotation * 1.2;
+    double rotation = (autonomousSwerveCommands[0])/28;
 
-
-    if (rotation >= -0.07142857142 && rotation <= 0.07142857142){
-      rotation = 0.0;
-    } else if (rotation >= 0.07142857142 && rotation <= 0.6) {
-      rotation = 0.6;
-    } else if (rotation <= -0.07142857142 && rotation >= -0.6) {
-      rotation = -0.6;
-    } else if (rotation >= 1.2) {
-      rotation = 1.2;
-    } else if (rotation <= -1.2) {
-      rotation = -1.2;
-    }
-
-    double swerveYchange; // These 5 variables are being used for calculating how far to move towards the game object.
+    double swerveYchange = autonomousSwerveCommands[1]/2; // These 5 variables are being used for calculating how far to move towards the game object.
+/*
     double ca = autonomousSwerveCommands[1]; // do not remove these!!! (current area)
     double idealArea = Constants.idealConeArea_Standing;
     double top_speed = Constants.top_speed_mps;
     double increment = top_speed / idealArea;
+*/
+    //swerveYchange = (ca - idealArea) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
 
-
-
-
-    SmartDashboard.putNumber("Unofficial status", (ca - idealArea) * increment * -1);
-
-
-    if ((Constants.idealConeArea_Standing > (ca - 0.5)) && (Constants.idealConeArea_Standing < (ca + 0.5))) {
-      swerveYchange = 0.0;
-      SmartDashboard.putString("On axis", "true");
-
-    } else {
-      swerveYchange = (ca - idealArea) * increment * -1; // this one equation took up like half a whiteboard lmao !!!DO NOT REMOVE THIS!!!
-      SmartDashboard.putString("On axis", "false");
-
-    }
-
-
-    SmartDashboard.putNumber("First", swerveYchange);
-
-
+    /* 
     if ((swerveYchange < 0.35) && (swerveYchange >= .11)) { // this is all for the graph line thingy that Coach Dan knows about ask him if things happen
       swerveYchange = 0.35;
     } else if (swerveYchange <= .11) {
       swerveYchange = 0.0;
     }
-
-    swerveYchange = -1 * swerveYchange; // overall invert
-
-
-    SmartDashboard.putNumber("Rotation For Swerve", rotation);
-    SmartDashboard.putNumber("Move (meters per second) For Swerve", swerveYchange);
-
-
-    if (pickupStatus == pickupStatusEnum.in_progress) {
-                   
-      SmartDashboard.putString("Pickup Status", "In progress");
-      // updateSwerveParameters()
-      m_robotContainer.updateSwerveParameters(new Translation2d(0,swerveYchange), rotation, true);
-     
-    } else {
-      SmartDashboard.putString("Pickup Status", "Idle");
-    }
+    */
+    SmartDashboard.putNumber("rotation", rotation);
+    SmartDashboard.putNumber("swerveYchange", swerveYchange);
+    m_robotContainer.updateSwerveParameters(new Translation2d(0,swerveYchange), rotation, true);
+  
 
   }
   /*
@@ -410,7 +365,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY(), operator_controller.getRightY());
-
+    /*
     if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
       m_robotContainer.updateSwerveParameters(new Translation2d(Constants.Swerve.maxSpeed/2 * -driver_Controller.getLeftX(), 
                                                                 Constants.Swerve.maxSpeed/2 * driver_Controller.getLeftY()),
@@ -418,6 +373,11 @@ public class Robot extends TimedRobot {
     } 
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+    }*/
+    if (driver_Controller.getAButton() == true) {
+      _RobotPickUpPiece();
+    } else {
+     m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
     }
   }
 
