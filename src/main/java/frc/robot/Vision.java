@@ -109,7 +109,7 @@ public class Vision {
     }
 
     PhotonCamera camera = new PhotonCamera("Arducam_OV9281_USB_Camera"); // April Tag camera
-    PhotonCamera gamePieceCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000"); // Game Piece Camera
+    PhotonCamera gamePieceCamera = new PhotonCamera("USB_CAMERA"); // Game Piece Camera
     boolean hasTargets; // april tags
     Color_Sensor m_color_sensor = new Color_Sensor();
     Pose3d robotPose = new Pose3d();
@@ -454,7 +454,7 @@ public class Vision {
         double CubeArea;
         double ConeArea;
 
-        setGamePiecePipeline(gamePiecePipelineIndex.cone);     
+        //setGamePiecePipeline(gamePiecePipelineIndex.cone);     
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
 
         // cone pipeline
@@ -467,7 +467,7 @@ public class Vision {
 
 
         // cube pipeline
-        setGamePiecePipeline(gamePiecePipelineIndex.cube);
+        //setGamePiecePipeline(gamePiecePipelineIndex.cube);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
         
         if (gamePieceCameraResult.hasTargets()) {
@@ -497,7 +497,7 @@ public class Vision {
      * @param valueToGet Can be: Area, Pitch, Skew, and Yaw
      * @return Returns the requested value based off of valueToGet
      */
-    public double getCubeInfo(infoTypeToReturn valueToGet) {
+    public double getCubeInfo(String valueToGet) {
         setGamePiecePipeline(gamePiecePipelineIndex.cube);
         gamePieceCameraResult = gamePieceCamera.getLatestResult();
         
@@ -505,13 +505,15 @@ public class Vision {
         if (gamePieceCameraResult.hasTargets()) { // if it does has a target then do this :D
             PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             switch (valueToGet) {
-                case Area:
+                case "Area":
                     return bestTarget.getArea();
-                case Pitch:
+                case "Pitch":
+                    SmartDashboard.putNumber("bestTarget pitch", bestTarget.getPitch());
                     return bestTarget.getPitch();
-                case Skew:
+                case "Skew":
                     return bestTarget.getSkew();
-                case Yaw:
+                case "Yaw":
+                    SmartDashboard.putNumber("bestTarget yaw", bestTarget.getYaw());
                     return bestTarget.getYaw();
                 default:
                     break;
@@ -580,17 +582,18 @@ public class Vision {
         best_Target_Global = "Cube";
 
         if (!(best_Target_Global == "No Target")) {
+            PhotonTrackedTarget bestTarget = gamePieceCameraResult.getBestTarget();
             gamePieceSwerveCommands[0] = 0.0;
             gamePieceSwerveCommands[1] = 0.0;
             
             if (best_Target_Global == "Cube") {
                 setGamePiecePipeline(gamePiecePipelineIndex.cube);
-                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw) - 13;
-                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch) + 5;
+                gamePieceSwerveCommands[0] = getCubeInfo("Yaw") - 13;//bestTarget.getYaw() - 13;//getCubeInfo(infoTypeToReturn.Yaw) - 13;
+                gamePieceSwerveCommands[1] = getCubeInfo("Pitch") + 7.5;//bestTarget.getPitch() + 5;//getCubeInfo(infoTypeToReturn.Pitch) + 5;
             } else {
-                setGamePiecePipeline(gamePiecePipelineIndex.cone);
-                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
-                gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch);
+                //setGamePiecePipeline(gamePiecePipelineIndex.cone);
+                // gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw);
+                // gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch);
             }
             return gamePieceSwerveCommands;
         } else {
