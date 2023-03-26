@@ -47,7 +47,9 @@ public class Robot extends TimedRobot {
   int driver_controller_POV_button;
   double speedScale = 0.85;
   double max_speed_limiter = 0.1;  // 10% of the maximum translation velocity and angular velocity
-  int autoStage = 0;
+  int autoStage = 3;
+  double initialGyroValue = 0.0;
+  double initialDistanceY = 0.0;
 
   boolean[] operator_buttons = {false, false, false, false, false, false, false, false};
   double[] operator_triggers = new double[2];
@@ -230,6 +232,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoInitShuffleboard();
+    zeroGyro();
+    initialGyroValue = gyro.getRoll();
+    initialDistanceY = getSwerveDistanceY();
     //m_robotContainer = new RobotContainer(); //WHY IS THIS HERE... ITS ALREADY RUN ONCE UNDER INIT
         /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -246,115 +251,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if (autoStage == 0){
-      m_arm.setIntakeMotor(0.1);
-      m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
-      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
-        m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
-        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
-          autoStage = 1;
-        }
-      }
-    }
-    else if (autoStage == 1){
-      autoIntake.start();
-      if (autoIntake.get() < 1.5){
-        m_arm.setIntakeMotor(-1);
-      }
-      else {
-        m_arm.setIntakeMotor(0);
-        autoStage = 2;
-      }
-    }
-    else if (autoStage == 2){
-      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
-      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
-          if (Math.abs((m_arm.get_main_arm_position() - Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position)) < 1500){
-            m_arm.setMianArmToZero();
-            autoStage = 3;
-          }
-          else {
-            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
-          }
-      }
-    }
-    else if (autoStage == 3){
-      autoBalance();  
-      //autoMove();
+    //autoBackup();
+    //autoDefault();
+    //autoDistanceTest();
+    autoTest(); //balance 
 
-      // autoIntake.reset();
-      // autoIntake.start();
-      // if (autoIntake.get() < 6){
-      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.6), 0, true);
-      // }
-    }
-    /*
-    double distanceY = m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
-    m_arm.setIntakeMotor(0.1); //may need to change sign
-    if (autoStage == 0){ //move 5 in forward
-      // if (distanceY < 5.1){
-      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.95), 0, true);
-  
-      // }
-      // else {
-      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
-      //   autoStage = 1;
-  
-      // }
-
-
-
-    }
-    else if (autoStage == 1){ //move main and intake arm to score - top - cube pos
-
-      m_arm.move_main_arm_to_position(Constants.Cube_Top_Score_Position.main_arm_position);
-      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Top_Score_Position.main_arm_position)) < 1000){
-        m_arm.move_intake_arm_to_position(Constants.Cube_Top_Score_Position.intake_arm_position);
-        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cone_Mid_Score_Position.intake_arm_position)) < 1000){
-          autoStage = 2;
-        }
-      }
-    }
-    else if (autoStage == 2){ //move 5 in backwards
-      if (distanceY > 0.1){
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.95), 0, true);
-  
-      }
-      else {
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
-        autoIntake.start();
-        autoStage = 3;
-  
-      }
-    }
-    else if (autoStage == 3){ //start intake
-      if (autoIntake.get() < 1.5){
-        m_arm.setIntakeMotor(-1); //may need to change sign
-      }
-      else {
-        m_arm.setIntakeMotor(0);
-        autoStage = 4;
-      }
-
-    }
-    else if (autoStage == 4){ //move to idle pos
-      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
-      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
-          if (Math.abs((m_arm.get_main_arm_position() - Constants.Cone_Ground_Upright_Pickup_Position.main_arm_position)) < 1000){
-            m_arm.setMianArmToZero();
-            autoStage = 5;
-          }
-          else {
-            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
-          }
-      }
-    }
-    else if (autoStage == 5){ //auto balance
-      autoBalance();
-    }
-
-    SmartDashboard.putNumber("auto stageszszw", autoStage);
-    */
   }
 
   @Override
@@ -495,15 +396,15 @@ public class Robot extends TimedRobot {
       return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
   }
 
-  public void autoBalance(){
+  public void autoBalance(double initialGyroValue){
     chargedStationTimer.start();
     String xy = "";
-    if (chargedStationTimer.get() < 5){
-      m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.7), 0, true);
-      xy = "timer";
+    // if (chargedStationTimer.get() < 5){
+    //   m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.7), 0, true);
+    //   xy = "timer";
 
-    }
-    else if ((gyro.getRoll()) > 0 + 0.5){
+    // }
+    if ((gyro.getRoll()) > initialGyroValue + 1.5){
       if (gonebackwards == false){
         m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.6), 0, true);
         xy = "forward fast";
@@ -515,7 +416,7 @@ public class Robot extends TimedRobot {
       }
 
     }
-    else if ((gyro.getRoll()) < 0 - 0.5){
+    else if ((gyro.getRoll()) < initialGyroValue - 1.5){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, -0.55), 0, true);
       xy = "backwards";
       gonebackwards = true;
@@ -531,7 +432,7 @@ public class Robot extends TimedRobot {
 
   public void autoMove(){
     moveAutoTimer.start();
-    if (moveAutoTimer.get() < 8){
+    if (moveAutoTimer.get() < 7){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, -1), 0, true);
     }
     else {
@@ -539,4 +440,276 @@ public class Robot extends TimedRobot {
 
     }
   }
+
+  public void autoDefault(){
+    if (autoStage == 0){
+      m_arm.setIntakeMotor(0.1);
+      m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+        m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
+          autoStage = 1;
+        }
+      }
+    }
+    else if (autoStage == 1){
+      autoIntake.start();
+      if (autoIntake.get() < 1.5){
+        m_arm.setIntakeMotor(-1);
+      }
+      else {
+        m_arm.setIntakeMotor(0);
+        autoStage = 2;
+      }
+    }
+    else if (autoStage == 2){
+      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+          if (Math.abs((m_arm.get_main_arm_position() - Constants.Start_Arm_Position.main_arm_position)) < 1500){
+            m_arm.setMianArmToZero();
+            autoStage = 3;
+          }
+          else {
+            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+          }
+      }
+    }
+    else if (autoStage == 3){
+      if ((106.75 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) > 0.25){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -1), 0, true);
+      }
+      else if ((106.75 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+        autoStage = 4;
+      }
+    }
+    else if (autoStage == 4){ // note to self
+      if (getSwerveDistanceY() > 96.75){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0.7), 0, true);
+      }
+      else {
+        autoBalance(initialGyroValue);  
+      }
+    }
+
+  }
+
+  public void autoBackup(){
+    if (autoStage == 0){
+      m_arm.setIntakeMotor(0.1);
+      m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+        m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
+          autoStage = 1;
+        }
+      }
+    }
+    else if (autoStage == 1){
+      autoIntake.start();
+      if (autoIntake.get() < 1.5){
+        m_arm.setIntakeMotor(-1);
+      }
+      else {
+        m_arm.setIntakeMotor(0);
+        autoStage = 2;
+      }
+    }
+    else if (autoStage == 2){
+      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+          if (Math.abs((m_arm.get_main_arm_position() - Constants.Start_Arm_Position.main_arm_position)) < 1500){
+            m_arm.setMianArmToZero();
+            autoStage = 3;
+          }
+          else {
+            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+          }
+      }
+    }
+    else if (autoStage == 3){
+      autoBalance(initialGyroValue);  
+      //autoMove();
+    }
+  }
+
+  public void autoDistanceTest(){
+    if (autoStage == 0){
+      m_arm.setIntakeMotor(0.1);
+      m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+        m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
+          autoStage = 1;
+        }
+      }
+    }
+    else if (autoStage == 1){
+      autoIntake.start();
+      if (autoIntake.get() < 1.5){
+        m_arm.setIntakeMotor(-1);
+      }
+      else {
+        m_arm.setIntakeMotor(0);
+        autoStage = 2;
+      }
+    }
+    else if (autoStage == 2){
+      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+          if (Math.abs((m_arm.get_main_arm_position() - Constants.Start_Arm_Position.main_arm_position)) < 1500){
+            m_arm.setMianArmToZero();
+            autoStage = 3;
+          }
+          else {
+            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+          }
+      }
+    }
+    else if (autoStage == 3){
+      //autoBalance(initialGyroValue);  
+      //autoMove();
+      //229.623151
+      //72.56158302 this is how much the robot needs to travel to balance in in
+      //21.603 this is how much the robot needs to travel sideways to get 
+
+      //180 for cube pickup
+      //81 for balance
+      if ((12) - (-1*getSwerveDistanceY()) > 0.05){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -1.75), -gyro.getYaw()/30, true);
+      }
+      // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+      //   autoStage = 4;
+      // }
+      else {
+        //autoBalance(initialGyroValue);
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+        autoStage = 4;
+      }
+    }
+    else if (autoStage == 4){
+      if ((6) - (getSwerveDistanceX()) > 0.05){
+        m_robotContainer.updateSwerveParameters(new Translation2d(1, 0), -gyro.getYaw()/30, true);
+      }
+      else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+        autoStage = 5;
+      }
+    }
+    else if (autoStage == 5){
+      if ((150+12) - (-1*getSwerveDistanceY()) > 0.1){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, -2.5), -gyro.getYaw()/30, true);
+      }
+      else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+        autoStage = 7;
+      }
+    }
+    else if (autoStage == 6){
+      if ((0) + (getSwerveDistanceX()) > 0.05){
+        m_robotContainer.updateSwerveParameters(new Translation2d(-1, 0), -gyro.getYaw()/30, true);
+      }
+      else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+        //autoStage = 6;12
+      }
+    }
+    else if (autoStage == 7){
+      if ((12) - (-1*getSwerveDistanceY()) < 0.1){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 2.5), -gyro.getYaw()/30, true);
+      }
+      else {
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+        autoStage = 6;
+      }
+    }
+    else if (autoStage == 8){
+      if ((10) - (-1*getSwerveDistanceY()) < 0.05){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 2.5), -gyro.getYaw()/30, true);
+      }
+      // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+      //   autoStage = 4;
+      // }
+      else {
+        //autoBalance(initialGyroValue);
+        //m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+
+    }
+
+  }
+}
+
+public void autoTest(){
+  if (autoStage == 0){
+    m_arm.setIntakeMotor(0.1);
+    m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+    if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+      m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+      if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
+        autoStage = 1;
+      }
+    }
+  }
+  else if (autoStage == 1){
+    autoIntake.start();
+    if (autoIntake.get() < 1.5){
+      m_arm.setIntakeMotor(-1);
+    }
+    else {
+      m_arm.setIntakeMotor(0);
+      autoStage = 2;
+    }
+  }
+  else if (autoStage == 2){
+    m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+    if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+        if (Math.abs((m_arm.get_main_arm_position() - Constants.Start_Arm_Position.main_arm_position)) < 1500){
+          m_arm.setMianArmToZero();
+          autoStage = 3;
+        }
+        else {
+          m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+        }
+    }
+  }
+  else if (autoStage == 3){
+    //autoBalance(initialGyroValue);  
+    //autoMove();
+    //229.623151
+    //72.56158302 this is how much the robot needs to travel to balance in in
+    //21.603 this is how much the robot needs to travel sideways to get 
+
+    //180 for cube pickup
+    //81 for balance
+    if ((173) - (-1*getSwerveDistanceY()) > 0.05){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, -1.75), -gyro.getYaw()/30, true);
+    }
+    // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+    //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+    //   autoStage = 4;
+    // }
+    else {
+      //autoBalance(initialGyroValue);
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+      autoStage = 4;
+    }
+  }
+  else if (autoStage == 4){
+    if ((100) - (-1*getSwerveDistanceY()) < 0.05){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 1.75), -gyro.getYaw()/30, true);
+    }
+    // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+    //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+    //   autoStage = 4;
+    // }
+    else {
+      autoBalance(initialGyroValue);
+      //m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+
+  }
+
+}
+}
 }
