@@ -120,11 +120,44 @@ public class Robot extends TimedRobot {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Pitch", autonomousSwerveCommands[1]);
-    
-    double rotation = (autonomousSwerveCommands[0])/28;
 
-    double swerveYchange = -1*autonomousSwerveCommands[1]/10; // These 5 variables are being used for calculating how far to move towards the game object.
-/*
+    double rotation = -1*(autonomousSwerveCommands[0])/10;
+    SmartDashboard.putNumber("cube rotation", rotation);
+
+    double swerveYchange = -1*autonomousSwerveCommands[1]/5;
+    if (Math.abs(autonomousSwerveCommands[1]) >= 0.50){
+      swerveYchange = -Math.signum(autonomousSwerveCommands[1])*0.4;
+    }
+    else if (Math.abs(autonomousSwerveCommands[1]) < 0.5 && Math.abs(autonomousSwerveCommands[1]) > 0.1){
+      swerveYchange = -Math.signum(autonomousSwerveCommands[1])*0.25;
+    }
+    else if (Math.abs(autonomousSwerveCommands[1]) < 0.1){
+      swerveYchange = 0.0;
+    }
+
+    if (Math.abs(autonomousSwerveCommands[0]) >= 0.50){
+      rotation = -Math.signum(autonomousSwerveCommands[0])*0.2;
+    }
+    else if (Math.abs(autonomousSwerveCommands[0]) < 0.5 && Math.abs(autonomousSwerveCommands[0]) > 0.1){
+      rotation = -Math.signum(autonomousSwerveCommands[0])*0.05;
+    }
+    else if (Math.abs(autonomousSwerveCommands[0]) < 0.1){
+      rotation = 0.0;
+    }
+
+    
+    // else {
+    //   swerveYchange = 0.*0;
+    // }
+    // if (swerveYchange < -3){
+    //   swerveYchange = -1*autonomousSwerveCommands[1]/5;
+    // }
+    // else {
+    //   swerveYchange = 0;
+    // }
+     // These 5 variables are being used for calculating how far to move towards the game object.
+    SmartDashboard.putNumber("cube swerveYchange", swerveYchange);
+    /* 
     double ca = autonomousSwerveCommands[1]; // do not remove these!!! (current area)
     double idealArea = Constants.idealConeArea_Standing;
     double top_speed = Constants.top_speed_mps;
