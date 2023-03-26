@@ -733,7 +733,7 @@ public void autoTest(){
   //  20,40,
   //  0,40,
   //  0,-20,
-  //  0,0}; -- this defines the path using X and Y coordinates (inches). This would first make the robot go 50 inches forward, then ten inches back, and 20 inches left/right, and so on.
+  //  0,0}; -- this defines the path using X and Y coordinates (inches). This would first make the robot go 50 inches forward, and 0 inches left and right, then ten inches back and 20 inches left/right, and so on. It IS relative to the robot's starting position.
   //runPath(path); -- this would run the path seen above, and will return true if it's finished. It does need to be run constantly.
   //movePeriodic; -- this needs to be run constantly, so that it actually updates swerve paramaters.
   // if you're not pressing a button/the robot shouldn't be moving, I would recommend setting these variables:
