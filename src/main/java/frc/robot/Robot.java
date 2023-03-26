@@ -94,12 +94,11 @@ public class Robot extends TimedRobot {
   private static final String kNotLeaving = "No";
   private String m_leavingCommunitySelected;
   // Shuffleboard: Declares variables associated with Delay
-  private final SendableChooser<String>  m_delay = new SendableChooser<>();
-  private static final String kNoDelay = "No Delay";
-  private static final String kOneSecond = "One Second";
-  private static final String kThreeSeconds = "Three Seconds";
-  private static final String kFiveSeconds = "Five Seconds";
-  private String m_delaySelected;
+  private final SendableChooser<String>  m_autoRoutine = new SendableChooser<>();
+  private static final String kRoutine1 = "Routine #1";
+  private static final String kRoutine2 = "Routine #2";
+  private static final String kRoutine3 = "Routine #3";
+  private String m_autoRoutineSelected;
 
 /*
    * 
@@ -124,7 +123,7 @@ public class Robot extends TimedRobot {
     
     double rotation = (autonomousSwerveCommands[0])/28;
 
-    double swerveYchange = autonomousSwerveCommands[1]/2; // These 5 variables are being used for calculating how far to move towards the game object.
+    double swerveYchange = -1*autonomousSwerveCommands[1]/10; // These 5 variables are being used for calculating how far to move towards the game object.
 /*
     double ca = autonomousSwerveCommands[1]; // do not remove these!!! (current area)
     double idealArea = Constants.idealConeArea_Standing;
@@ -265,7 +264,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY(), operator_controller.getRightY());
+    //m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY(), operator_controller.getRightY());
     /*
     if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
       m_robotContainer.updateSwerveParameters(new Translation2d(Constants.Swerve.maxSpeed/2 * -driver_Controller.getLeftX(), 
@@ -353,11 +352,10 @@ public class Robot extends TimedRobot {
       m_leavingCommunity.addOption("No", kNotLeaving);
       SmartDashboard.putData("Leaving Community", m_leavingCommunity);
       // Shuffleboard: Passes options "No Delay", "One Second", "Three Seconds", and "Five Seconds" for Delay
-      m_delay.setDefaultOption("No Delay", kNoDelay);
-      m_delay.addOption("One Second", kOneSecond);
-      m_delay.addOption("Three Seconds", kThreeSeconds);
-      m_delay.addOption("Five Seconds", kFiveSeconds);
-      SmartDashboard.putData("Delay", m_delay);
+      m_autoRoutine.setDefaultOption("Routine #1", kRoutine1);
+      m_autoRoutine.addOption("Routine #2", kRoutine2);
+      m_autoRoutine.addOption("Routine #3", kRoutine3);
+      SmartDashboard.putData("Auto Routine Selection", m_autoRoutine);
   }
 
   public void autoInitShuffleboard() {
@@ -377,8 +375,8 @@ public class Robot extends TimedRobot {
     m_leavingCommunitySelected = m_leavingCommunity.getSelected();
     System.out.println("Leaving Community Selected: " + m_leavingCommunitySelected);
     // Shuffleboard: Sets Delay Selection to variable and prints to console
-    m_delaySelected = m_delay.getSelected();
-    System.out.println("Delay Selected: " + m_delaySelected);
+    m_autoRoutineSelected = m_autoRoutine.getSelected();
+    System.out.println("Routine Selected: " + m_autoRoutineSelected);
   }
 
   public double getSwerveDistanceX(){

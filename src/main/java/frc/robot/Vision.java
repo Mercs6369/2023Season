@@ -585,7 +585,7 @@ public class Vision {
             
             if (best_Target_Global == "Cube") {
                 setGamePiecePipeline(gamePiecePipelineIndex.cube);
-                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw) - 13; // x
+                gamePieceSwerveCommands[0] = getCubeInfo(infoTypeToReturn.Yaw) - 13;
                 gamePieceSwerveCommands[1] = getCubeInfo(infoTypeToReturn.Pitch) + 5;
             } else {
                 setGamePiecePipeline(gamePiecePipelineIndex.cone);
