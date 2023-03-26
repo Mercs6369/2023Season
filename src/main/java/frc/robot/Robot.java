@@ -695,21 +695,200 @@ public void autoTest(){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
       autoStage = 4;
     }
-  }
-  else if (autoStage == 4){
-    if ((100) - (-1*getSwerveDistanceY()) < 0.05){
-      m_robotContainer.updateSwerveParameters(new Translation2d(0, 1.75), -gyro.getYaw()/30, true);
+  } else if (autoStage == 4){
+      if ((100) - (-1*getSwerveDistanceY()) < 0.05){
+        m_robotContainer.updateSwerveParameters(new Translation2d(0, 1.75), -gyro.getYaw()/30, true);
+      }
+      // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+      //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+      //   autoStage = 4;
+      // }
+      else {
+        autoBalance(initialGyroValue);
+        //m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+
+      }
+
     }
-    // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
-    //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
-    //   autoStage = 4;
-    // }
-    else {
-      autoBalance(initialGyroValue);
-      //m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
+  }
+
+  /*
+   * 
+   * 
+   * Jon's Auton
+   * 
+   * 
+   */
+
+
+
+  double xVelocity = 0;
+  double yVelocity = 0;
+  double xDestination = 0;
+  double yDestination = 0;
+
+  //double[] path = 
+  //{0,50,
+  //  20,50,
+  //  20,40,
+  //  0,40,
+  //  0,-20,
+  //  0,0}; -- this defines the path using X and Y coordinates (inches). This would first make the robot go 50 inches forward, then ten inches back, and 20 inches left/right, and so on.
+  //runPath(path); -- this would run the path seen above, and will return true if it's finished. It does need to be run constantly.
+  //movePeriodic; -- this needs to be run constantly, so that it actually updates swerve paramaters.
+  // if you're not pressing a button/the robot shouldn't be moving, I would recommend setting these variables:
+  //
+  //xVelocity = 0;
+  //Velocity = 0;
+  //xDestination = 0;
+  //yDestination = 0;
+  //stage = 0; (this might need to be set to something either really low (like zero) or something really high (like 500))
+  //
+  //
+  
+
+
+  public void moveTo(double x, double y) { //runPath is basically just a bunch of these moveTo methods looped together.
+    xVelocity = 0;
+    yVelocity = 0;
+    xDestination = x;
+    yDestination = y;
+    SmartDashboard.putNumber("zAttempted Position Y", y);
+    SmartDashboard.putNumber("zAttempted Position X", x);
+
+
+    if (yDestination > getSwerveDistanceY()) {
+      yVelocity = 0.7;
+    } else {
+      yVelocity = -0.7;
+    }
+
+    if (xDestination > getSwerveDistanceX()) {
+      xVelocity = 0.6;
+    } else {
+      xVelocity = -0.6;
+    }
+  }
+
+
+
+
+
+
+
+  public boolean movePeriodic() {
+    SmartDashboard.putNumber("VelocityX - Before", xVelocity);
+    SmartDashboard.putNumber("VelocityY - Before", yVelocity);
+
+    if (Math.abs(yDestination - getSwerveDistanceY()) <= 6) { // see below
+      yVelocity = 0;
+    }
+    if (Math.abs(xDestination - getSwerveDistanceX()) <= 6) { // this number (6) can/should be changed, if the robot is within 6 inches of it's destination, it will stop. I think it should work if you were to set it to 1
+      xVelocity = 0;
+    }
+
+    SmartDashboard.putNumber("DestinationX", xDestination);
+    SmartDashboard.putNumber("DestinationY", yDestination);
+    SmartDashboard.putNumber("VelocityX - After", xVelocity);
+    SmartDashboard.putNumber("VelocityY - After", yVelocity);
+    if (xVelocity == 0 && yVelocity == 0) {
+      return true;
+    } else {
+      
+      m_robotContainer.updateSwerveParameters(new Translation2d(xVelocity, yVelocity), 0, true);
+      return false;
+    }
 
   }
 
-}
-}
+
+
+
+  int stage = 0;
+  boolean hasDashboarded = false;
+  boolean hasCompletedStage = false;
+
+  public void runPath(double... values) {
+    SmartDashboard.putNumber("Stage", stage);
+    if (stage < values.length) {
+      SmartDashboard.putString("Under length", "yessss");
+
+     
+      moveTo(values[stage], values[stage+1]);
+
+      if (movePeriodic() == true) { // completed current moveTo
+
+        if (stage < values.length) {
+          
+
+          hasDashboarded = true;
+          stage = stage + 2;
+          hasCompletedStage = true;
+
+          //xDestination = values[2];
+          //yDestination = values[3];
+        } else {
+          // finisheddddddddddddd
+          SmartDashboard.putString("Finished", "yay we finished lets go #poppingoff #letsgooo #blessed");
+        }
+        
+      }
+    } else {
+      xDestination = getSwerveDistanceX();
+      yDestination = getSwerveDistanceY();
+      SmartDashboard.putString("Under length", "nooooo");
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public void runBackwards(double... values) {
+    SmartDashboard.putNumber("Stage", stage);
+    if (stage < values.length) {
+      SmartDashboard.putString("Under length", "yessss");
+
+      moveTo(values[values.length - stage - 2], values[values.length - stage - 1]);
+
+      if (movePeriodic() == true) { // completed current moveTo
+
+        if (stage < values.length) {
+          
+
+          hasDashboarded = true;
+          stage = stage + 2;
+          hasCompletedStage = true;
+
+          //xDestination = values[2];
+          //yDestination = values[3];
+        } else {
+          // finisheddddddddddddd
+          SmartDashboard.putString("Finished", "yay we finished lets go #poppingoff #letsgooo #blessed");
+        }
+        
+      }
+    } else {
+      xDestination = getSwerveDistanceX();
+      yDestination = getSwerveDistanceY();
+      SmartDashboard.putString("Under length", "nooooo");
+    }
+  }
 }
