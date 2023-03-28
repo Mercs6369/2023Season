@@ -274,10 +274,14 @@ public class Robot extends TimedRobot {
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }*/
-    if (driver_Controller.getAButton() == true) {
-      _RobotPickUpPiece();
-    } else {
-     m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
+    if (operator_controller.getAButton() == true) {
+      m_arm.move_main_arm_to_position(-17500);
+    }
+    if (operator_controller.getXButton() == true) {
+      m_arm.move_main_arm_to_position(-45000);
+    }
+    else {
+     //m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
     }
   }
 

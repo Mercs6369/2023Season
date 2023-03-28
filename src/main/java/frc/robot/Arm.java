@@ -62,6 +62,7 @@ public class Arm {
     Timer m_time = new Timer();
 
     double last_button_time = 1;
+    double main_arm_encoder_corrected;
 
     // GLOBAL_ARM_STATE is used quite a bit.
     ArmStateEnum GLOBAL_ARM_STATE = ArmStateEnum.Idle;
@@ -113,7 +114,7 @@ public class Arm {
         main_arm_motor_2.follow(main_arm_motor_1);
         current_main_arm_position_command = main_arm_motor_1.getSelectedSensorPosition();
 
-        intake_arm_motor.setInverted(false);
+        intake_arm_motor.setInverted(true);
         intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
         intake_arm_motor.config_kP(0, 0.0325, 30);
@@ -123,6 +124,7 @@ public class Arm {
         intake_arm_motor.configClosedloopRamp(0.25);
         intake_arm_motor.configNeutralDeadband(0.001);
         intake_arm_motor.configClosedLoopPeakOutput(0, 0.2); //0.65
+        intake_arm_motor.configClearPositionOnLimitR(true, 30);
 
 
         // intake_arm_motor.configPeakOutputForward(0.9, 30);
@@ -192,8 +194,13 @@ public class Arm {
     }
 
     public void recalibrate_main_arm_encoder() {
-        //main_arm_encoder.setPositionOffset(0.9);
-        main_arm_motor_1.setSelectedSensorPosition(0.0, 0, 30);
+        if(main_arm_encoder.getAbsolutePosition() < 0.8) {
+            main_arm_encoder_corrected = main_arm_encoder.getAbsolutePosition() + 1.0;
+        }
+        else {
+            main_arm_encoder_corrected = main_arm_encoder.getAbsolutePosition();
+        }
+        main_arm_motor_1.setSelectedSensorPosition((-152130.3358 * main_arm_encoder_corrected) + 152293.97, 0, 30);
     }
 
     public void processArmCommands0(double intake_setpoint, double main_setpoint){

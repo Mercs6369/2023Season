@@ -42,7 +42,7 @@ public class RobotContainer {
                 s_Swerve, 
                 () -> driver_controller.getRawAxis(strafeAxis), 
                 () -> driver_controller.getRawAxis(translationAxis), //switched translationAxis and strafeAxis
-                () -> -driver_controller.getRawAxis(rotationAxis),
+                () -> driver_controller.getRawAxis(rotationAxis),
                 //() -> robotCentric.getAsBoolean()
                 () -> true
             )
