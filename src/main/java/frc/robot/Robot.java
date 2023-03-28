@@ -100,21 +100,7 @@ public class Robot extends TimedRobot {
   private static final String kRoutine3 = "Routine #3";
   private String m_autoRoutineSelected;
 
-/*
-   * 
-   *
-   * 
-   */
-  enum pickupStatusEnum {
-    in_progress,
-    finished,
-    idle,
-  }
-  pickupStatusEnum pickupStatus = pickupStatusEnum.idle;
 
-  /**
-   * This needs to be run whenever the button (assigned to picking up a piece) is pressed. You don't have to worry about adding a debounce to this, it's all handled internally :P
-   */
 
   private void _RobotPickUpPiece() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
