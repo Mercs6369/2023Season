@@ -54,8 +54,8 @@ public class Constants {
         public static final double main_arm_position = -21997;
     }
     public static final class Cone_Ground_Side_Pickup_Position {   // cube pickup position
-        public static final double intake_arm_position = -29861.0;//-26529.0;//-33351.0;//-33524;
-        public static final double main_arm_position = -8805.0;//-7033.0;//-10097.0;//-10258;
+        public static final double intake_arm_position = -37135;//-26529.0;//-33351.0;//-33524;
+        public static final double main_arm_position = -13463;//-7033.0;//-10097.0;//-10258;
     }
     public static final class Cone_Station_Pickup_Position {   // cube pickup position
         public static final double intake_arm_position = 0.0;

@@ -124,7 +124,7 @@ public class Arm {
         intake_arm_motor.configClosedloopRamp(0.25);
         intake_arm_motor.configNeutralDeadband(0.001);
         intake_arm_motor.configClosedLoopPeakOutput(0, 0.2); //0.65
-        intake_arm_motor.configClearPositionOnLimitR(true, 30);
+        //intake_arm_motor.configClearPositionOnLimitR(true, 30);
 
 
         // intake_arm_motor.configPeakOutputForward(0.9, 30);

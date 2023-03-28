@@ -297,8 +297,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    //m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY(), operator_controller.getRightY());
-    /*
+    m_arm.armPeriodic(operator_buttons, operator_triggers, operator_controller.getLeftY(), operator_controller.getRightY());
+    
     if (m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Picking_up || m_arm.GLOBAL_ARM_STATE == ArmStateEnum.Scoring) {
       m_robotContainer.updateSwerveParameters(new Translation2d(Constants.Swerve.maxSpeed/2 * -driver_Controller.getLeftX(), 
                                                                 Constants.Swerve.maxSpeed/2 * driver_Controller.getLeftY()),
@@ -306,16 +306,8 @@ public class Robot extends TimedRobot {
     } 
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
-    }*/
-    if (operator_controller.getAButton() == true) {
-      m_arm.move_main_arm_to_position(-17500);
     }
-    if (operator_controller.getXButton() == true) {
-      m_arm.move_main_arm_to_position(-45000);
-    }
-    else {
-     //m_robotContainer.updateSwerveParameters(new Translation2d(0,0), 0, false);
-    }
+    
   }
 
   @Override
