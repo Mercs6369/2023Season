@@ -7,27 +7,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Arm.ArmStateEnum;
 import frc.robot.LED_Signaling.LED_State;
-import frc.robot.Vision.gamePiecePipelineIndex;
-import frc.robot.Vision.infoTypeToReturn;
-import frc.robot.commands.TeleopSwerve;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
 import com.ctre.phoenix.sensors.Pigeon2;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
   public static CTREConfigs ctreConfigs;
-  private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   public Pigeon2 gyro;
 
@@ -66,34 +57,6 @@ public class Robot extends TimedRobot {
 
   double[] autonomousSwerveCommands = {0,0,0};
 
-  // Shuffleboard: Declares variables associated with Alliance Selection
-  private final SendableChooser<String> m_alliance = new SendableChooser<>();
-  private static final String kRed = "Red";
-  private static final String kBlue = "Blue";
-  private String m_allianceSelected;
-  // Shuffleboard: Declares variables associated with Idle Selection
-  private final SendableChooser<String> m_idle = new SendableChooser<>();
-  private static final String kNotIdle = "No";
-  private static final String kIsIdle = "Yes";
-  private String m_idleSelected;
-  // Shuffleboard: Declares variables associated with Position Selection
-  private final SendableChooser<String> m_position = new SendableChooser<>();
-  private static final String kCenter = "Center";
-  private static final String kLeft = "Left";
-  private static final String kRight = "Right";
-  private String m_positionSelected;
-  // Shuffleboard: Declares variables associated with Scoring Node
-  private final SendableChooser<String>  m_scoringNode= new SendableChooser<>();
-  private static final String kHigh = "High";
-  private static final String kMedium = "Medium";
-  private static final String kHybrid = "Hybrid";
-  private String m_scoringNodeSelected;
-  // Shuffleboard: Declares variables associated with Leaving Community
-  private final SendableChooser<String>  m_leavingCommunity = new SendableChooser<>();
-  private static final String kIsLeaving = "Yes";
-  private static final String kNotLeaving = "No";
-  private String m_leavingCommunitySelected;
-  // Shuffleboard: Declares variables associated with Delay
   private final SendableChooser<String>  m_autoRoutine = new SendableChooser<>();
   private static final String kRoutine1 = "Routine #1";
   private static final String kRoutine2 = "Routine #2";
@@ -184,8 +147,6 @@ public class Robot extends TimedRobot {
     gyro = new Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
     zeroGyro();
-
-    final double xRoll = gyro.getRoll();
         
   }
  
@@ -201,16 +162,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("SwerveDistanceX", getSwerveDistanceX());
     SmartDashboard.putNumber("SwerveDistanceY", getSwerveDistanceY());
     SmartDashboard.putNumber("Roll", gyro.getRoll());
-    SmartDashboard.putNumber("Pitch", gyro.getPitch());
-    SmartDashboard.putNumber("Yaw", gyro.getYaw());
-
+    
     SmartDashboard.putNumber("Main Arm Position", m_arm.get_main_arm_position());
     SmartDashboard.putNumber("Intake Arm Position", m_arm.get_intake_arm_position_selected());
     SmartDashboard.putNumber("Main Arm Position Throughbore", m_arm.get_main_arm_position_throughbore());
 
-
     getControllerStates();
-
 
     if (driver_Controller.getPOV() == 0){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
@@ -232,19 +189,6 @@ public class Robot extends TimedRobot {
 
     }
 
-    /* if (operator_controller.getRawButton(1) == true){
-      m_arm.setIntakeMotor(0.9);
-    }
-    else if (operator_controller.getRawButton(3) == true) {
-      m_arm.setIntakeMotor(-0.9);
-    }
-    else {
-      m_arm.setIntakeMotor(0.0);
-    } */
-
-
-  
-
    }
 
   @Override
@@ -252,19 +196,7 @@ public class Robot extends TimedRobot {
     autoInitShuffleboard();
     zeroGyro();
     initialGyroValue = gyro.getRoll();
-    initialDistanceY = getSwerveDistanceY();
-    //m_robotContainer = new RobotContainer(); //WHY IS THIS HERE... ITS ALREADY RUN ONCE UNDER INIT
-        /*
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-    */
-    
-
-
+    initialDistanceY = getSwerveDistanceY(); 
   }
 
   @Override
@@ -344,29 +276,6 @@ public class Robot extends TimedRobot {
   }
   
   public void robotInitShuffleboard() {
-      // Shuffleboard: Passes options "Red" and "Blue" for Alliance
-      m_alliance.setDefaultOption("Red", kRed);
-      m_alliance.addOption("Blue", kBlue);
-      SmartDashboard.putData("Alliance", m_alliance);
-      // Shuffleboard: Passes options "Yes" and "No" for Idle
-      m_idle.setDefaultOption("No", kNotIdle);
-      m_idle.addOption("Yes", kIsIdle);
-      SmartDashboard.putData("Idle", m_idle);
-      // Shuffleboard: Passes options "Center", "Left", and "Right" for Position
-      m_position.setDefaultOption("Center", kCenter);
-      m_position.addOption("Left", kLeft);
-      m_position.addOption("Right", kRight);
-      SmartDashboard.putData("Position", m_position);
-      // Shuffleboard: Passes options "High", "Medium", and "Hybrid" for Scoring Node
-      m_scoringNode.setDefaultOption("High", kHigh);
-      m_scoringNode.addOption("Medium", kMedium);
-      m_scoringNode.addOption("Hybrid", kHybrid);
-      SmartDashboard.putData("Scoring Node", m_scoringNode);
-      // Shuffleboard: Passes options "Yes" and "No" for Leaving Community
-      m_leavingCommunity.setDefaultOption("Yes", kIsLeaving);
-      m_leavingCommunity.addOption("No", kNotLeaving);
-      SmartDashboard.putData("Leaving Community", m_leavingCommunity);
-      // Shuffleboard: Passes options "No Delay", "One Second", "Three Seconds", and "Five Seconds" for Delay
       m_autoRoutine.setDefaultOption("Routine #1", kRoutine1);
       m_autoRoutine.addOption("Routine #2", kRoutine2);
       m_autoRoutine.addOption("Routine #3", kRoutine3);
@@ -374,22 +283,6 @@ public class Robot extends TimedRobot {
   }
 
   public void autoInitShuffleboard() {
-    // Shuffleboard: Sets Alliance Selection to variable and prints to console
-    m_allianceSelected = m_alliance.getSelected();
-    System.out.println("Alliance Selected: " + m_allianceSelected);
-    // Shuffleboard: Sets Idle Selection to variable and prints to console
-    m_idleSelected = m_idle.getSelected();
-    System.out.println("Idle Selected: " + m_idleSelected);
-    // Shuffleboard: Sets Position Selection to variable
-    m_positionSelected = m_position.getSelected();
-    System.out.println("Position Selected: " + m_positionSelected);
-    // Shuffleboard: Sets Scoring Node Selection to variable and prints to console
-    m_scoringNodeSelected = m_scoringNode.getSelected();
-    System.out.println("Scoring Node Selected: " + m_scoringNodeSelected);
-    // Shuffleboard: Sets Leaving Community Selection to variable and prints to console
-    m_leavingCommunitySelected = m_leavingCommunity.getSelected();
-    System.out.println("Leaving Community Selected: " + m_leavingCommunitySelected);
-    // Shuffleboard: Sets Delay Selection to variable and prints to console
     m_autoRoutineSelected = m_autoRoutine.getSelected();
     System.out.println("Routine Selected: " + m_autoRoutineSelected);
   }
@@ -759,8 +652,6 @@ public void autoTest(){
   //
   //
   
-
-
   public void moveTo(double x, double y) { //runPath is basically just a bunch of these moveTo methods looped together.
     xVelocity = 0;
     yVelocity = 0;
@@ -782,12 +673,6 @@ public void autoTest(){
       xVelocity = -0.6;
     }
   }
-
-
-
-
-
-
 
   public boolean movePeriodic() {
     SmartDashboard.putNumber("VelocityX - Before", xVelocity);
@@ -814,9 +699,6 @@ public void autoTest(){
 
   }
 
-
-
-
   int stage = 0;
   boolean hasDashboarded = false;
   boolean hasCompletedStage = false;
@@ -825,7 +707,6 @@ public void autoTest(){
     SmartDashboard.putNumber("Stage", stage);
     if (stage < values.length) {
       SmartDashboard.putString("Under length", "yessss");
-
      
       moveTo(values[stage], values[stage+1]);
 
@@ -852,27 +733,6 @@ public void autoTest(){
       SmartDashboard.putString("Under length", "nooooo");
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public void runBackwards(double... values) {
     SmartDashboard.putNumber("Stage", stage);

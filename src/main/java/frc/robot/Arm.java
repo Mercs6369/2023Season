@@ -2,16 +2,13 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LED_Signaling.LED_State;
-import edu.wpi.first.math.MathUtil;
 
 public class Arm {
     WPI_TalonFX intake = new WPI_TalonFX(Constants.INTAKE_ROLLER_MOTOR_1_ID);
@@ -177,7 +174,7 @@ public class Arm {
 
         }
         intake_arm_motor.set(ControlMode.Position, current_intake_arm_position_command);
-        SmartDashboard.putNumber("current_intake_arm_position_command", current_intake_arm_position_command);
+        //SmartDashboard.putNumber("current_intake_arm_position_command", current_intake_arm_position_command);
         //intake_arm_motor.set(MathUtil.clamp(intake_arm_PID.calculate(get_intake_arm_position(), input), -0.5, 0.5));
     }
 
