@@ -114,13 +114,13 @@ public class Arm {
         intake_arm_motor.setInverted(true);
         intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
-        intake_arm_motor.config_kP(0, 0.0325, 30);
+        intake_arm_motor.config_kP(0, 0.055, 30);
         intake_arm_motor.config_kI(0, 0.0, 30);
         intake_arm_motor.config_kD(0, 0.0, 30);
         intake_arm_motor.config_kF(0, 0.0, 30);
-        intake_arm_motor.configClosedloopRamp(0.25);
+        intake_arm_motor.configClosedloopRamp(0.15);
         intake_arm_motor.configNeutralDeadband(0.001);
-        intake_arm_motor.configClosedLoopPeakOutput(0, 0.2); //0.65
+        intake_arm_motor.configClosedLoopPeakOutput(0, 0.25); //0.65
         //intake_arm_motor.configClearPositionOnLimitR(true, 30);
 
 
@@ -429,6 +429,7 @@ public class Arm {
                 if (GLOBAL_OBJECT_STATE == GamePieces.Cone){
                     move_main_arm_to_position(Constants.Cone_Mid_Score_Position.main_arm_position);
                     if (Math.abs((get_main_arm_position() - Constants.Cone_Mid_Score_Position.main_arm_position)) < 1000){
+                        SmartDashboard.putString("testing temp cone mid", "works");
                         move_intake_arm_to_position(Constants.Cone_Mid_Score_Position.intake_arm_position, getLeftY);
 
                     }
