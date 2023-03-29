@@ -342,7 +342,7 @@ public class Arm {
             GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
             GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
         } else {
-            setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
+            //setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
         }
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {

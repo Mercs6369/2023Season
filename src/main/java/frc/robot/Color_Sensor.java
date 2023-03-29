@@ -114,7 +114,7 @@ public class Color_Sensor {
     * Info is output to SmartDashboard also.
     *
     */
-    public void color_sensor_prox_measure () {
+    public double color_sensor_prox_measure () {
         if (is_color_sensor_prox_data_there()) {
             proximity = NetworkTableInstance.getDefault().getTable("RevColorSensor_V3").getEntry("colorSensorProx").getDouble(0);
         }
@@ -122,6 +122,7 @@ public class Color_Sensor {
             proximity = -1;
         }
         SmartDashboard.putNumber("Game Piece Proximity", proximity);
+        return proximity;
     }
 
     /**

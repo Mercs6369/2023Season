@@ -141,8 +141,8 @@ public class Vision {
     * Info is output to SmartDashboard also.
     *
     */
-    public void CS_Prox_measure() {
-        m_color_sensor.color_sensor_prox_measure();
+    public double CS_Prox_measure() {
+        return(m_color_sensor.color_sensor_prox_measure());
     }
 
     public void targeting() {
@@ -569,6 +569,15 @@ public class Vision {
         System.out.println("Error in Vision.java - newPipelineName wasn't of the proper enum. Not sure how this is possible :P");
        }
 
+    }
+
+    public double generateCubeIntakeCommands() {
+        if (CS_Prox_measure() < 50) {
+            return (0.5);
+        }
+        else {
+            return (0.0);
+        }
     }
 
 

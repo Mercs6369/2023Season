@@ -225,6 +225,10 @@ public class Robot extends TimedRobot {
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
+
+    if (operator_controller.getPOV(0) == 0) {
+        m_arm.setIntakeMotor(m_vision.generateCubeIntakeCommands());
+    }
     
   }
 
