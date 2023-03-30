@@ -114,7 +114,7 @@ public class Arm {
         intake_arm_motor.setInverted(true);
         intake_arm_motor.setSensorPhase(false);
         intake_arm_motor.setNeutralMode(NeutralMode.Brake);
-        intake_arm_motor.config_kP(0, 0.055, 30);
+        intake_arm_motor.config_kP(0, 0.06, 30);
         intake_arm_motor.config_kI(0, 0.0, 30);
         intake_arm_motor.config_kD(0, 0.0, 30);
         intake_arm_motor.config_kF(0, 0.0, 30);
@@ -342,7 +342,7 @@ public class Arm {
             GLOBAL_SCORE_POSITION = ActiveScorePosition.Neither;
             GLOBAL_PICK_POSITION = ActivePickPosition.Neither;
         } else {
-            //setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
+            setIntakeMotor(operator_triggers[1] - operator_triggers[0]);
         }
 
         if (GLOBAL_ARM_STATE == ArmStateEnum.Idle) {

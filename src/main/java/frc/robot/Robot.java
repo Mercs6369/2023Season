@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   int driver_controller_POV_button;
   double speedScale = 0.85;
   double max_speed_limiter = 0.1;  // 10% of the maximum translation velocity and angular velocity
-  int autoStage = 3;
+  int autoStage = 0;
   double initialGyroValue = 0.0;
   double initialDistanceY = 0.0;
 
@@ -58,9 +58,10 @@ public class Robot extends TimedRobot {
   double[] autonomousSwerveCommands = {0,0,0};
 
   private final SendableChooser<String>  m_autoRoutine = new SendableChooser<>();
-  private static final String kRoutine1 = "Routine #1";
-  private static final String kRoutine2 = "Routine #2";
-  private static final String kRoutine3 = "Routine #3";
+  private static final String kRoutine1 = "MidDefault";
+  private static final String kRoutine2 = "CubeLeft";
+  private static final String kRoutine3 = "PreloadRight";
+  private static final String kRoutine4 = "Do Nothing";
   private String m_autoRoutineSelected;
 
 
@@ -201,10 +202,24 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+
+    if (m_autoRoutineSelected == "MidDefault") {
+      autoTest();
+    }
+    else if (m_autoRoutineSelected == "CubeLeft") {
+      autoDistanceTest();
+    }
+    else if (m_autoRoutineSelected == "PreloadRight") {
+      autoBackup();
+    }
+    else if (m_autoRoutineSelected == "Do Nothing") {
+
+    }
+    
+
     //autoBackup();
     //autoDefault();
-    //autoDistanceTest();
-    autoTest(); //balance 
+    //autoDistanceTest(); 
 
   }
 
@@ -226,9 +241,10 @@ public class Robot extends TimedRobot {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
 
-    if (operator_controller.getPOV(0) == 0) {
-        m_arm.setIntakeMotor(m_vision.generateCubeIntakeCommands());
-    }
+   // if (operator_controller.getPOV(0) == 0) {
+       // m_arm.setIntakeMotor(m_vision.generateCubeIntakeCommands());
+       // SmartDashboard.putNumber("AutoCubeIntake", m_vision.generateCubeIntakeCommands());
+   // }
     
   }
 
@@ -280,9 +296,10 @@ public class Robot extends TimedRobot {
   }
   
   public void robotInitShuffleboard() {
-      m_autoRoutine.setDefaultOption("Routine #1", kRoutine1);
-      m_autoRoutine.addOption("Routine #2", kRoutine2);
-      m_autoRoutine.addOption("Routine #3", kRoutine3);
+      m_autoRoutine.setDefaultOption("MidDefault", kRoutine1);
+      m_autoRoutine.addOption("CubeLeft", kRoutine2);
+      m_autoRoutine.addOption("PreloadRight", kRoutine3);
+      m_autoRoutine.addOption("Do Nothing", kRoutine4);     
       SmartDashboard.putData("Auto Routine Selection", m_autoRoutine);
   }
 
@@ -513,7 +530,7 @@ public class Robot extends TimedRobot {
       }
       else {
         m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
-        autoStage = 7;
+        //autoStage = 7;
       }
     }
     else if (autoStage == 6){
@@ -593,7 +610,7 @@ public void autoTest(){
 
     //180 for cube pickup
     //81 for balance
-    if ((173) - (-1*getSwerveDistanceY()) > 0.05){
+    if ((68) - (-1*getSwerveDistanceY()) > 0.05){
       m_robotContainer.updateSwerveParameters(new Translation2d(0, -1.75), -gyro.getYaw()/30, true);
     }
     // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
@@ -606,19 +623,59 @@ public void autoTest(){
       autoStage = 4;
     }
   } else if (autoStage == 4){
-      if ((100) - (-1*getSwerveDistanceY()) < 0.05){
-        m_robotContainer.updateSwerveParameters(new Translation2d(0, 1.75), -gyro.getYaw()/30, true);
-      }
+      //if ((75) - (-1*getSwerveDistanceY()) < 0.05){
+      //  m_robotContainer.updateSwerveParameters(new Translation2d(0, 1.75), -gyro.getYaw()/30, true);
+      //}
       // else if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
       //   m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
       //   autoStage = 4;
       // }
-      else {
+      //else {
         autoBalance(initialGyroValue);
         //m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, true);
 
-      }
+      //}
 
+    }
+  }
+
+  public void autoLeft(){
+    if (autoStage == 0){
+      m_arm.setIntakeMotor(0.1);
+      m_arm.move_main_arm_to_position(Constants.Cube_Mid_Score_Position.main_arm_position);
+      if (Math.abs((m_arm.get_main_arm_position() - Constants.Cube_Mid_Score_Position.main_arm_position)) < 1000){
+        m_arm.move_intake_arm_to_position(Constants.Cube_Mid_Score_Position.intake_arm_position);
+        if ((Math.abs(m_arm.get_intake_arm_position_selected() - Constants.Cube_Mid_Score_Position.intake_arm_position) < 1000)){
+          autoStage = 1;
+        }
+      }
+    }
+    else if (autoStage == 1){
+      autoIntake.start();
+      if (autoIntake.get() < 1.5){
+        m_arm.setIntakeMotor(-1);
+      }
+      else {
+        m_arm.setIntakeMotor(0);
+        autoStage = 2;
+      }
+    }
+    else if (autoStage == 2){
+      m_arm.move_intake_arm_to_position(Constants.Start_Arm_Position.intake_arm_position);
+      if (Math.abs((m_arm.get_intake_arm_position_selected() - Constants.Start_Arm_Position.intake_arm_position)) < 750){
+          if (Math.abs((m_arm.get_main_arm_position() - Constants.Start_Arm_Position.main_arm_position)) < 1500){
+            m_arm.setMianArmToZero();
+            autoStage = 3;
+          }
+          else {
+            m_arm.move_main_arm_to_position(Constants.Start_Arm_Position.main_arm_position);
+          }
+      }
+    }
+    else if (autoStage == 3){
+      if ((229.623151 - (-1*initialDistanceY)) - (-1*getSwerveDistanceY()) <= 0.25){
+         m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
+      }
     }
   }
 
