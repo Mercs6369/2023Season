@@ -70,8 +70,8 @@ public class Constants {
         public static final double main_arm_position = -77358;//-73481;
     }
     public static final class Cone_Top_Score_Position {   // cone top scoring position
-        public static final double intake_arm_position = -26000;//-25594.0;
-        public static final double main_arm_position = -83527;
+        public static final double intake_arm_position = -21000;//-25594.0; //substract to make higher
+        public static final double main_arm_position = -73027; //add to make it rotate less
     }
     public static final class Cube_Community_Score_Position {   // cube middle scoring position
         public static final double intake_arm_position = -1026;
