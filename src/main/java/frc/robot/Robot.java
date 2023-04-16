@@ -67,9 +67,12 @@ public class Robot extends TimedRobot {
   private static final String kRoutine5 = "MidDefault with mobility";
   private String m_autoRoutineSelected;
 
+  private final SendableChooser<String>  m_speedControl = new SendableChooser<>();
+  private static final String kSpeedNormal = "Normal Speed";
+  private static final String kSpeedSlow = "Slow Speed";
+  private String m_speedSelected;
 
-
-  private void _RobotPickUpPiece() {
+  private void RobotPickUpPiece() {
     autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Pitch", autonomousSwerveCommands[1]);
@@ -232,7 +235,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    
+    teleopInitShuffleboard();
+    if (m_speedSelected == "Normal Speed") {
+      //
+      Constants.Swerve.maxSpeed = 4.5;
+    }
+    else if (m_speedSelected == "Slow Speed") {
+      //
+      Constants.Swerve.maxSpeed = 1.5;
+    }
+
   }
 
   @Override
@@ -309,12 +321,22 @@ public class Robot extends TimedRobot {
       m_autoRoutine.addOption("Do Nothing", kRoutine4);   
       m_autoRoutine.addOption("MidDefault with mobility", kRoutine5);    
       SmartDashboard.putData("Auto Routine Selection", m_autoRoutine);
+
+      m_speedControl.setDefaultOption("Normal Speed", kSpeedNormal);
+      m_speedControl.addOption("Slow Speed", kSpeedSlow); 
+      SmartDashboard.putData("Speed Selection", m_speedControl);
   }
 
   public void autoInitShuffleboard() {
     m_autoRoutineSelected = m_autoRoutine.getSelected();
     System.out.println("Routine Selected: " + m_autoRoutineSelected);
   }
+
+  public void teleopInitShuffleboard() {
+    m_speedSelected = m_speedControl.getSelected();
+    System.out.println("Speed Selected: " + m_speedSelected);
+  }
+
 
   public double getSwerveDistanceX(){
     return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getX();
