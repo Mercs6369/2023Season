@@ -66,7 +66,7 @@ public class Constants {
         public static final double main_arm_position = -77000;
     }
     public static final class Cone_Mid_Score_Position {   // cone middle scoring position
-        public static final double intake_arm_position = -16272;//-10642;
+        public static final double intake_arm_position = -17272;//-10642;
         public static final double main_arm_position = -77358;//-73481;
     }
     public static final class Cone_Top_Score_Position {   // cone top scoring position
