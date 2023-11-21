@@ -1,25 +1,12 @@
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Quaternion;
-import edu.wpi.first.math.geometry.Pose2d;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Arm.GamePieces;
 
 public class Vision {
     //game piece 
@@ -96,6 +83,7 @@ public class Vision {
             fiducialID = -1;
             aprilTagX = 999.0;
             aprilTagY = 999.0;
+            aprilTagZ = 999.0;
             aprilTagZAngle = 999.0;
         }
 
@@ -105,6 +93,42 @@ public class Vision {
         SmartDashboard.putNumber("AprilTag Y (m)", aprilTagY);
         SmartDashboard.putNumber("AprilTag Z (m)", aprilTagZ);
         SmartDashboard.putNumber("AprilTag Z Angle", aprilTagZAngle);
+    }
+
+    public int getFiducialID(){
+        return fiducialID;
+    }
+
+    public double getAprilTagX(){
+        return aprilTagX;
+    }
+
+    public double getAprilTagY(){
+        return aprilTagY;
+    }
+
+    public double getAprilTagZ(){
+        return aprilTagZ;
+    }
+
+    public double getAprilTagZAngle(){
+        return aprilTagZAngle;
+    }
+
+    public double getGamePieceYaw(){
+        return gamePieceYaw;
+    }
+
+    public double getGamePiecePitch(){
+        return gamePiecePitch;
+    }
+
+    public double getGamePieceSkew(){
+        return gamePieceSkew;
+    }
+
+    public double getGamePieceAreaPercent(){
+        return gamePieceAreaPercent;
     }
     
 }
