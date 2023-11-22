@@ -73,7 +73,6 @@ public class Robot extends TimedRobot {
   private String m_speedSelected;
 
   private void RobotPickUpPiece() {
-    autonomousSwerveCommands = m_vision.runAlignmentProcess();
     SmartDashboard.putNumber("Yaw", autonomousSwerveCommands[0]);
     SmartDashboard.putNumber("Pitch", autonomousSwerveCommands[1]);
 
@@ -134,19 +133,9 @@ public class Robot extends TimedRobot {
   
 
   }
-  /*
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   */
 
   @Override
   public void robotInit() {
-
-    //m_vision.setGamePiecePipeline(gamePiecePipelineIndex.driver);
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
     robotInitShuffleboard();
@@ -195,6 +184,9 @@ public class Robot extends TimedRobot {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
 
     }
+
+    m_vision.gamePiecePeriodic();
+    m_vision.aprilTagPeriodic();
 
    }
 
