@@ -187,6 +187,7 @@ public class Robot extends TimedRobot {
 
     m_vision.gamePiecePeriodic();
     m_vision.aprilTagPeriodic();
+    m_vision.reflectiveTapePeriodic();
 
    }
 
