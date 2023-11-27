@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
   Timer autoIntakeThing = new Timer();
   Timer autoIntakeThing1 = new Timer();
   Arm m_arm = new Arm();
+  NodeSelector nodeSelector = new NodeSelector();
 
   double[] autonomousSwerveCommands = {0,0,0};
 
@@ -188,6 +189,9 @@ public class Robot extends TimedRobot {
     m_vision.gamePiecePeriodic();
     m_vision.aprilTagPeriodic();
     m_vision.reflectiveTapePeriodic();
+    nodeSelector.updateSelectedNode(driver_Controller.getPOV());
+    SmartDashboard.putString("node", nodeSelector.getCurrentNode());
+    
 
    }
 
@@ -201,6 +205,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+
 
     if (m_autoRoutineSelected == "MidDefault") {
       autoTest();
@@ -252,11 +257,6 @@ public class Robot extends TimedRobot {
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
-
-   // if (operator_controller.getPOV(0) == 0) {
-       // m_arm.setIntakeMotor(m_vision.generateCubeIntakeCommands());
-       // SmartDashboard.putNumber("AutoCubeIntake", m_vision.generateCubeIntakeCommands());
-   // }
     
   }
 
