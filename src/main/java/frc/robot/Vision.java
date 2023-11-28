@@ -1,6 +1,6 @@
 package frc.robot;
 
-import java.util.List;
+import java.util.*;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -180,11 +180,11 @@ public class Vision {
     }
 
     /**
-     * Gets the Z angle of the AprilTag in radians.
+     * Gets the Z angle of the AprilTag in degrees.
      * @return The Z angle.
      */
     public double getAprilTagZAngle(){
-        return aprilTagZAngle;
+        return aprilTagZAngle * (180 / Math.PI);
     }
 
     /**

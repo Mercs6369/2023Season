@@ -166,25 +166,7 @@ public class Robot extends TimedRobot {
 
     getControllerStates();
 
-    if (driver_Controller.getPOV() == 0){
-      m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
-    }
-    else if (driver_Controller.getPOV() == 90){
-      m_robotContainer.updateSwerveParameters(new Translation2d(2, 0), 0, true);
 
-    }
-    else if (driver_Controller.getPOV() == 270){
-      m_robotContainer.updateSwerveParameters(new Translation2d(-2, 0), 0, true);
-
-    }
-    else if (driver_Controller.getPOV() == 180){
-      m_robotContainer.updateSwerveParameters(new Translation2d(0, -2), 0, true);
-
-    }
-    else {
-      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
-
-    }
 
     m_vision.gamePiecePeriodic();
     m_vision.aprilTagPeriodic();
@@ -254,6 +236,24 @@ public class Robot extends TimedRobot {
                                                                 Constants.Swerve.maxSpeed/1.5 * driver_Controller.getLeftY()),
                                                                 Constants.Swerve.maxSpeed/1.5 * -driver_Controller.getRightX(), true);
     } 
+    else if (driver_Controller.getPOV() == 0){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 2), 0, true);
+    }
+    else if (driver_Controller.getPOV() == 90){
+      m_robotContainer.updateSwerveParameters(new Translation2d(2, 0), 0, true);
+
+    }
+    else if (driver_Controller.getPOV() == 270){
+      m_robotContainer.updateSwerveParameters(new Translation2d(-2, 0), 0, true);
+
+    }
+    else if (driver_Controller.getPOV() == 180){
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, -2), 0, true);
+
+    }
+    else if (driver_Controller.getRawButton(6)) {
+      m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), -m_vision.getGamePieceYaw()/10, true);
+    }
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
     }
