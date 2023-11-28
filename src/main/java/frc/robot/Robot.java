@@ -253,6 +253,8 @@ public class Robot extends TimedRobot {
     }
     else if (driver_Controller.getRawButton(6)) {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), -m_vision.getGamePieceYaw()/10, true);
+      // m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), -m_vision.getGamePieceYaw() * (0.1 / Math.sqrt(Math.abs(m_vision.getGamePieceYaw()))), true);
+
     }
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
