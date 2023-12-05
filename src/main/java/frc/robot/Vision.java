@@ -1,11 +1,18 @@
 package frc.robot;
 
+import java.io.IOException;
 import java.util.*;
-
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -26,7 +33,10 @@ public class Vision {
     boolean aprilTagHasTargets = false;
     List<PhotonTrackedTarget> aprilTagTargets;
     PhotonTrackedTarget aprilTagBestTarget = new PhotonTrackedTarget();
+    AprilTagFieldLayout aprilTagFieldLayout;
+    PhotonPoseEstimator poseEstimator;
     int fiducialID;
+    Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     double aprilTagX, aprilTagY, aprilTagZAngle, aprilTagZ = 999.0;
 
     // reflective tape
@@ -42,6 +52,12 @@ public class Vision {
      */
     public Vision(){
         gamePieceCamera.setPipelineIndex(2);
+        try {
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2023-chargedup.json"); // is this right? The docs show "AprilTagFields.k2023ChargedUp.m_resourceFile"
+          } catch (IOException e) {
+            e.printStackTrace();
+        }
+        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, aprilTagCameraBack, robotToCam);
     }    
 
     /**

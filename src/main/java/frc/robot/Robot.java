@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
@@ -21,6 +22,9 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
   private RobotContainer m_robotContainer;
   public Pigeon2 gyro;
+
+  private Command m_autonomousCommand;
+
 
 
   XboxController driver_Controller = new XboxController(0);
@@ -189,21 +193,29 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
 
 
-    if (m_autoRoutineSelected == "MidDefault") {
-      autoTest();
-    }
-    else if (m_autoRoutineSelected == "CubeLeft") {
-      autoDistanceTest();
-    }
-    else if (m_autoRoutineSelected == "PreloadRight") {
-      autoBackup();
+    // if (m_autoRoutineSelected == "MidDefault") {
+    //   autoTest();
+    // }
+    // else if (m_autoRoutineSelected == "CubeLeft") {
+    //   autoDistanceTest();
+    // }
+    // else if (m_autoRoutineSelected == "PreloadRight") {
+    //   autoBackup();
 
-    }
-    else if (m_autoRoutineSelected == "Do Nothing") {
+    // }
+    // else if (m_autoRoutineSelected == "Do Nothing") {
 
-    }
-    else if (m_autoRoutineSelected == "MidDefault with mobility"){
-      autoTest1();
+    // }
+    // else if (m_autoRoutineSelected == "MidDefault with mobility"){
+    //   autoTest1();
+    // }
+
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null)
+    {
+      m_autonomousCommand.schedule();
     }
     
 
@@ -254,7 +266,6 @@ public class Robot extends TimedRobot {
     else if (driver_Controller.getRawButton(6)) {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), -m_vision.getGamePieceYaw()/10, true);
       // m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), -m_vision.getGamePieceYaw() * (0.1 / Math.sqrt(Math.abs(m_vision.getGamePieceYaw()))), true);
-
     }
     else {
       m_robotContainer.updateSwerveParameters(new Translation2d(0, 0), 0, false);
