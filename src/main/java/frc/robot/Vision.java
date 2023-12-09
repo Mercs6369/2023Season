@@ -52,12 +52,14 @@ public class Vision {
      */
     public Vision(){
         gamePieceCamera.setPipelineIndex(2);
-        try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2023-chargedup.json"); // is this right? The docs show "AprilTagFields.k2023ChargedUp.m_resourceFile"
-          } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2023-chargedup.json"); // is this right? The docs show "AprilTagFields.k2023ChargedUp.m_resourceFile"
+        //  } catch (IOException e) {
+        //    e.printStackTrace();
+        //}
         poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, aprilTagCameraBack, robotToCam);
+
+
     }    
 
     /**

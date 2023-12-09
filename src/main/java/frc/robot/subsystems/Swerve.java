@@ -104,7 +104,7 @@ public class Swerve extends SubsystemBase {
                                 ));
 
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
-        supplierChassisSpeeds = new ChassisSpeeds();
+        //supplierChassisSpeeds = new ChassisSpeeds();
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -148,9 +148,9 @@ public class Swerve extends SubsystemBase {
         gyro.setYaw(0);
     }
     
-    public ChassisSpeeds getRobotRelativeSpeeds(){
+/*     public ChassisSpeeds getRobotRelativeSpeeds(){
         return supplierChassisSpeeds;
-    }
+    } */
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds){
         this.drive(new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond), chassisSpeeds.omegaRadiansPerSecond, false, false);
@@ -181,17 +181,17 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        CurrentOdometry = swerveOdometry.update(getYaw(), getModulePositions()); 
-        CurrentOdometryTime = Timer.getFPGATimestamp();
+        //CurrentOdometry = swerveOdometry.update(getYaw(), getModulePositions()); 
+        //CurrentOdometryTime = Timer.getFPGATimestamp();
 
-        consumerChassisSpeeds = new ChassisSpeeds((CurrentOdometry.getX() - lastOdometry.getX())/(CurrentOdometryTime - lastOdometryTime), (CurrentOdometry.getY() - lastOdometry.getY())/(CurrentOdometryTime - lastOdometryTime), (CurrentOdometry.getRotation().getRadians() - lastOdometry.getRotation().getRadians())/(CurrentOdometryTime - lastOdometryTime));
+        //consumerChassisSpeeds = new ChassisSpeeds((CurrentOdometry.getX() - lastOdometry.getX())/(CurrentOdometryTime - lastOdometryTime), (CurrentOdometry.getY() - lastOdometry.getY())/(CurrentOdometryTime - lastOdometryTime), (CurrentOdometry.getRotation().getRadians() - lastOdometry.getRotation().getRadians())/(CurrentOdometryTime - lastOdometryTime));
 
-        lastOdometry = swerveOdometry.update(getYaw(), getModulePositions()); 
-        lastOdometryTime = Timer.getFPGATimestamp();
+        //lastOdometry = swerveOdometry.update(getYaw(), getModulePositions()); 
+        //lastOdometryTime = Timer.getFPGATimestamp();
         
-        SmartDashboard.putNumber("consumerChassisSpeeds vxMetersPerSecond", consumerChassisSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("consumerChassisSpeeds vyMetersPerSecond", consumerChassisSpeeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("consumerChassisSpeeds omegaRadiansPerSecond", consumerChassisSpeeds.omegaRadiansPerSecond);
+        //SmartDashboard.putNumber("consumerChassisSpeeds vxMetersPerSecond", consumerChassisSpeeds.vxMetersPerSecond);
+        //SmartDashboard.putNumber("consumerChassisSpeeds vyMetersPerSecond", consumerChassisSpeeds.vyMetersPerSecond);
+        //SmartDashboard.putNumber("consumerChassisSpeeds omegaRadiansPerSecond", consumerChassisSpeeds.omegaRadiansPerSecond);
 
         
         for(SwerveModule mod : mSwerveMods){

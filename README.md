@@ -33,14 +33,14 @@ Major Task Status:
 
 
 Proposed SW Structure (assumes the current HW design we are prototyping) with basic psuedo code ideas
-    RoboRIO
+  -  RoboRIO
         Vision Process running at 50 Hz (20 millisec between updates)
             if (one or more AprilTags are visible)
-                reset the odometry position to 0, 0, 0
+                \\reset the odometry position to 0, 0, 0
                 update the current robot's predicted position based on AprilTag data
             else
-                update the current robot's predicted position based on the last known AprilTag data AND the current odometry data
-            ...
+                \\update the current robot's predicted position based on the last known AprilTag data AND the current odometry data
+                rotate robot until AprilTag is visible
             Change Vision Processing Mode method (new method which reconfigures the PhotonVision server to change targetting modes)
             ...
 
