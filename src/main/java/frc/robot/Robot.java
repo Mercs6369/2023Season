@@ -188,6 +188,13 @@ public class Robot extends TimedRobot {
     zeroGyro();
     initialGyroValue = gyro.getRoll();
     initialDistanceY = getSwerveDistanceY(); 
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null)
+    {
+      m_autonomousCommand.schedule();
+    }
   }
 
   @Override
@@ -211,13 +218,7 @@ public class Robot extends TimedRobot {
     //   autoTest1();
     // }
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null)
-    {
-      m_autonomousCommand.schedule();
-    }
     
 
     //autoBackup();

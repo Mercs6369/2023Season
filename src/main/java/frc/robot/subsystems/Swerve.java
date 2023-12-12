@@ -66,15 +66,15 @@ public class Swerve extends SubsystemBase {
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
 
-    //     AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getRobotRelativeSpeeds, this::driveRobotRelative, new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-    //     new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-    //     new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-    //     4.5, // Max module speed, in m/s
-    //     0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-    //     new ReplanningConfig() // Default path replanning config. See the API for the options here
-    // ), new Subsystem() {
+        AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getRobotRelativeSpeeds, this::driveRobotRelative, new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+        4.5, // Max module speed, in m/s
+        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+        new ReplanningConfig() // Default path replanning config. See the API for the options here
+    ), new Subsystem() {
             
-    //     });
+        });
         
     }
 
@@ -148,9 +148,9 @@ public class Swerve extends SubsystemBase {
         gyro.setYaw(0);
     }
     
-/*     public ChassisSpeeds getRobotRelativeSpeeds(){
+     public ChassisSpeeds getRobotRelativeSpeeds(){
         return supplierChassisSpeeds;
-    } */
+    } 
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds){
         this.drive(new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond), chassisSpeeds.omegaRadiansPerSecond, false, false);
