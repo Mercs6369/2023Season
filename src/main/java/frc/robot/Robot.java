@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -345,10 +346,10 @@ public class Robot extends TimedRobot {
 
 
   public double getSwerveDistanceX(){
-    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getX();
+    return Units.metersToInches(m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getX());
   }
   public double getSwerveDistanceY(){
-    return m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY();
+    return Units.metersToInches(m_robotContainer.s_Swerve.swerveOdometry.getPoseMeters().getY());
   }
 
   public void zeroGyro(){
