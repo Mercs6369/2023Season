@@ -33,6 +33,13 @@ Major Task Status:
 
 
 Proposed SW Structure (assumes the current HW design we are prototyping) with basic psuedo code ideas
+  -  System Design
+
+![image](https://github.com/Mercs6369/2023Season/assets/72580050/43dbb785-1fd3-4f6b-a6c8-7b8ff1c1c268)
+
+Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The server can connect to multiple cameras at once, and sends the data from each camera process over local host to a custom processing software running on the Beelink. This performs the final vision processing. Critical robot information is sent through network tables (ex. x, y, theta) to the Robo Rio. Then the Robo Rio uses this data to determine the robots precise location.
+
+
   -  Vision Processor
 	Major Parts:
      		Arducam 120 fps Mono Global Shutter USB Camera (Amazon Link: https://www.amazon.com/Arducam-Distortion-Microphones-Computer-Raspberry/dp/B096M5DKY6/ref=sr_1_2?crid=KGS8EVJN0SDT&keywords=arducam%2B120fps%2Bmono%2Bglobal%2Bshutter%2Busb%2Bcamera&qid=1702947529&sprefix=arducam%2B120%2Bfps%2Bmono%2Bg%2Caps%2C103&sr=8-2&th=1)
@@ -45,7 +52,10 @@ Proposed SW Structure (assumes the current HW design we are prototyping) with ba
 
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
-		
+	Design Description:
+	System consists of the following major software components:
+ 		Custom version of 
+
        
   
   -  RoboRIO
