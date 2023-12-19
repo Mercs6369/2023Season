@@ -52,12 +52,14 @@ Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The
 
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
+        DC Voltage Regulator (12V to 5V 20A; Amazon Link:https://www.amazon.com/Regulator-Converter-12V-Waterproof-Transformer/dp/B08CHMJM9J/ref=sr_1_16?crid=SJYTTESS0QIH&keywords=DC%2Bvoltage%2Bbuck%2Bconverter%2B12%2Bv%2B5%2Bv&qid=1702952291&sprefix=dc%2Bvoltage%2Bbuck%2Bconverter%2B12%2Bv%2B5%2Bv%2Caps%2C113&sr=8-16&th=1)
+
 Design Description:
-	System consists of the following major software components per processor:<br />
-    Beelink -<br />
-        Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.<br />
-        Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field to estimate the precise position of the robot on the field.<br />
-    RoboRIO -<br />
+> System consists of the following major software components per processor:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Beelink -<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field to estimate the precise position of the robot on the field.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RoboRIO -<br />
 
  	
        
