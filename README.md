@@ -53,9 +53,9 @@ Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
 Design Description:
-	System consists of the following major software components per processor:
-&nbsp;Beelink -
-&nbsp;&nbsp;Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.
+	System consists of the following major software components per processor:<br />
+Beelink -<br />
+Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.
 
 &nbsp;&nbsp;Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field to estimate the precise position of the robot on the field.
         
