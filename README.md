@@ -42,7 +42,7 @@ Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The
 
   -  Vision Processor
 	Major Parts:
-     		Arducam 120 fps Mono Global Shutter USB Camera (Amazon Link: https://www.amazon.com/Arducam-Distortion-Microphones-Computer-Raspberry/dp/B096M5DKY6/ref=sr_1_2?crid=KGS8EVJN0SDT&keywords=arducam%2B120fps%2Bmono%2Bglobal%2Bshutter%2Busb%2Bcamera&qid=1702947529&sprefix=arducam%2B120%2Bfps%2Bmono%2Bg%2Caps%2C103&sr=8-2&th=1)
+     	Arducam 120 fps Mono Global Shutter USB Camera (Amazon Link: https://www.amazon.com/Arducam-Distortion-Microphones-Computer-Raspberry/dp/B096M5DKY6/ref=sr_1_2?crid=KGS8EVJN0SDT&keywords=arducam%2B120fps%2Bmono%2Bglobal%2Bshutter%2Busb%2Bcamera&qid=1702947529&sprefix=arducam%2B120%2Bfps%2Bmono%2Bg%2Caps%2C103&sr=8-2&th=1)
 
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/6af8153e-b32c-413b-924d-8e8c662704ac)
 		M12 Wide Angle Lens (Amazon Link: https://www.amazon.com/Xenocam-Degrees-Distortion-Without-Infrared/dp/B07CZ5G2TY/ref=sr_1_5?crid=23CC74EGVVPIR&keywords=M12%2Bwide%2Bangle%2Blens&qid=1702947639&sprefix=m12%2Bwide%2Bangle%2Blens%2Caps%2C115&sr=8-5&th=1)
@@ -53,9 +53,15 @@ Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
 Design Description:
-	System consists of the following major software components:
- 		Custom version of 
-
+	System consists of the following major software components per processor:
+        Beelink -
+            Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.
+        
+            Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field to estimate the precise position of the robot on the field.
+        
+        RoboRIO -
+            
+ 	
        
   
   -  RoboRIO
