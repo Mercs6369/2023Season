@@ -56,10 +56,7 @@ Design Description:
 	System consists of the following major software components per processor:
         Beelink -
             Custom version of Photon Vision Server that maps to cameras based on USB port they are connected to.
-        
-            Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by
-            using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field
-            to estimate the precise position of the robot on the field.
+            Custom Vision Processor service that receives Photon Vision April tag targeting information and outputs consolidated estimated robot position.This is acheived by using the relative location of the cameras to the center of the robot, the robot distance from April tags, and the known locations of each April tag on the field to estimate the precise position of the robot on the field.
         
         RoboRIO -
 
