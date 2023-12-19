@@ -52,7 +52,7 @@ Vision Processor (VP), the Photon Vision server runs on the Beelink mini pc. The
 
 ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
-	Design Description:
+Design Description:
 	System consists of the following major software components:
  		Custom version of 
 
