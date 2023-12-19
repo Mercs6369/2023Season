@@ -68,5 +68,9 @@ Proposed SW Structure (assumes the current HW design we are prototyping) with ba
 
         Auto Cone Score method (this is a new method which commands the robot to automatically score a cone onto the designated position)
 
+     ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
+
+
     Beelink SER5
-        PhotonVision server outputting targetting data over Networktables at 100 Hz (10 millisec between updates)
+	PhotonVision server outputting targetting data over Networktables at 100 Hz (10 millisec between updates)
+	
