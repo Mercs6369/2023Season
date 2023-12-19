@@ -33,6 +33,21 @@ Major Task Status:
 
 
 Proposed SW Structure (assumes the current HW design we are prototyping) with basic psuedo code ideas
+  -  Vision Processor
+	Major Parts:
+     		Arducam 120 fps Mono Global Shutter USB Camera (Amazon Link: https://www.amazon.com/Arducam-Distortion-Microphones-Computer-Raspberry/dp/B096M5DKY6/ref=sr_1_2?crid=KGS8EVJN0SDT&keywords=arducam%2B120fps%2Bmono%2Bglobal%2Bshutter%2Busb%2Bcamera&qid=1702947529&sprefix=arducam%2B120%2Bfps%2Bmono%2Bg%2Caps%2C103&sr=8-2&th=1)
+
+![image](https://github.com/Mercs6369/2023Season/assets/72580050/6af8153e-b32c-413b-924d-8e8c662704ac)
+		M12 Wide Angle Lens (Amazon Link: https://www.amazon.com/Xenocam-Degrees-Distortion-Without-Infrared/dp/B07CZ5G2TY/ref=sr_1_5?crid=23CC74EGVVPIR&keywords=M12%2Bwide%2Bangle%2Blens&qid=1702947639&sprefix=m12%2Bwide%2Bangle%2Blens%2Caps%2C115&sr=8-5&th=1)
+
+![image](https://github.com/Mercs6369/2023Season/assets/72580050/26630844-6574-40f6-8c7a-827b4e28de01)
+		Beelink Mini PC (Amazon Link: https://www.amazon.com/Beelink-SER5-Graphics-Computer-Support/dp/B0C2P486GQ/ref=sr_1_4?crid=2JRXMK9ED7XUR&keywords=beelink%2Bmini%2Bpc&qid=1702947874&sprefix=Beelin%2Caps%2C118&sr=8-4&th=1)
+
+![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
+
+		
+       
+  
   -  RoboRIO
         Vision Process running at 50 Hz (20 millisec between updates)
             if (one or more AprilTags are visible)
@@ -67,8 +82,6 @@ Proposed SW Structure (assumes the current HW design we are prototyping) with ba
         Auto Cube Score method (this is a new method which commands the robot to automatically score a cube onto the designated position)
 
         Auto Cone Score method (this is a new method which commands the robot to automatically score a cone onto the designated position)
-
-     ![image](https://github.com/Mercs6369/2023Season/assets/72580050/fabffcfb-aa9f-40b9-b995-036484863f8d)
 
 
     Beelink SER5
